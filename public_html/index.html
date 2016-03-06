@@ -6,6 +6,16 @@
     </head>
     <body>
         <button id="set">Set</button>
-        <script src="js/app.js"></script>
+        <script>
+            var socket = io();
+            document.getElementById( 'set' ).onclick = function() {
+                socket.emit( 'SET', new Date().getTime() );
+                console.log( 'SET' );
+            };
+            socket.on( 'SET', function( msg ) {
+                var dt = msg - new Date().getTime();
+                console.log( 'SET:' +  + ' ' + dt.toString() );
+            });
+        </script>
     <body>
 </html>

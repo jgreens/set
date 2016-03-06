@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>SET | America's Favorite Card Game</title>
+        <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+    </head>
+    <body>
+        <button id="set">Set</button>
+        <script>
+            var socket = io();
+            document.getElementById( 'set' ).onclick = function() {
+                socket.emit( 'SET', new Date().getTime() );
+                console.log( 'SET' );
+            };
+            socket.on( 'SET', function( msg ) {
+                var dt = msg - new Date().getTime();
+                console.log( 'SET:' +  + ' ' + dt.toString() );
+            });
+        </script>
+    <body>
+</html>

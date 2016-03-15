@@ -87,6 +87,8 @@ public class Game{
         Card c2 = board.get(rowj).get(colj);
         if(cardmap.containsKey(nextCard(c1,c2)))
         {
+          c1.print();
+          c2.print();
           return true; 
         }
       }
@@ -152,7 +154,9 @@ public class Game{
   {
     if(j>3 || j < 0 || i <0 || i>=board.size())
     { return false;}
+    System.out.print("Removed card: ");
     board.get(i).remove(j).print();
+    System.out.println("");
     boardsize--;
     if(board.get(i).isEmpty())
     {

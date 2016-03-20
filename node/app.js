@@ -2,10 +2,10 @@ var app = require( 'express' )();
 var http = require( 'http' ).Server( app );
 var io = require( 'socket.io' )( http );
 var unixSocket = require( 'unix-socket' );
-var ROOT = '/root/cooper/set';
+var ROOT = '/home/jason/school/ece361/set';
 
 app.get( '/', function( req, res ){
-    res.sendfile( ROOT + '/public_html/index.html' );
+    res.sendFile( ROOT + '/public_html/index.html' );
 });
 
 http.listen( 3000, function(){
@@ -26,8 +26,7 @@ var option = {
     mode: 0666 
 };
 
-/*
-unixSocket.listen( server, option, function( result ) {
+unixSocket.listen( app, option, function( result ) {
     if( result ) {
         console.log( 'Server started on ' + result );
     } else {
@@ -35,4 +34,3 @@ unixSocket.listen( server, option, function( result ) {
         process.exit( 0 );
     }
 });
-*/

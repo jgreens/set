@@ -2,7 +2,7 @@ var app = require( 'express' )();
 var http = require( 'http' ).Server( app );
 var io = require( 'socket.io' )( http );
 var unixSocket = require( 'unix-socket' );
-var ROOT = '/root/cooper/set';
+var ROOT = '/home/cooper/set';
 
 app.get( '/', function( req, res ){
     res.sendfile( ROOT + '/public_html/index.html' );

@@ -3,7 +3,11 @@ var http = require( 'http' ).Server( app );
 var io = require( 'socket.io' )( http );
 var unixSocket = require( 'unix-socket' );
 var net = require('net');
-var ROOT = '/home/jason/school/ece361/set';
+
+
+var ROOT = '/home/cooper/set';
+// var ROOT = '/home/jason/school/ece361/set';
+
 
 app.get( '/', function( req, res ){
     res.sendFile( ROOT + '/public_html/index.html' );

@@ -30,7 +30,9 @@ public class Game{
   
   /**
    * Draws three cards and sticks them on the board.
-   *
+   * 
+   * Currently doesnt check if generated card has already been delt
+   * 
    */
   public void drawThree()
   {
@@ -69,20 +71,24 @@ public class Game{
     
   }
   /**
-   * Checks if the board has a Set.
+   * Checks if the board has a Set, by looping through the board, finding every pair of cards and 
+   * checking if the third card needed to complete the pair exists
    * 
    * @return Boolean-Returns true if there is a set on the board, false otherwise
    */
   public Boolean hasSet()
   {
+//    System.out.println("Board Size:" + boardsize);
     for(int i = 0; i <boardsize-1; i++)
     {
       for(int j = i+1; j < boardsize;j++)
       {
-        int rowi = i%3;
-        int coli = i/3;
-        int rowj = j%3;
-        int colj = j/3;
+        int rowi = i/3;
+        int coli = i%3;
+        int rowj = j/3;
+        int colj = j%3;
+//        System.out.println("row/col i: "+rowi+"/"+coli);
+//        System.out.println("row/col j: "+rowj+"/"+colj);
         Card c1 = board.get(rowi).get(coli);
         Card c2 = board.get(rowj).get(colj);
         if(cardmap.containsKey(nextCard(c1,c2)))
@@ -152,7 +158,9 @@ public class Game{
   {
     if(j>3 || j < 0 || i <0 || i>=board.size())
     { return false;}
-    board.get(i).remove(j).print();
+    Card removed = board.get(i).remove(j);
+    //removed.print();
+    cardmap.remove(removed);
     boardsize--;
     if(board.get(i).isEmpty())
     {

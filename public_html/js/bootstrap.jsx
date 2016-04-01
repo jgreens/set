@@ -1,25 +1,19 @@
 define(
 [
-    'react'
+    'react',
+    'jsx!components/Login/Login'
 ]
 , function(
-    React
+    React,
+    Login
 ) {
 
     var Bootstrap = {};
 
     Bootstrap.init = function() {
-    };
-
-    Bootstrap.Lobby = function() {
         React.render(
             <main className="ui page grid">
-                <div className="row">
-                    <div className="column">
-                        <div class="bootstrap">
-                        </div>
-                    </div>
-                </div>
+                <Login />
             </main>
             , document.getElementsByClassName( 'react-container')[ 0 ]
         );

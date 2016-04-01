@@ -19,5 +19,6 @@ mv json-20160212.jar org.json.jar
 ```
 Use the classpath attribute when compiling and running the server:
 ```
-javac -classpath org.json.jar SetServer.java
+javac -cp org.json.jar SetServer.java
+java -cp .:org.json.jar SetServer.java
 ```

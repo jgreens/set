@@ -5,7 +5,7 @@ define(
 , function(
     React
 ) {
-    var Login = React.createClass({
+    var Register = React.createClass({
         getInitialState: function() {
             return {
                 'username': '',
@@ -40,7 +40,7 @@ define(
                         <div className="column">
                             <h2 className="ui teal image header">
                                 <div className="content">
-                                    Log-in
+                                    Register 
                                 </div>
                             </h2>
                             <form className="ui large form">
@@ -57,7 +57,7 @@ define(
                                             <input id="password" type="password" name="password" placeholder="Password" value={this.state.password} onChange={this._inputChange}></input>
                                         </div>
                                     </div>
-                                    <div id="submit" className="ui fluid large teal submit button">Login</div>
+                                    <div id="submit" className="ui fluid large teal submit button">Register</div>
                                 </div>
 
                                 <div className="ui error message"></div>
@@ -74,5 +74,5 @@ define(
         }
     });
 
-    return Login;
+    return Register;
 });

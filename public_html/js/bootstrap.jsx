@@ -1,22 +1,22 @@
 define(
 [
     'react',
-    'jsx!components/Login/Login'
+    'jsx!ViewController'
 ]
 , function(
     React,
-    Login
+    ViewController 
 ) {
-
-    var Bootstrap = {};
-
-    Bootstrap.init = function() {
-        React.render(
-            <main className="ui page grid">
-                <Login />
-            </main>
-            , document.getElementsByClassName( 'react-container')[ 0 ]
-        );
+    var Bootstrap = {
+        init: function() {
+            React.render(
+                <main className="ui page grid">
+                    <ViewController />
+                </main>
+                , document.getElementsByClassName( 'react-container')[ 0 ]
+            );
+        },
+        
     };
 
     return Bootstrap;

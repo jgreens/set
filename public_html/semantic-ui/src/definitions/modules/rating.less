@@ -1,13 +1,14 @@
-/*
- * # Semantic - Rating
+/*!
+ * # Semantic UI - Rating
  * http://github.com/semantic-org/semantic-ui/
  *
  *
- * Copyright 2014 Contributor
+ * Copyright 2015 Contributors
  * Released under the MIT license
  * http://opensource.org/licenses/MIT
  *
  */
+
 
 /*******************************
             Theme
@@ -16,43 +17,33 @@
 @type    : 'module';
 @element : 'rating';
 
-@import '../../theme.config';
-
+@import (multiple) '../../theme.config';
 
 /*******************************
            Rating
 *******************************/
 
 .ui.rating {
-  display: @display;
-  font-size: 0em;
+  display: inline-flex;
+  white-space: @whiteSpace;
   vertical-align: @verticalAlign;
 }
 .ui.rating:last-child {
   margin-right: 0em;
 }
 
-.ui.rating:before {
-  display: block;
-  content: '';
-  visibility: hidden;
-  clear: both;
-  height: 0;
-}
-
 /* Icon */
 .ui.rating .icon {
-  cursor: pointer;
-
-  margin: 0em;
-  width: @iconHitbox;
-  text-align: center;
-  height: auto;
   padding: 0em;
-
+  margin: 0em;
+  text-align: center;
   font-weight: normal;
   font-style: normal;
-  vertical-align: @verticalAlign;
+  flex: 1 0 auto;
+  cursor: @iconCursor;
+  width: @iconWidth;
+  height: @iconHeight;
+  transition: @iconTransition;
 }
 
 
@@ -60,37 +51,58 @@
              Types
 *******************************/
 
+
+/*-------------------
+      Standard
+--------------------*/
+
+/* Inactive Icon */
+.ui.rating .icon {
+  background: @inactiveBackground;
+  color: @inactiveColor;
+}
+
+/* Active Icon */
+.ui.rating .active.icon {
+  background: @activeBackground;
+  color: @activeColor;
+}
+
+/* Selected Icon */
+.ui.rating .icon.selected,
+.ui.rating .icon.selected.active {
+  background: @selectedBackground;
+  color: @selectedColor;
+}
+
+
 /*-------------------
         Star
 --------------------*/
 
 /* Inactive */
 .ui.star.rating .icon {
-  width: @starIconHitbox;
+  width: @starIconWidth;
+  height: @starIconHeight;
+  background: @starInactiveBackground;
   color: @starInactiveColor;
+  text-shadow: @starInactiveTextShadow;
 }
 
 /* Active Star */
 .ui.star.rating .active.icon {
+  background: @starActiveBackground !important;
   color: @starActiveColor !important;
-  text-shadow: @starActiveShadow;
+  text-shadow: @starActiveTextShadow !important;
 }
 
 /* Selected Star */
 .ui.star.rating .icon.selected,
 .ui.star.rating .icon.selected.active {
+  background: @starSelectedBackground !important;
   color: @starSelectedColor !important;
+  text-shadow: @starSelectedTextShadow !important;
 }
-
-.ui.star.rating.partial {
-  position: relative;
-  z-index: 1;
-}
-.ui.star.rating.partial:before {
-  position: absolute;
-  z-index: -1;
-}
-
 
 
 /*-------------------
@@ -98,44 +110,32 @@
 --------------------*/
 
 .ui.heart.rating .icon {
-  width: @heartIconHitbox;
+  width: @heartIconWidth;
+  height: @heartIconHeight;
+  background: @heartInactiveBackground;
   color: @heartInactiveColor;
+  text-shadow: @heartInactiveTextShadow !important;
 }
 
 /* Active Heart */
 .ui.heart.rating .active.icon {
+  background: @heartActiveBackground !important;
   color: @heartActiveColor !important;
-  text-shadow: @heartActiveShadow;
+  text-shadow: @heartActiveTextShadow !important;
 }
 
 /* Selected Heart */
 .ui.heart.rating .icon.selected,
 .ui.heart.rating .icon.selected.active {
+  background: @heartSelectedBackground !important;
   color: @heartSelectedColor !important;
+  text-shadow: @heartSelectedTextShadow !important;
 }
 
 
 /*******************************
              States
 *******************************/
-
-
-/* Inactive Icon */
-.ui.rating .icon {
-  color: @inactiveColor;
-}
-
-/* Active Icon */
-.ui.rating .active.icon {
-  color: @activeColor;
-}
-
-/* Selected Icon */
-.ui.rating .icon.selected,
-.ui.rating .icon.selected.active {
-  color: @hoverColor;
-}
-
 
 /*-------------------
        Disabled
@@ -148,12 +148,12 @@
 
 
 /*-------------------
-     Interacting (Active)
+   User Interactive
 --------------------*/
 
 /* Selected Rating */
 .ui.rating.selected .active.icon {
-  opacity: @interactiveIconOpacity;
+  opacity: @interactiveActiveIconOpacity;
 }
 .ui.rating.selected .icon.selected,
 .ui.rating .icon.selected {
@@ -166,33 +166,27 @@
           Variations
 *******************************/
 
-.ui.mini.rating .icon {
+.ui.mini.rating {
   font-size: @mini;
 }
-.ui.tiny.rating .icon {
+.ui.tiny.rating {
   font-size: @tiny;
 }
-.ui.small.rating .icon {
+.ui.small.rating {
   font-size: @small;
 }
-.ui.rating .icon {
+.ui.rating {
   font-size: @medium;
 }
-.ui.large.rating .icon {
+.ui.large.rating {
   font-size: @large;
 }
-.ui.huge.rating .icon {
+.ui.huge.rating {
   font-size: @huge;
 }
-.ui.massive.rating .icon {
+.ui.massive.rating {
   font-size: @massive;
 }
 
-/* Realign */
-.ui.large.rating,
-.ui.huge.rating,
-.ui.massive.rating {
-  vertical-align: @oversizedVerticalAlign;
-}
 
 .loadUIOverrides();

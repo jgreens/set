@@ -1,9 +1,9 @@
-/*
- * # Semantic - Accordion
- * http://github.com/jlukic/semantic-ui/
+/*!
+ * # Semantic UI - Accordion
+ * http://github.com/semantic-org/semantic-ui/
  *
  *
- * Copyright 2014 Contributor
+ * Copyright 2015 Contributors
  * Released under the MIT license
  * http://opensource.org/licenses/MIT
  *
@@ -16,8 +16,7 @@
 @type    : 'module';
 @element : 'accordion';
 
-@import '../../theme.config';
-
+@import (multiple) '../../theme.config';
 
 /*******************************
             Accordion
@@ -26,7 +25,6 @@
 .ui.accordion,
 .ui.accordion .accordion {
   max-width: 100%;
-  font-size: @fontSize;
 }
 .ui.accordion .accordion {
   margin: @childAccordionMargin;
@@ -141,7 +139,7 @@
   transition: @styledTitleTransition;
 }
 .ui.styled.accordion > .title:first-child,
-.ui.styled.accordion > .accordion .title:first-child {
+.ui.styled.accordion .accordion .title:first-child {
   border-top: none;
 }
 
@@ -210,6 +208,13 @@
   width: 100%;
 }
 
+/*--------------
+     Inverted
+---------------*/
 
+.ui.inverted.accordion .title:not(.ui) {
+  color: @invertedTitleColor;
+}
 
 .loadUIOverrides();
+

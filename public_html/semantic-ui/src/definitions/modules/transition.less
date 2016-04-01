@@ -1,13 +1,14 @@
- /*
- * # Semantic - Transition
+/*!
+ * # Semantic UI - Transition
  * http://github.com/semantic-org/semantic-ui/
  *
  *
- * Copyright 2014 Contributors
+ * Copyright 2015 Contributors
  * Released under the MIT license
  * http://opensource.org/licenses/MIT
  *
  */
+
 
 /*******************************
             Theme
@@ -16,17 +17,11 @@
 @type    : 'module';
 @element : 'transition';
 
-@import '../../theme.config';
-
+@import (multiple) '../../theme.config';
 
 /*******************************
           Transitions
 *******************************/
-
-/*
-  Some transitions adapted from Animate CSS
-  https://github.com/daneden/animate.css
-*/
 
 .transition {
   animation-iteration-count: 1;
@@ -43,7 +38,6 @@
 /* Animating */
 .animating.transition {
   backface-visibility: @backfaceVisibility;
-  transform: @use3DAcceleration;
   visibility: visible !important;
 }
 
@@ -64,8 +58,8 @@
 .visible.transition {
   display: block !important;
   visibility: visible !important;
-  backface-visibility: @backfaceVisibility;
-  transform: @use3DAcceleration;
+/*  backface-visibility: @backfaceVisibility;
+  transform: @use3DAcceleration;*/
 }
 
 /* Disabled */
@@ -81,9 +75,5 @@
   animation-iteration-count: infinite;
 }
 
-
-/*******************************
-             Types
-*******************************/
 
 .loadUIOverrides();

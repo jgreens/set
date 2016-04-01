@@ -1,13 +1,14 @@
-/*
- * # Semantic - Search
+/*!
+ * # Semantic UI - Search
  * http://github.com/semantic-org/semantic-ui/
  *
  *
- * Copyright 2014 Contributor
+ * Copyright 2015 Contributors
  * Released under the MIT license
  * http://opensource.org/licenses/MIT
  *
  */
+
 
 /*******************************
             Theme
@@ -16,7 +17,7 @@
 @type    : 'module';
 @element : 'search';
 
-@import '../../theme.config';
+@import (multiple) '../../theme.config';
 
 /*******************************
              Search
@@ -70,6 +71,7 @@
   position: absolute;
   top: 100%;
   left: 0%;
+  transform-origin: center top;
 
   background: @resultsBackground;
 
@@ -78,7 +80,14 @@
 
   border-radius: @resultsBorderRadius;
   box-shadow: @resultsBoxShadow;
+  border: @resultsBorder;
   z-index: @resultsZIndex;
+}
+.ui.search > .results > :first-child {
+  border-radius: @resultsBorderRadius @resultsBorderRadius 0em 0em;
+}
+.ui.search > .results > :last-child {
+  border-radius: 0em 0em @resultsBorderRadius @resultsBorderRadius;
 }
 
 /*--------------
@@ -90,13 +99,13 @@
   display: block;
   overflow: hidden;
   font-size: @resultFontSize;
-  padding: @resultVerticalPadding @resultHorizontalPadding;
+  padding: @resultPadding;
   color: @resultTextColor;
   line-height: @resultLineHeight;
   border-bottom: @resultDivider;
 }
 .ui.search > .results .result:last-child {
-  border-bottom: @resultLastDivider;
+  border-bottom: @resultLastDivider !important;
 }
 
 /* Image */
@@ -123,6 +132,7 @@
 }
 
 .ui.search > .results .result .title {
+  margin: @resultTitleMargin;
   font-family: @resultTitleFont;
   font-weight: @resultTitleFontWeight;
   font-size: @resultTitleFontSize;
@@ -174,10 +184,20 @@
 *******************************/
 
 /*--------------------
+       Focus
+---------------------*/
+
+.ui.search > .prompt:focus {
+  border-color: @promptFocusBorderColor;
+  background: @promptFocusBackground;
+  color: @promptFocusColor;
+}
+
+/*--------------------
        Loading
 ---------------------*/
 
-.ui.loading.search .input > .icon:before {
+.ui.loading.search .input > i.icon:before {
   position: absolute;
   content: '';
   top: 50%;
@@ -190,7 +210,7 @@
   border-radius: @circularRadius;
   border: @loaderLineWidth solid @loaderFillColor;
 }
-.ui.loading.search .input > .icon:after {
+.ui.loading.search .input > i.icon:after {
   position: absolute;
   content: '';
   top: 50%;
@@ -229,10 +249,10 @@
       Active
 ---------------*/
 
-.ui.search > .results .category.active {
+.ui.category.search > .results .category.active {
   background: @categoryActiveBackground;
 }
-.ui.search > .results .category.active > .name {
+.ui.category.search > .results .category.active > .name {
   color: @categoryNameActiveColor;
 }
 
@@ -255,7 +275,40 @@
 *******************************/
 
 /*--------------
-    Categories
+    Selection
+---------------*/
+
+.ui.search.selection .prompt {
+  border-radius: @selectionPromptBorderRadius;
+}
+
+/* Remove input */
+.ui.search.selection > .icon.input > .remove.icon {
+  pointer-events: none;
+  position: absolute;
+  left: auto;
+  opacity: 0;
+  color: @selectionCloseIconColor;
+  top: @selectionCloseTop;
+  right: @selectionCloseRight;
+  transition: @selectionCloseTransition;
+}
+.ui.search.selection > .icon.input > .active.remove.icon {
+  cursor: pointer;
+  opacity: @selectionCloseIconOpacity;
+  pointer-events: auto;
+}
+.ui.search.selection > .icon.input:not([class*="left icon"]) > .icon ~ .remove.icon {
+  right: @selectionCloseIconInputRight;
+}
+.ui.search.selection > .icon.input > .remove.icon:hover {
+  opacity: @selectionCloseIconHoverOpacity;
+  color: @selectionCloseIconHoverColor;
+}
+
+
+/*--------------
+    Category
 ---------------*/
 
 .ui.category.search .results {
@@ -269,8 +322,18 @@
   border-bottom: @categoryDivider;
   transition: @categoryTransition;
 }
+
+/* Last Category */
 .ui.category.search > .results .category:last-child {
   border-bottom: none;
+}
+
+/* First / Last */
+.ui.category.search > .results .category:first-child .name + .result {
+  border-radius: 0em @resultsBorderRadius 0em 0em;
+}
+.ui.category.search > .results .category:last-child .result:last-child {
+  border-radius: 0em 0em @resultsBorderRadius 0em;
 }
 
 /* Category Result */
@@ -280,8 +343,9 @@
   border-left: @categoryResultLeftBorder;
   border-bottom: @categoryResultDivider;
   transition: @categoryResultTransition;
+  padding: @categoryResultPadding;
 }
-.ui.category.search > .results .category .result:last-child {
+.ui.category.search > .results .category:last-child .result:last-child {
   border-bottom: @categoryResultLastDivider;
 }
 
@@ -328,11 +392,26 @@
       Sizes
 ---------------*/
 
+.ui.mini.search {
+  font-size: @relativeMini;
+}
+.ui.small.search {
+  font-size: @relativeSmall;
+}
 .ui.search {
-  font-size: @medium;
+  font-size: @relativeMedium;
 }
 .ui.large.search {
-  font-size: @large;
+  font-size: @relativeLarge;
+}
+.ui.big.search {
+  font-size: @relativeBig;
+}
+.ui.huge.search {
+  font-size: @relativeHuge;
+}
+.ui.massive.search {
+  font-size: @relativeMassive;
 }
 
 .loadUIOverrides();

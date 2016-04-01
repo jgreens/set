@@ -6,16 +6,16 @@
        Element
 --------------------*/
 
-@zIndex: 900;
+@zIndex: 1900;
 @background: @white;
 
 @maxWidth: 250px;
-@borderColor: #CCCCCC;
+@borderColor: @solidBorderColor;
 @borderWidth: 1px;
-@boxShadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+@boxShadow: @floatingShadow;
 @color: @textColor;
 
-@verticalPadding: 0.8em;
+@verticalPadding: 0.833em;
 @horizontalPadding: 1em;
 @fontWeight: normal;
 @fontStyle: normal;
@@ -51,6 +51,11 @@
 @arrowStroke: @borderWidth;
 @arrowColor: darken(@borderColor, 10);
 
+/* Arrow color by position */
+@arrowTopBackground: @arrowBackground;
+@arrowCenterBackground: @arrowBackground;
+@arrowBottomBackground: @arrowBackground;
+
 @arrowBoxShadow: @arrowStroke @arrowStroke 0px 0px @arrowColor;
 @leftArrowBoxShadow: @arrowStroke -@arrowStroke 0px 0px @arrowColor;
 @rightArrowBoxShadow: -@arrowStroke @arrowStroke 0px 0px @arrowColor;
@@ -60,8 +65,8 @@
        Coupling
 --------------------*/
 
-/* (padding * @medium) */
-@nestedGridMargin: -0.7rem -0.875rem;
+/* Grid Inside Popup */
+@nestedGridMargin: -0.7rem -0.875rem; /* (padding * @medium) */
 @nestedGridWidth: ~"calc(100% + 1.75rem)";
 
 /*-------------------
@@ -86,10 +91,9 @@
 
 @invertedHeaderBackground: none;
 @invertedHeaderColor: @white;
-@invertedArrowColor: @black;
+@invertedArrowColor: @invertedBackground;
 
-/* Sizes */
-@small: 0.8rem;
-@medium: 0.875rem;
-@large: 1rem;
-@huge: 1.1rem;
+/* Arrow color by position */
+@invertedArrowTopBackground: @invertedBackground;
+@invertedArrowCenterBackground: @invertedBackground;
+@invertedArrowBottomBackground: @invertedBackground;

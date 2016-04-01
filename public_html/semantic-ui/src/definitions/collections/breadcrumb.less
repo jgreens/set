@@ -1,14 +1,13 @@
-/*
- * # Semantic - Breadcrumb
+/*!
+ * # Semantic UI - Breadcrumb
  * http://github.com/semantic-org/semantic-ui/
  *
  *
- * Copyright 2014 Contributor
+ * Copyright 2015 Contributors
  * Released under the MIT license
  * http://opensource.org/licenses/MIT
  *
  */
-
 
 /*******************************
             Theme
@@ -17,15 +16,17 @@
 @type    : 'collection';
 @element : 'breadcrumb';
 
-@import '../../theme.config';
+@import (multiple) '../../theme.config';
+
 
 /*******************************
            Breadcrumb
 *******************************/
 
 .ui.breadcrumb {
-  margin: @verticalMargin 0em;
+  line-height: 1;
   display: @display;
+  margin: @verticalMargin 0em;
   vertical-align: @verticalAlign;
 }
 .ui.breadcrumb:first-child {

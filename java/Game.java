@@ -2,9 +2,15 @@ import java.util.*;
 public class Game{
   
   /**
-   * The number of cards on the board.
+   * The number of cards on the board and in the deck respectively.
    */
-  int boardsize;
+  int boardSize;
+  int deckSize;
+  
+  //status of hte game, whether it has started or is just waiting in the lobby
+  //0 means it has not started. 1 means it has started
+  int status;
+  
   /**
    * Hash Table of all the cards in the deck.Originally the second value is 0, when the card is still in the deck.
    * When a card is delt to the board the value is set to 1. When the card is removed from the board it is set to -1
@@ -22,7 +28,9 @@ public class Game{
   public Game(){
     initDeck();
     board = new ArrayList<Card>();
-    boardsize = 0;
+    boardSize = 0;
+    deckSize = 81;
+    status = 0;
     drawThree();
     drawThree();
     drawThree();
@@ -55,8 +63,12 @@ public class Game{
    * Currently doesnt check if generated card has already been delt
    * 
    */
-  public void drawThree()
+  public Boolean drawThree()
   {
+    if(deckSize < 3)
+    {
+      return false;
+    }
     ArrayList<Card> temp = new ArrayList<Card>(3);
     Random r = new Random();
     for(int j = 0; j < 3; j ++){
@@ -72,11 +84,13 @@ public class Game{
         int code = deck.get(card);
         exists = code == 0 ? false : true;//if the code is 0 then the card has not been delt
       }while(exists);//make sure you generate a unique card
-      deck.replace(card,1);//makes the value of that card 1, indicating its in the deck
-      temp.add(card);
+      deck.replace(card,1);//makes the value of that card 1, indicating its on the board
+      temp.add(card);      
     }
     board.addAll(temp);
-    boardsize += 3;
+    deckSize-=3;
+    boardSize += 3;
+    return true;
   }
   /**
    * Prints the board. Used for debugging
@@ -101,9 +115,9 @@ public class Game{
   public Boolean hasSet()
   {
     System.out.println("Checking for set");
-    for(int i = 0; i <boardsize-1; i++)
+    for(int i = 0; i <boardSize-1; i++)
     {
-      for(int j = i+1; j < boardsize;j++)
+      for(int j = i+1; j < boardSize;j++)
       {
         Card c1 = board.get(i);
         Card c2 = board.get(j);
@@ -182,7 +196,7 @@ public class Game{
     { return false;}
     Card removed = board.remove(i);
     deck.replace(removed,-1);
-    boardsize--;
+    boardSize--;
     return true;
   }
 }

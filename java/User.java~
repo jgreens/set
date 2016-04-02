@@ -1,6 +1,0 @@
-public class User{
-  
- String username, userid, password;
-  
-  
-}

@@ -7,14 +7,9 @@ public class Card{
     fill = f;
   }
   
-  public String toString()
-  {
-    return shape+"|"+color+"|"+number+"|"+fill+"|  ";
-  }
-  
   public void print()
   {
-    System.out.print(toString());
+    System.out.print(shape+"|"+color+"|"+number+"|"+fill+"|  ");
   }
   /**
    * Overwriting the equals method so the HashMap understands what equivalent cards are.

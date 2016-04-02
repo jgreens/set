@@ -1,31 +1,52 @@
 import java.util.*;
 public class Game{
-  /**
-   * 2-D ArrayList the contains all the cards.
-   */
-  List<List<Card>> board;
+  
   /**
    * The number of cards on the board.
    */
   int boardsize;
   /**
-   * Hash Table of all the cards on the board. Used to improve effiency when determining if a set exists on the board
+   * Hash Table of all the cards in the deck.Originally the second value is 0, when the card is still in the deck.
+   * When a card is delt to the board the value is set to 1. When the card is removed from the board it is set to -1
    */
-  HashMap<Card,String> cardmap;
-  
+  HashMap<Card,Integer> deck;
+  /**
+   * ArrayList of all the cards on the board. Done to make it easy to loop through the deck, because looping through a hashtable is annoying.
+   */
+  ArrayList<Card> board;
   /**
    * Constructor creates a board of 12 cards.
    * Also initializes the internal ArrayList and HashMap of Cards.
    * 
    */
   public Game(){
-    board = new ArrayList<List<Card>>();  
-    cardmap = new HashMap<Card,String>();
+    initDeck();
+    board = new ArrayList<Card>();
     boardsize = 0;
     drawThree();
     drawThree();
     drawThree();
     drawThree();    
+  }
+  
+  void initDeck()
+  {
+   deck = new HashMap<Card,Integer>(); 
+   //goes through every combination of cards for each of the 4 attributes
+   for(int i = 0; i < 3; i++)
+   {
+     for(int j= 0; j<3;j++)
+     {
+       for(int k = 0; k< 3; k++)
+       {
+         for(int l = 0; l < 3; l++)
+         {
+           Card card = new Card(i,j,k,l);
+           deck.put(card,0);
+         }
+       }
+     }
+   }
   }
   
   /**
@@ -41,34 +62,35 @@ public class Game{
     for(int j = 0; j < 3; j ++){
       Card card;
       int[] arr = new int[4];
+      Boolean exists = true;
       do{        
         for(int i = 0; i < 4; i ++)
         {        
           arr[i]=r.nextInt(3);
         }
         card = new Card(arr[0],arr[1],arr[2],arr[3]);
-      }while(cardmap.containsKey(card));//make sure you generate a unique card
-      
+        int code = deck.get(card);
+        exists = code == 0 ? false : true;//if the code is 0 then the card has not been delt
+      }while(exists);//make sure you generate a unique card
+      deck.replace(card,1);//makes the value of that card 1, indicating its in the deck
       temp.add(card);
-      cardmap.put(card,arr[0] +" "+ arr[1]+ " "+ arr[2] +" "+ arr[3]);
     }
-    board.add(temp);
+    board.addAll(temp);
     boardsize += 3;
   }
   /**
    * Prints the board. Used for debugging
    */
-  public void printBoard(){
-    
+  public void printBoard(){    
     for(int i = 0; i < board.size();i++)
     {
-      for(int j = 0; j < board.get(i).size();j++)
+      board.get(i).print();
+      if(i%3 == 2)
       {
-        board.get(i).get(j).print();
+        System.out.println("");
       }
-      System.out.println("");
     }
-    
+    System.out.println("");
   }
   /**
    * Checks if the board has a Set, by looping through the board, finding every pair of cards and 
@@ -78,21 +100,21 @@ public class Game{
    */
   public Boolean hasSet()
   {
-//    System.out.println("Board Size:" + boardsize);
+    System.out.println("Checking for set");
     for(int i = 0; i <boardsize-1; i++)
     {
       for(int j = i+1; j < boardsize;j++)
       {
-        int rowi = i/3;
-        int coli = i%3;
-        int rowj = j/3;
-        int colj = j%3;
-//        System.out.println("row/col i: "+rowi+"/"+coli);
-//        System.out.println("row/col j: "+rowj+"/"+colj);
-        Card c1 = board.get(rowi).get(coli);
-        Card c2 = board.get(rowj).get(colj);
-        if(cardmap.containsKey(nextCard(c1,c2)))
+        Card c1 = board.get(i);
+        Card c2 = board.get(j);
+        //if the card needed to complete the set is on the board you got yourself a set
+        if(deck.get(nextCard(c1,c2)) == 1)
         {
+          System.out.print("Set: ");
+          c1.print();
+          c2.print();
+          Card c3 = nextCard(c1,c2);
+          c3.print();
           return true; 
         }
       }
@@ -150,45 +172,17 @@ public class Game{
   /**
    * Removes the card at the specified index.
    * 
-   * @param  i row number
-   * @param  j column number
+   * @param  index of card on board to remove
    * @return Boolean-whether or not the card at that index was removed
    */
-  public Boolean removeCard(int i, int j)
+  public Boolean removeCard(int i)
   {
-    if(j>3 || j < 0 || i <0 || i>=board.size())
+    System.out.println("Removing Card");
+    if(i <0 || i>=board.size())
     { return false;}
-    Card removed = board.get(i).remove(j);
-    //removed.print();
-    cardmap.remove(removed);
+    Card removed = board.remove(i);
+    deck.replace(removed,-1);
     boardsize--;
-    if(board.get(i).isEmpty())
-    {
-      board.remove(i);
-    }else{
-      //shift elements into proper place 
-      //you wont need to shift if the last row was being removed because its the last row
-      shift(i);
-    }
-    
     return true;
-  }
-  /**
-   * ArrayList.Remove shifts the list down automagically, ensuring that there are no holes within individual rows
-   * However there could still be rows with less than 3 elements. This method shifts the board so that there are no such empty holes.
-   * 
-   * @param row- shifts everything after and including this row. Row numbers start with 0.
-   */
-  public void shift(int row)
-  {
-   //basically checks if any row has less than 3 elements and fills it in
-   //if row equals the last row then it skips this loop and doesnt do anything
-   for(int i = row; i < board.size()-1; i++)
-   {
-     if(board.get(i).size() < 3)
-     {//gets the first element of the next row and puts it at the end of this row
-       board.get(i).add(board.get(i+1).remove(0));//
-     }
-   }
   }
 }

@@ -5,9 +5,9 @@ public class Test{
     Game g = new Game();
     g.printBoard();
     System.out.println(g.hasSet());
-    System.out.println("Removing card");
-    g.removeCard(0,0);
+    g.removeCard(0);
     g.printBoard();
+    
     
   } 
 }

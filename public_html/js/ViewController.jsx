@@ -2,12 +2,14 @@ define(
 [
     'react',
     'jsx!components/Login/Login',
-    'jsx!components/Register/Register'
+    'jsx!components/Register/Register',
+    'jsx!components/Lobby/Lobby'
 ]
 , function(
     React,
     Login,
-    Register
+    Register,
+    Lobby
 ) {
     var ViewController = React.createClass({
         getInitialState: function() {
@@ -37,8 +39,11 @@ define(
                 case 'Register':
                     view.push( <Register key="Register"/> );
                     break;
+                case 'Lobby':
+                    view.push( <Lobby key="Lobby"/> );
+                    break;
                 default:
-                break;
+                    break;
             }
 
             return view;

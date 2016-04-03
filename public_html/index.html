@@ -2,28 +2,46 @@
 <html>
     <head>
         <title>SET | America's Favorite Card Game</title>
+        <link rel="stylesheet" href="semantic-ui/dist/semantic.min.css">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+        <style>
+            body > .grid {
+              height: 100%;
+            }
+            .Login .column, .Register .column {
+              max-width: 450px;
+            }
+            .ui.grid.Login, .ui.grid.Register {
+              margin-top: 70px;
+            }
+        </style> 
     </head>
     <body>
-        <button id="set">Set</button>
-        <button id="ping_all">Ping all clients</button>
-        <script>
-            var socket = io();
-            document.getElementById( 'set' ).onclick = function() {
-                socket.emit( 'SET', new Date().getTime() );
-                console.log( 'SET' );
-            };
-            document.getElementById( 'ping_all' ).onclick = function() {
-                socket.emit( 'PING_ALL', 'PING_ALL' );
-                console.log( 'PING_ALL' );
-            };
-            socket.on( 'SET', function( msg ) {
-                var dt = msg - new Date().getTime();
-                console.log( 'SET:' +  + ' ' + dt.toString() );
-            });
-            socket.on( 'PING_ALL', function( msg ) {
-                console.log( 'pinged' );
-            });
-        </script>
+        <div class="react-container">
+        </div>
+        <!-- 
+            <button id="set">Set</button>
+            <button id="ping_all">Ping all clients</button>
+            <script>
+                var socket = io();
+                document.getElementById( 'set' ).onclick = function() {
+                    socket.emit( 'SET', new Date().getTime() );
+                    console.log( 'SET' );
+                };
+                document.getElementById( 'ping_all' ).onclick = function() {
+                    socket.emit( 'PING_ALL', 'PING_ALL' );
+                    console.log( 'PING_ALL' );
+                };
+                socket.on( 'SET', function( msg ) {
+                    var dt = msg - new Date().getTime();
+                    console.log( 'SET:' +  + ' ' + dt.toString() );
+                });
+                socket.on( 'PING_ALL', function( msg ) {
+                    console.log( 'pinged' );
+                });
+            </script>
+        -->
+        <script src="js/libs/require.js" data-main="js/app"></script>
     <body>
 </html>

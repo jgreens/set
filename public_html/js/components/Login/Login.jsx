@@ -15,7 +15,6 @@ define(
             };
         },
         componentDidMount: function() {
-            this._setSubmitListener();
             this._setFormValidation();
         },
         _setFormValidation: function() {
@@ -40,6 +39,9 @@ define(
                         ]
                     }
                 }
+            }).submit( function( e ) {
+                e.preventDefault();
+                return false;
             });
         },
         _inputChange: function( e ) {
@@ -47,15 +49,22 @@ define(
             update[ e.target.name ] = e.target.value;
             this.setState( update );
         },
-        _setSubmitListener: function() {
-            var self = this;
-            document.getElementById( 'submit' ).onclick = function() {
-                console.log( self.state );
-            };
+        _loginClick: function( e ) {
+            var user = { 'user': { 'id': 5, 'name': 'Jonny' } };
+            this.setState( user );
+            console.log( this.state );
+            this._goToLobby();
         },
         _goToRegister: function( e ) {
             var customEvent = new CustomEvent( 'ViewController',  {
                 detail: { 'view': 'Register' },
+                bubbles: true
+            });
+            window.dispatchEvent( customEvent );
+        },
+        _goToLobby: function(  ) {
+            var customEvent = new CustomEvent( 'ViewController',  {
+                detail: { 'view': 'Lobby', 'user': this.state.user },
                 bubbles: true
             });
             window.dispatchEvent( customEvent );
@@ -69,7 +78,7 @@ define(
                                 Login
                             </div>
                         </h2>
-                        <form className="ui large form">
+                        <form className="ui large form Login-form">
                             <div className="ui segment">
                                 <div className="field">
                                     <div className="ui left icon input">
@@ -83,11 +92,10 @@ define(
                                         <input id="password" type="password" name="password" placeholder="Password" value={this.state.password} onChange={this._inputChange}></input>
                                     </div>
                                 </div>
-                                <div id="submit" className="ui fluid large teal submit button">Login</div>
+                                <div id="submit" className="ui fluid large teal submit button" onClick={this._loginClick}>Login</div>
                             </div>
 
                             <div className="ui error message"></div>
-
                         </form>
 
                         <div className="ui message">

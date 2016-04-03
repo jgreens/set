@@ -1,58 +1,13 @@
 define(
 [
     'react',
-    'semantic-form'
+    'jsx!components/Lobby/LobbyItem',
 ]
 , function(
     React,
-    SemantiForm
+    LobbyItem
 ) {
-    var Login = React.createClass({
-        getInitialState: function() {
-            return {
-                'username': '',
-                'password': ''
-            };
-        },
-        componentDidMount: function() {
-            this._setSubmitListener();
-            this._setFormValidation();
-        },
-        _setFormValidation: function() {
-            $('.ui.form').form({
-                fields: {
-                    username: {
-                        identifier: 'username',
-                        rules: [
-                            {
-                                type   : 'empty',
-                                prompt : 'Please enter your username'
-                            }
-                        ]
-                    },
-                    password: {
-                        identifier: 'password',
-                        rules: [
-                            {
-                                type   : 'empty',
-                                prompt : 'Please enter your password'
-                            }
-                        ]
-                    }
-                }
-            });
-        },
-        _inputChange: function( e ) {
-            var update = {};
-            update[ e.target.name ] = e.target.value;
-            this.setState( update );
-        },
-        _setSubmitListener: function() {
-            var self = this;
-            document.getElementById( 'submit' ).onclick = function() {
-                console.log( self.state );
-            };
-        },
+    var Lobby = React.createClass({
         _goToRegister: function( e ) {
             var customEvent = new CustomEvent( 'ViewController',  {
                 detail: { 'view': 'Register' },
@@ -60,38 +15,18 @@ define(
             });
             window.dispatchEvent( customEvent );
         },
+        members: [{ id: 1, name: 'Jonny' }, { id: 2, name: 'Akshay' }],
         render: function() {
             return(
-                <div className="Login ui middle aligned center aligned grid">
-                    <div className="column">
-                        <h2 className="ui teal image header">
-                            <div className="content">
-                                Login
+                <div className="Lobby ui grid container">
+                    <div className="row">
+                        <div className="column">
+                            <div className="ui fluid vertical menu">
+                                <LobbyItem key='1' name='Game1' members={this.members} />
+                                <LobbyItem key='2' name='Game2' members={this.members} />
+                                <LobbyItem key='3' name='Game3' members={this.members} />
+                                <LobbyItem key='4' name='Game4' members={this.members} />
                             </div>
-                        </h2>
-                        <form className="ui large form">
-                            <div className="ui segment">
-                                <div className="field">
-                                    <div className="ui left icon input">
-                                        <i className="user icon"></i>
-                                        <input id="username" type="text" name="username" placeholder="Username" value={this.state.username} onChange={this._inputChange}></input>
-                                    </div>
-                                </div>
-                                <div className="field">
-                                    <div className="ui left icon input">
-                                        <i className="lock icon"></i>
-                                        <input id="password" type="password" name="password" placeholder="Password" value={this.state.password} onChange={this._inputChange}></input>
-                                    </div>
-                                </div>
-                                <div id="submit" className="ui fluid large teal submit button">Login</div>
-                            </div>
-
-                            <div className="ui error message"></div>
-
-                        </form>
-
-                        <div className="ui message">
-                            Don&#39;t have an account? <a onClick={this._goToRegister}>Sign Up</a>
                         </div>
                     </div>
                 </div>
@@ -99,5 +34,5 @@ define(
         }
     });
 
-    return Login;
+    return Lobby;
 });

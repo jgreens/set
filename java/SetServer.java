@@ -9,9 +9,11 @@ import org.json.*;
 
 public class SetServer {
 
-    private static int msgCounter = 0;
+    private static int msgCount;
 
     public static void main(String[] args) {
+        msgCount = 0;
+
         // Initialize java server and listen for messages
         try (
             ServerSocket server = new ServerSocket(1010);
@@ -24,15 +26,14 @@ public class SetServer {
             // Initiate conversation with client
             outputLine = SetServer.processInput(null);
             System.out.println(outputLine);
-            out.println(outputLine);
 
             while ((inputLine = in.readLine()) != null) {
                 outputLine = SetServer.processInput(inputLine);
                 System.out.println(outputLine);
-                out.println(outputLine);
-                if (outputLine.equals("STOP")) {
-                    break;
-                }
+
+                // Send ack back to server
+                String ackMessage = SetServer.generateAck(inputLine);
+                out.println(ackMessage);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -44,12 +45,24 @@ public class SetServer {
         // Note: The structure of the data string will vary based on the message type
         if (input != null) {
             JSONObject obj = new JSONObject(input);
+            int msgId = obj.getInt("msgId");
             String msgType = obj.getString("msgType");
             String dataString = obj.getJSONObject("data").toString();
-            return "Processed message " + msgCounter++ + ": type '" + msgType + "'";
+            return "Processed message " + msgId + ": type '" + msgType + "'";
         } else {
             return "Processed null message";
         }
+    }
+
+    public static String generateAck(String input) {
+        // Assume valid input string (not null; proper JSON format)
+        JSONObject obj = new JSONObject(input);
+        int ackId = obj.getInt("msgId");
+        JSONObject response = new JSONObject();
+        response.put("msgId", msgCount++);
+        response.put("msgType", "ack");
+        response.put("data", new JSONObject("{ ackNum: " + ackId + " }"));
+        return response.toString();
     }
 
 }

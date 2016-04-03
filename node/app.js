@@ -6,7 +6,7 @@ var net = require('net');
 
 
 var ROOT = '/home/cooper/set';
-// var ROOT = '/home/jason/school/ece361/set';
+//var ROOT = '/home/jason/school/ece361/set';
 
 
 app.get( '/', function( req, res ){
@@ -17,7 +17,13 @@ const client = net.connect( 1010, 'localhost' );
 client.on( 'connect', function() {
     // 'connect' listener
     console.log( 'connected to server!' );
-    client.write( 'connected to server\n' );
+    var obj = {
+        msgType: "nodeConnect",
+        data: {
+            msg: "connected to server!"
+        }
+    };
+    client.write( JSON.stringify( obj ) + '\n' );
 });
 client.on( 'data', function( data ) {
     console.log( 'message received: ' + data.toString() );
@@ -31,8 +37,14 @@ http.listen( 3000, function(){
 });
 
 io.on( 'connection', function( socket ) {
-    client.write( 'a user connected\n' );
-    console.log( 'a user connected' );
+    var obj = {
+        msgType: "registerClient",
+        data: {
+            userId: "testId"
+        }
+    };
+    client.write( JSON.stringify( obj ) + '\n' );
+    console.log( obj );
     socket.on( 'SET', function( msg ) {
         io.emit( 'SET', msg );
         var dt = msg - new Date().getTime();
@@ -43,7 +55,13 @@ io.on( 'connection', function( socket ) {
         console.log( 'pinged' );
     });
     socket.on( 'disconnect', function() {
-        client.write( 'a user disconnected\n' );
         console.log( 'a user disconnected' );
+        var obj = {
+            msgType: "unregisterClient",
+            data: {
+                userId: "testId"
+            }
+        };
+        client.write( JSON.stringify( obj ) + '\n' );
     });
 });

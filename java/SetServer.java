@@ -12,12 +12,8 @@ public class SetServer {
     private static int msgCounter = 0;
 
     public static void main(String[] args) {
-        String json = "{\"method\": \"methodTest\", \"data\": \"dataTest\"}";
-        RequestObject obj = RequestObject.fromJSON(json);
-        System.out.println("METHOD: " + obj.method);
-        System.out.println("DATA: " + obj.data);
-        return;
-        /*try (
+        // Initialize java server and listen for messages
+        try (
             ServerSocket server = new ServerSocket(1010);
             Socket client = server.accept();
             PrintWriter out = new PrintWriter(client.getOutputStream(), true);
@@ -40,31 +36,19 @@ public class SetServer {
             }
         } catch (Exception e) {
             e.printStackTrace();
-        }*/
+        }
     }
 
     public static String processInput(String input) {
-        if (input.equals("PING_ALL")) {
-            // This isn't running...
-            System.out.println("Pinging all clients");
-        }
-        return "Processed message " + msgCounter++ + ": " + input;
-    }
-
-    protected class RequestObject {
-        public string method;
-        public string data;
-
-        public RequestObject(String method, String data) {
-            this.method = method;
-            this.data = data;
-        }
-
-        public static RequestObject fromJSON(string json) {
-            JSONObject obj = new JSONObject(json);
-            String m = obj.getString("method");
-            String d = obj.getString("data");
-            return RequestObject(m, d);
+        // Parse JSON string and separate into message type and data strings
+        // Note: The structure of the data string will vary based on the message type
+        if (input != null) {
+            JSONObject obj = new JSONObject(input);
+            String msgType = obj.getString("msgType");
+            String dataString = obj.getJSONObject("data").toString();
+            return "Processed message " + msgCounter++ + ": type '" + msgType + "'";
+        } else {
+            return "Processed null message";
         }
     }
 

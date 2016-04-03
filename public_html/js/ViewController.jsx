@@ -23,17 +23,19 @@ define(
             window.addEventListener( 'ViewController', this._updateView, false );
         },
         _updateView: function( e ) {
-            this.setState( 'view', e.detail.view );
+            var currState = this.state;
+            currState.view = e.detail.view;
+            this.setState( currState );
         },
         _getView: function() {
             var view = [];
 
             switch( this.state.view ) {
                 case 'Login':
-                    view.push( <Login /> );
+                    view.push( <Login key="Login"/> );
                     break;
                 case 'Register':
-                    view.push( <Register /> );
+                    view.push( <Register key="Register"/> );
                     break;
                 default:
                 break;

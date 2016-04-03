@@ -1,18 +1,20 @@
 define(
 [
     'react',
+    'react-dom',
     'jsx!ViewController'
 ]
 , function(
     React,
+    ReactDOM,
     ViewController 
 ) {
     var Bootstrap = {
         init: function() {
-            React.render(
-                <main className="ui page grid">
+            ReactDOM.render(
+                <div className="bootstrap">
                     <ViewController />
-                </main>
+                </div>
                 , document.getElementsByClassName( 'react-container')[ 0 ]
             );
         },

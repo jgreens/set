@@ -4,10 +4,11 @@ require.config({
         , 'JSXTransformer': 'libs/JSXTransformer.mod'
         , 'jsx': 'libs/jsx'
         , 'react': 'libs/react'
+        , 'react-dom': 'libs/react-dom'
         , 'director': 'libs/director.min'
         , 'jquery': '//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min'
-        , 'firebase': '//cdn.firebase.com/js/client/2.1.0/firebase'
         , 'semantic': '../semantic-ui/dist/semantic.min'
+        , 'semantic-form': '../semantic-ui/dist/components/form.min'
     }
     , shim: {
         'JSXTransformer': {
@@ -28,14 +29,12 @@ require.config({
 require(
 [
     'jsx!bootstrap'
-    , 'firebase'
     , 'semantic'
 ]
 , function(
-    BootStrap
-    , fbPlaceHolder
+    Bootstrap
     , semanticPlaceHolder 
 ) {
-    BootStrap.init();
+    Bootstrap.init();
 });
 

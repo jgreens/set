@@ -9,7 +9,8 @@ define(
         getInitialState: function() {
             return {
                 'username': '',
-                'password': ''
+                'password': '',
+                'confirmPassword': ''
             };
         },
         componentDidMount: function() {
@@ -43,6 +44,15 @@ define(
                             {
                                 type   : 'maxLength[20]',
                                 prompt : 'Your password must be less than 20 characters'
+                            }
+                        ]
+                    },
+                    confirmPassword: {
+                        identifier: 'confirmPassword',
+                        rules: [
+                            {
+                                type   : 'match[password]',
+                                prompt : 'Your chosen password and confirmed password don\'t match.'
                             }
                         ]
                     }
@@ -88,6 +98,12 @@ define(
                                     <div className="ui left icon input">
                                         <i className="lock icon"></i>
                                         <input id="password" type="password" name="password" placeholder="Password" value={this.state.password} onChange={this._inputChange}></input>
+                                    </div>
+                                </div>
+                                <div className="field">
+                                    <div className="ui left icon input">
+                                        <i className="lock icon"></i>
+                                        <input id="confirmPassword" type="password" name="confirmPassword" placeholder="Confirm Password" value={this.state.confirmPassword} onChange={this._inputChange}></input>
                                     </div>
                                 </div>
                                 <div id="submit" className="ui fluid large teal submit button">Register</div>

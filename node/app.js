@@ -67,5 +67,7 @@ io.on( 'connection', function( socket ) {
             confirmPassword: data.confirmPassword
         });
         client.write( JSON.stringify( obj ) + '\n' );
+
+        socket.emit( 'USER REGISTER ACK', true );
     });
 });

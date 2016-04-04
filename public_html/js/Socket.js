@@ -9,10 +9,11 @@ define(
 
     var Socket = {};
 
-    Socket.register = function( state ) {
+    Socket.register = function( state, callback ) {
         socket.emit( 'USER REGISTER', state );
-        console.log( state );
-        console.log( socket );
+        socket.on( 'USER REGISTER ACK', function( data ) {
+            callback( data );
+        });
     };
 
     return Socket;

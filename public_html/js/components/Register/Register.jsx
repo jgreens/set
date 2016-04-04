@@ -19,6 +19,8 @@ define(
             this._setFormValidation();
         },
         _setFormValidation: function() {
+            var self = this;
+
             $('.ui.form').form({
                 fields: {
                     username: {
@@ -60,6 +62,12 @@ define(
                 }
             }).submit( function( e ) {
                 e.preventDefault();
+                Socket.register( self.state, function( data ) {
+                    if( data )
+                        self._goToLogin(); // Success
+                    else
+                        console.log( 'Could not create an account.' );
+                });
                 return false;
             });
         },
@@ -67,9 +75,6 @@ define(
             var update = {};
             update[ e.target.name ] = e.target.value;
             this.setState( update );
-        },
-        _registerClick: function( e ) {
-            Socket.register( this.state );
         },
         _goToLogin: function( e ) {
             var customEvent = new CustomEvent( 'ViewController',  {
@@ -107,7 +112,7 @@ define(
                                         <input id="confirmPassword" type="password" name="confirmPassword" placeholder="Confirm Password" value={this.state.confirmPassword} onChange={this._inputChange}></input>
                                     </div>
                                 </div>
-                                <div id="submit" className="ui fluid large teal submit button" onClick={this._registerClick}>Register</div>
+                                <div id="submit" className="ui fluid large teal submit button">Register</div>
                             </div>
 
                             <div className="ui error message"></div>

@@ -1,18 +1,28 @@
-var app = require( 'express' )();
-var http = require( 'http' ).Server( app );
-var io = require( 'socket.io' )( http );
+var express = require( 'express' );
+var http = require( 'http' );
+var socketIO = require( 'socket.io' );
 var unixSocket = require( 'unix-socket' );
 var net = require('net');
+var path = require( 'path' );
 
 
-//var ROOT = '/home/cooper/set';
-var ROOT = '/home/jason/school/ece361/set';
+/*
+ * Express
+ */
+var app = express();
 
+var ROOT = '/home/cooper/set';
+//var ROOT = '/home/jason/school/ece361/set';
 
-app.get( '/', function( req, res ){
-    res.sendFile( ROOT + '/public_html/index.html' );
+app.use(express.static(path.join(__dirname, "../public_html")));
+app.listen(3000, function() {
+    console.log( 'listening on *:3000' );
 });
 
+
+/*
+ * Node - Java Socket Connection
+ */
 // Utility function to create messages with id numbers (used for acks)
 var msgCount = 0;
 var createMessage = function( msgType, data ) {
@@ -41,9 +51,11 @@ client.on( 'end', function() {
     console.log( 'disconnected from server' );
 });
 
-http.listen( 3000, function(){
-    console.log( 'listening on *:3000' );
-});
+
+/*
+ * Node - Browser Socket Connection (socket.io)
+ */
+var io = socketIO(http.Server(app));
 
 // Node-Browser socket connection event handling
 io.on( 'connection', function( socket ) {

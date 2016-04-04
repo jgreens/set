@@ -1,9 +1,9 @@
 public class Set {
 
     public static void main(String[] args) {
-        Lobby gameLobby = new Lobby();
+        Lobby lobby = new Lobby();
         SetServer server = new SetServer();
-        server.Listen(gameLobby);
+        server.Listen(lobby);
     }
 
 }

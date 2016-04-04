@@ -18,7 +18,7 @@ class Lobby{
     System.out.println("Executing " + command + " command");
     switch(command)
     {
-      case "USER CREATE":
+      case "USER REGISTER":
         //create a User with the specified username and password and add into the database.
         break;
       case "USER LOGIN":

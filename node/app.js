@@ -61,7 +61,7 @@ io.on( 'connection', function( socket ) {
     });
 
     socket.on( 'USER REGISTER', function(data) {
-        var obj = createMessage( "registerUser", {
+        var obj = createMessage( 'USER REGISTER', {
             username: data.username,
             password: data.password,
             confirmPassword: data.confirmPassword

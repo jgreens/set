@@ -26,8 +26,7 @@ public class SetServer {
             in = new BufferedReader(new InputStreamReader(client.getInputStream()));
             // Initiate conversation with client
             String outputLine;
-            outputLine = SetServer.processInput(null, null);
-            System.out.println(outputLine);
+            processInput(null, null);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -38,11 +37,10 @@ public class SetServer {
             // Listen for input
             String inputLine, outputLine;
             while ((inputLine = in.readLine()) != null) {
-                outputLine = SetServer.processInput(lobby, inputLine);
-                System.out.println(outputLine);
+                processInput(lobby, inputLine);
 
                 // Send ack back to server
-                String ackMessage = SetServer.generateAck(inputLine);
+                String ackMessage = generateAck(inputLine);
                 out.println(ackMessage);
             }
         } catch (Exception e) {
@@ -50,7 +48,7 @@ public class SetServer {
         }
     }
 
-    private static String processInput(Lobby lobby, String input) {
+    private void processInput(Lobby lobby, String input) {
         if (input != null) {
             // Parse JSON object
             JSONObject obj = new JSONObject(input);
@@ -58,15 +56,21 @@ public class SetServer {
             String msgType = obj.getString("msgType");
             String dataString = obj.getJSONObject("data").toString(); // The structure will vary, so leave as String
 
-            // Execute command
+            System.out.println("Processing message " + msgId + ": type '" + msgType + "'");
+
+            // Execute command (null response indicates no result to hand back to client)
             String executeResult = lobby.executeCommand(msgType, dataString);
-            return "Processed message " + msgId + ": type '" + msgType + "' with result '" + executeResult + "'";
+            if (executeResult != null) {
+                System.out.println("Sending response:");
+                System.out.println(executeResult);
+                out.println(executeResult);
+            }
         } else {
-            return "Initialized link";
+            System.out.println("Initialized link");
         }
     }
 
-    private static String generateAck(String input) {
+    private String generateAck(String input) {
         // Assume valid input string (not null; proper JSON format)
         JSONObject obj = new JSONObject(input);
         int ackId = obj.getInt("msgId");

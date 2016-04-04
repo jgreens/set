@@ -14,7 +14,8 @@ class Lobby{
     if(command.length() == 0) {
       return "";
     }
-    String returnstr = "Default return";
+    //String returnstr = "{\"msg\": \"Default return\"}";
+    String returnstr = null;
     System.out.println("Executing " + command + " command");
     switch(command)
     {

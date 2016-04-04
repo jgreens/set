@@ -84,7 +84,7 @@ public class Game{
         int code = deck.get(card);
         exists = code == 0 ? false : true;//if the code is 0 then the card has not been delt
       }while(exists);//make sure you generate a unique card
-      deck.replace(card,1);//makes the value of that card 1, indicating its on the board
+      deck.put(card,1);//makes the value of that card 1, indicating its on the board
       temp.add(card);      
     }
     board.addAll(temp);
@@ -195,7 +195,7 @@ public class Game{
     if(i <0 || i>=board.size())
     { return false;}
     Card removed = board.remove(i);
-    deck.replace(removed,-1);
+    deck.put(removed,-1);
     boardSize--;
     return true;
   }

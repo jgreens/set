@@ -9,15 +9,13 @@ class Lobby{
    games = new HashMap<Game,List<String>>();
  }
   
-  String executeCommand(String cmnd)
+  public String executeCommand(String command, String data)
   {
-    if(cmnd.length() == 0)
-    {
+    if(command.length() == 0) {
       return "";
     }
-    String[] commands = cmnd.split(" ");
-    String returnstr;
-    String command = commands[0]+ " "+ commands[1];
+    String returnstr = "Default return";
+    System.out.println("Executing " + command + " command");
     switch(command)
     {
       case "USER CREATE":
@@ -38,6 +36,9 @@ class Lobby{
       case "GAME SET":
         // check if the next three cards make a successful group, and if they exist on the board. 
         //If they do remove the three cards, update the corresponding score and returns three new cards if there are no more sets on the board. 
+        break;
+      default:
+        // Handle invalid command type here
         break;
     }
     return returnstr;

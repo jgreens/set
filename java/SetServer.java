@@ -10,25 +10,35 @@ import org.json.*;
 public class SetServer {
 
     private static int msgCount;
+    ServerSocket server;
+    Socket client;
+    PrintWriter out;
+    BufferedReader in;
 
-    public static void main(String[] args) {
+    public SetServer() {
         msgCount = 0;
 
         // Initialize java server and listen for messages
-        try (
-            ServerSocket server = new ServerSocket(1010);
-            Socket client = server.accept();
-            PrintWriter out = new PrintWriter(client.getOutputStream(), true);
-            BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
-        ) {
-            String inputLine, outputLine;
-
+        try {
+            server = new ServerSocket(1010);
+            client = server.accept();
+            out = new PrintWriter(client.getOutputStream(), true);
+            in = new BufferedReader(new InputStreamReader(client.getInputStream()));
             // Initiate conversation with client
-            outputLine = SetServer.processInput(null);
+            String outputLine;
+            outputLine = SetServer.processInput(null, null);
             System.out.println(outputLine);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
+    public void Listen(Lobby lobby) {
+        try {
+            // Listen for input
+            String inputLine, outputLine;
             while ((inputLine = in.readLine()) != null) {
-                outputLine = SetServer.processInput(inputLine);
+                outputLine = SetServer.processInput(lobby, inputLine);
                 System.out.println(outputLine);
 
                 // Send ack back to server
@@ -40,7 +50,7 @@ public class SetServer {
         }
     }
 
-    public static String processInput(String input) {
+    private static String processInput(Lobby lobby, String input) {
         // Parse JSON string and separate into message type and data strings
         // Note: The structure of the data string will vary based on the message type
         if (input != null) {
@@ -48,13 +58,14 @@ public class SetServer {
             int msgId = obj.getInt("msgId");
             String msgType = obj.getString("msgType");
             String dataString = obj.getJSONObject("data").toString();
-            return "Processed message " + msgId + ": type '" + msgType + "'";
+            String executeResult = lobby.executeCommand(msgType, dataString);
+            return "Processed message " + msgId + ": type '" + msgType + "' with result " + executeResult;
         } else {
-            return "Processed null message";
+            return "Initialized link";
         }
     }
 
-    public static String generateAck(String input) {
+    private static String generateAck(String input) {
         // Assume valid input string (not null; proper JSON format)
         JSONObject obj = new JSONObject(input);
         int ackId = obj.getInt("msgId");

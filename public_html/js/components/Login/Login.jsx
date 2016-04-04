@@ -5,7 +5,7 @@ define(
 ]
 , function(
     React,
-    SemantiForm
+    SemanticForm
 ) {
     var Login = React.createClass({
         getInitialState: function() {

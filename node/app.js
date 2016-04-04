@@ -59,4 +59,13 @@ io.on( 'connection', function( socket ) {
         var obj = createMessage( "unregisterClient", { userId: "testId" } );
         client.write( JSON.stringify( obj ) + '\n' );
     });
+
+    socket.on( 'USER REGISTER', function(data) {
+        var obj = createMessage( "registerUser", {
+            username: data.username,
+            password: data.password,
+            confirmPassword: data.confirmPassword
+        });
+        client.write( JSON.stringify( obj ) + '\n' );
+    });
 });

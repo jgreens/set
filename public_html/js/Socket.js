@@ -3,7 +3,7 @@ define(
     'socket-io'
 ]
 , function(
-    socket
+    SocketPlaceholder // becasue socket defaults to the lowercase "socket" variable
 ) {
     var Socket = {}; 
 

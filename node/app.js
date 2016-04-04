@@ -1,8 +1,7 @@
 var express = require( 'express' );
 var http = require( 'http' );
 var socketIO = require( 'socket.io' );
-var unixSocket = require( 'unix-socket' );
-var net = require('net');
+var net = require( 'net' );
 var path = require( 'path' );
 
 
@@ -10,10 +9,6 @@ var path = require( 'path' );
  * Express
  */
 var app = express();
-
-var ROOT = '/home/cooper/set';
-//var ROOT = '/home/jason/school/ece361/set';
-
 app.use(express.static(path.join(__dirname, "../public_html")));
 app.listen(3000, function() {
     console.log( 'listening on *:3000' );
@@ -55,23 +50,10 @@ client.on( 'end', function() {
 /*
  * Node - Browser Socket Connection (socket.io)
  */
-var io = socketIO(http.Server(app));
-
-// Node-Browser socket connection event handling
+var io = socketIO( http.Server( app ) );
 io.on( 'connection', function( socket ) {
     var obj = createMessage( "registerClient", { userId: "testId" } );
     client.write( JSON.stringify( obj ) + '\n' );
-
-    socket.on( 'SET', function( msg ) {
-        io.emit( 'SET', msg );
-        var dt = msg - new Date().getTime();
-        console.log( 'SET:' +  + ' ' + dt.toString() );
-    });
-
-    socket.on( 'PING_ALL', function( msg ) {
-        io.emit( 'PING_ALL', msg );
-        console.log( 'pinged' );
-    });
 
     socket.on( 'disconnect', function() {
         var obj = createMessage( "unregisterClient", { userId: "testId" } );

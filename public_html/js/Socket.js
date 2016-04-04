@@ -1,11 +1,13 @@
 define(
 [
-    'socket-io'
+    'socket.io'
 ]
 , function(
-    SocketPlaceholder // becasue socket defaults to the lowercase "socket" variable
+    io
 ) {
-    var Socket = {}; 
+    var socket = io();
+
+    var Socket = {};
 
     Socket.register = function( state ) {
         socket.emit( 'USER REGISTER', state );

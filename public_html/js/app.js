@@ -9,7 +9,7 @@ require.config({
         , 'jquery': '//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min'
         , 'semantic': '../semantic-ui/dist/semantic.min'
         , 'semantic-form': '../semantic-ui/dist/components/form.min'
-        , 'socket-io': '//cdn.socket.io/socket.io-1.4.5'
+        , 'socket.io': '//cdn.socket.io/socket.io-1.4.5'
     }
     , shim: {
         'JSXTransformer': {

@@ -10,7 +10,7 @@ var path = require( 'path' );
  */
 var app = express();
 app.use(express.static(path.join(__dirname, "../public_html")));
-app.listen(3000, function() {
+var expressServer = app.listen(3000, function() {
     console.log( 'listening on *:3000' );
 });
 
@@ -50,7 +50,7 @@ client.on( 'end', function() {
 /*
  * Node - Browser Socket Connection (socket.io)
  */
-var io = socketIO( http.Server( app ) );
+var io = require( 'socket.io' ).listen( expressServer );
 io.on( 'connection', function( socket ) {
     var obj = createMessage( "registerClient", { userId: "testId" } );
     client.write( JSON.stringify( obj ) + '\n' );

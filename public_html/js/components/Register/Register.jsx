@@ -1,9 +1,11 @@
 define(
 [
-    'react'
+    'react',
+    'Socket'
 ]
 , function(
-    React
+    React,
+    Socket
 ) {
     var Register = React.createClass({
         getInitialState: function() {
@@ -14,7 +16,6 @@ define(
             };
         },
         componentDidMount: function() {
-            this._setSubmitListener();
             this._setFormValidation();
         },
         _setFormValidation: function() {
@@ -57,6 +58,9 @@ define(
                         ]
                     }
                 }
+            }).submit( function( e ) {
+                e.preventDefault();
+                return false;
             });
         },
         _inputChange: function( e ) {
@@ -64,11 +68,8 @@ define(
             update[ e.target.name ] = e.target.value;
             this.setState( update );
         },
-        _setSubmitListener: function() {
-            var self = this;
-            document.getElementById( 'submit' ).onclick = function() {
-                console.log( self.state );
-            };
+        _registerClick: function( e ) {
+            Socket.register( this.state );
         },
         _goToLogin: function( e ) {
             var customEvent = new CustomEvent( 'ViewController',  {
@@ -106,7 +107,7 @@ define(
                                         <input id="confirmPassword" type="password" name="confirmPassword" placeholder="Confirm Password" value={this.state.confirmPassword} onChange={this._inputChange}></input>
                                     </div>
                                 </div>
-                                <div id="submit" className="ui fluid large teal submit button">Register</div>
+                                <div id="submit" className="ui fluid large teal submit button" onClick={this._registerClick}>Register</div>
                             </div>
 
                             <div className="ui error message"></div>

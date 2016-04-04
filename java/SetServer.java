@@ -51,15 +51,16 @@ public class SetServer {
     }
 
     private static String processInput(Lobby lobby, String input) {
-        // Parse JSON string and separate into message type and data strings
-        // Note: The structure of the data string will vary based on the message type
         if (input != null) {
+            // Parse JSON object
             JSONObject obj = new JSONObject(input);
             int msgId = obj.getInt("msgId");
             String msgType = obj.getString("msgType");
-            String dataString = obj.getJSONObject("data").toString();
+            String dataString = obj.getJSONObject("data").toString(); // The structure will vary, so leave as String
+
+            // Execute command
             String executeResult = lobby.executeCommand(msgType, dataString);
-            return "Processed message " + msgId + ": type '" + msgType + "' with result " + executeResult;
+            return "Processed message " + msgId + ": type '" + msgType + "' with result '" + executeResult + "'";
         } else {
             return "Initialized link";
         }

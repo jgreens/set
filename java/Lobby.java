@@ -18,6 +18,12 @@ class Lobby{
     System.out.println("Executing " + command + " command");
     switch(command)
     {
+      case "CLIENT CONNECT":
+        // Create client with unique guid and no user logged in (user is null)
+        break;
+      case "CLIENT DISCONNECT":
+        // Remove client with specified guid due to disconnect
+        break;
       case "USER REGISTER":
         //create a User with the specified username and password and add into the database.
         break;

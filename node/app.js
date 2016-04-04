@@ -52,11 +52,11 @@ client.on( 'end', function() {
  */
 var io = require( 'socket.io' ).listen( expressServer );
 io.on( 'connection', function( socket ) {
-    var obj = createMessage( "registerClient", { userId: "testId" } );
+    var obj = createMessage( 'CLIENT CONNECT', { clientId: socket.id } );
     client.write( JSON.stringify( obj ) + '\n' );
 
     socket.on( 'disconnect', function() {
-        var obj = createMessage( "unregisterClient", { userId: "testId" } );
+        var obj = createMessage( 'CLIENT DISCONNECT', { clientId: socket.id } );
         client.write( JSON.stringify( obj ) + '\n' );
     });
 

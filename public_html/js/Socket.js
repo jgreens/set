@@ -23,5 +23,21 @@ define(
         });
     };
 
+    Socket.startLobby = function( callback ) {
+        console.log( 'HERE' );
+        socket.emit( 'LOBBY LIST' );
+        socket.once( 'LOBBY LIST ACK', function( data ) {
+            console.log( 'HERE' );
+            callback( data );
+        });
+        socket.on( 'LOBBY UPDATE', function( data ) {
+            callback( data );
+        });
+    }
+
+    Socket.endLobby = function() {
+        socket.removeListener( 'LOBBY UPDATE' );
+    }
+
     return Socket;
 });

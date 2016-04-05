@@ -79,4 +79,26 @@ io.on( 'connection', function( socket ) {
 
         socket.emit( 'USER LOGIN ACK', true );
     });
+
+    socket.on( 'LOBBY LIST', function() {
+        var obj = createMessage( 'LOBBY LIST', {} );
+        client.write( JSON.stringify( obj ) + '\n' );
+
+        // Just to send over some testing games
+        var games = [
+            {
+                id: 1,
+                name: 'Game 1',
+                members: [{ id: 101, name: 'Jonny' }, { id: 102, name: 'Jason' }]
+            },
+            {
+                id: 2,
+                name: 'Game 2',
+                members: [{ id: 103, name: 'Calvin' }, { id: 104, name: 'Akshay' }]
+            }
+        ];
+
+        socket.emit( 'LOBBY LIST ACK', games );
+    });
+
 });

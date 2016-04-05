@@ -1,24 +1,30 @@
 define(
 [
     'react',
+    'Socket',
     'semantic-form'
 ]
 , function(
     React,
+    Socket,
     SemanticForm
 ) {
     var Login = React.createClass({
         getInitialState: function() {
             return {
                 'username': '',
-                'password': ''
+                'password': '',
+                'segmentClass': 'ui segment'
             };
         },
         componentDidMount: function() {
             this._setFormValidation();
         },
         _setFormValidation: function() {
-            $('.ui.form').form({
+            var self = this;
+
+            var form = $('.ui.form');
+            form.form({
                 fields: {
                     username: {
                         identifier: 'username',
@@ -38,6 +44,17 @@ define(
                             }
                         ]
                     }
+                },
+                onSuccess: function() {
+                    self.setState({ 'segmentClass': 'ui segment loading' }); // Dim and show loader while waiting for response
+
+                    Socket.login( self.state, function( data ) { // TODO: Get userId from callback and update state
+                        self.setState({ 'segmentClass': 'ui segment' }); // Remove loader
+                        if( data ) // Successfully created account
+                            self._goToLobby();
+                        else // Failure
+                            form.form( 'add errors', [ 'The username/password combination provided is not valid.' ] );
+                    });
                 }
             }).submit( function( e ) {
                 e.preventDefault();
@@ -49,12 +66,6 @@ define(
             update[ e.target.name ] = e.target.value;
             this.setState( update );
         },
-        _loginClick: function( e ) {
-            var user = { 'user': { 'id': 5, 'name': 'Jonny' } };
-            this.setState( user );
-            console.log( this.state );
-            this._goToLobby();
-        },
         _goToRegister: function( e ) {
             var customEvent = new CustomEvent( 'ViewController',  {
                 detail: { 'view': 'Register' },
@@ -62,9 +73,9 @@ define(
             });
             window.dispatchEvent( customEvent );
         },
-        _goToLobby: function(  ) {
+        _goToLobby: function() {
             var customEvent = new CustomEvent( 'ViewController',  {
-                detail: { 'view': 'Lobby', 'user': this.state.user },
+                detail: { 'view': 'Lobby', 'user': { name: this.state.username, id: 99 } }, // TODO: Temporary ID
                 bubbles: true
             });
             window.dispatchEvent( customEvent );
@@ -79,7 +90,7 @@ define(
                             </div>
                         </h2>
                         <form className="ui large form Login-form">
-                            <div className="ui segment">
+                            <div className={this.state.segmentClass}>
                                 <div className="field">
                                     <div className="ui left icon input">
                                         <i className="user icon"></i>
@@ -92,7 +103,7 @@ define(
                                         <input id="password" type="password" name="password" placeholder="Password" value={this.state.password} onChange={this._inputChange}></input>
                                     </div>
                                 </div>
-                                <div id="submit" className="ui fluid large teal submit button" onClick={this._loginClick}>Login</div>
+                                <div id="submit" className="ui fluid large teal submit button">Login</div>
                             </div>
 
                             <div className="ui error message"></div>

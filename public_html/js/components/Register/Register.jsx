@@ -12,7 +12,8 @@ define(
             return {
                 'username': '',
                 'password': '',
-                'confirmPassword': ''
+                'confirmPassword': '',
+                'segmentClass': 'ui segment'
             };
         },
         componentDidMount: function() {
@@ -21,7 +22,8 @@ define(
         _setFormValidation: function() {
             var self = this;
 
-            $('.ui.form').form({
+            var form = $('.ui.form');
+            form.form({
                 fields: {
                     username: {
                         identifier: 'username',
@@ -59,15 +61,21 @@ define(
                             }
                         ]
                     }
+                },
+                onSuccess: function() {
+                    self.setState({ 'segmentClass': 'ui segment loading' }); // Dim and show loader while waiting for response
+
+                    Socket.register( self.state, function( data ) {
+                        self.setState({ 'segmentClass': 'ui segment' }); // Remove loader
+
+                        if( data ) // Successfully created account
+                            self._goToLogin();
+                        else // Failure
+                            form.form( 'add errors', [ 'An account already exists with this username.' ] );
+                    });
                 }
             }).submit( function( e ) {
                 e.preventDefault();
-                Socket.register( self.state, function( data ) {
-                    if( data )
-                        self._goToLogin(); // Success
-                    else
-                        console.log( 'Could not create an account.' );
-                });
                 return false;
             });
         },
@@ -93,7 +101,7 @@ define(
                             </div>
                         </h2>
                         <form className="ui large form">
-                            <div className="ui segment">
+                            <div className={this.state.segmentClass}>
                                 <div className="field">
                                     <div className="ui left icon input">
                                         <i className="user icon"></i>

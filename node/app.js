@@ -64,10 +64,73 @@ io.on( 'connection', function( socket ) {
         var obj = createMessage( 'USER REGISTER', {
             username: data.username,
             password: data.password,
-            confirmPassword: data.confirmPassword
         });
         client.write( JSON.stringify( obj ) + '\n' );
 
         socket.emit( 'USER REGISTER ACK', true );
     });
+
+    socket.on( 'USER LOGIN', function(data) {
+        var obj = createMessage( 'USER LOGIN', {
+            username: data.username,
+            password: data.password,
+        });
+        client.write( JSON.stringify( obj ) + '\n' );
+
+        socket.emit( 'USER LOGIN ACK', true );
+    });
+
+    socket.on( 'LOBBY LIST', function() {
+        var obj = createMessage( 'LOBBY LIST', {} );
+        client.write( JSON.stringify( obj ) + '\n' );
+
+        // Just to send over some testing games
+        var games = [
+            {
+                id: 1,
+                name: 'Game 1',
+                members: [{ id: 101, name: 'Jonny' }, { id: 102, name: 'Jason' }]
+            },
+            {
+                id: 2,
+                name: 'Game 2',
+                members: [{ id: 103, name: 'Calvin' }, { id: 104, name: 'Akshay' }]
+            }
+        ];
+
+        socket.emit( 'LOBBY LIST ACK', games );
+
+        // Testing the update feature, updates every 5 seconds
+        var counter = true;
+        var games2 = [
+            {
+                id: 1,
+                name: 'Game 1',
+                members: [{ id: 101, name: 'Jonny' }, { id: 102, name: 'Jason' }]
+            },
+            {
+                id: 2,
+                name: 'Game 2',
+                members: [{ id: 103, name: 'Calvin' }, { id: 104, name: 'Akshay' }]
+            },
+            {
+                id: 3,
+                name: 'Game 3',
+                members: [{ id: 101, name: 'Jonny' }, { id: 102, name: 'Jason' }, { id: 103, name: 'Calvin' }, { id: 104, name: 'Akshay' }]
+            }
+        ];
+        var games3;
+        setInterval( function() {
+            if( counter ) {
+                games3 = games2;
+                counter = false;
+            } else {
+                games3 = games;
+                counter = true;
+            }
+            
+            socket.emit( 'LOBBY UPDATE', games3 );
+        }, 5000 );
+    });
+
 });

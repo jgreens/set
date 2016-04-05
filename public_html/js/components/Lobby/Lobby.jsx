@@ -44,9 +44,12 @@ define(
                 <div className="Lobby ui grid container">
                     <div className="row">
                         <div className="column">
-                            <div className="ui fluid vertical menu">
+                            <h1>Logged in as {this.props.user.name}</h1>
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="column">
                                 {this._generateItems()}
-                            </div>
                         </div>
                     </div>
                 </div>

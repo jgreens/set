@@ -48,7 +48,7 @@ define(
                 onSuccess: function() {
                     self.setState({ 'segmentClass': 'ui segment loading' }); // Dim and show loader while waiting for response
 
-                    Socket.login( self.state, function( data ) {
+                    Socket.login( self.state, function( data ) { // TODO: Get userId from callback and update state
                         self.setState({ 'segmentClass': 'ui segment' }); // Remove loader
                         if( data ) // Successfully created account
                             self._goToLobby();
@@ -73,9 +73,9 @@ define(
             });
             window.dispatchEvent( customEvent );
         },
-        _goToLobby: function(  ) {
+        _goToLobby: function() {
             var customEvent = new CustomEvent( 'ViewController',  {
-                detail: { 'view': 'Lobby', 'user': this.state.user },
+                detail: { 'view': 'Lobby', 'user': { name: this.state.username, id: 99 } }, // TODO: Temporary ID
                 bubbles: true
             });
             window.dispatchEvent( customEvent );

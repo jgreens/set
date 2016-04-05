@@ -26,7 +26,11 @@ define(
         },
         _updateView: function( e ) {
             var currState = this.state;
+
             currState.view = e.detail.view;
+            if( e.detail.user )
+                currState.user = e.detail.user;
+
             this.setState( currState );
         },
         _getView: function() {
@@ -34,13 +38,13 @@ define(
 
             switch( this.state.view ) {
                 case 'Login':
-                    view.push( <Login key="Login"/> );
+                    view.push( <Login key="Login" /> );
                     break;
                 case 'Register':
-                    view.push( <Register key="Register"/> );
+                    view.push( <Register key="Register" /> );
                     break;
                 case 'Lobby':
-                    view.push( <Lobby key="Lobby"/> );
+                    view.push( <Lobby key="Lobby" user={this.state.user} /> );
                     break;
                 default:
                     break;

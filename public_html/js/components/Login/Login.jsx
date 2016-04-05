@@ -23,7 +23,8 @@ define(
         _setFormValidation: function() {
             var self = this;
 
-            $('.ui.form').form({
+            var form = $('.ui.form');
+            form.form({
                 fields: {
                     username: {
                         identifier: 'username',
@@ -52,7 +53,7 @@ define(
                         if( data ) // Successfully created account
                             self._goToLobby();
                         else // Failure
-                            console.log( 'Could not log in.' );
+                            form.form( 'add errors', [ 'The username/password combination provided is not valid.' ] );
                     });
                 }
             }).submit( function( e ) {

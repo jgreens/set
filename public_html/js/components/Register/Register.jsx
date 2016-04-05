@@ -22,7 +22,8 @@ define(
         _setFormValidation: function() {
             var self = this;
 
-            $('.ui.form').form({
+            var form = $('.ui.form');
+            form.form({
                 fields: {
                     username: {
                         identifier: 'username',
@@ -70,7 +71,7 @@ define(
                         if( data ) // Successfully created account
                             self._goToLogin();
                         else // Failure
-                            console.log( 'Could not create an account.' );
+                            form.form( 'add errors', [ 'An account already exists with this username.' ] );
                     });
                 }
             }).submit( function( e ) {

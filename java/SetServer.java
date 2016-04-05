@@ -15,6 +15,8 @@ public class SetServer {
     PrintWriter out;
     BufferedReader in;
 
+    Lobby lobby;
+
     public SetServer() {
         msgCount = 0;
 
@@ -32,7 +34,15 @@ public class SetServer {
         }
     }
 
-    public void Listen(Lobby lobby) {
+    public void InitializeLobby(Lobby l) {
+        lobby = l;
+    }
+
+    public void Listen() {
+        if (lobby == null) {
+            System.err.println("Error listening for clients: must initialize lobby first");
+        }
+
         try {
             // Listen for input
             String inputLine, outputLine;

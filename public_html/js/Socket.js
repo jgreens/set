@@ -11,7 +11,14 @@ define(
 
     Socket.register = function( state, callback ) {
         socket.emit( 'USER REGISTER', state );
-        socket.on( 'USER REGISTER ACK', function( data ) {
+        socket.once( 'USER REGISTER ACK', function( data ) {
+            callback( data );
+        });
+    };
+
+    Socket.login = function( state, callback ) {
+        socket.emit( 'USER LOGIN', state );
+        socket.once( 'USER LOGIN ACK', function( data ) {
             callback( data );
         });
     };

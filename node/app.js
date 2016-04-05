@@ -64,10 +64,19 @@ io.on( 'connection', function( socket ) {
         var obj = createMessage( 'USER REGISTER', {
             username: data.username,
             password: data.password,
-            confirmPassword: data.confirmPassword
         });
         client.write( JSON.stringify( obj ) + '\n' );
 
         socket.emit( 'USER REGISTER ACK', true );
+    });
+
+    socket.on( 'USER LOGIN', function(data) {
+        var obj = createMessage( 'USER LOGIN', {
+            username: data.username,
+            password: data.password,
+        });
+        client.write( JSON.stringify( obj ) + '\n' );
+
+        socket.emit( 'USER LOGIN ACK', true );
     });
 });

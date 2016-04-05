@@ -43,19 +43,24 @@ public class SetServer {
             System.err.println("Error listening for clients: must initialize lobby first");
         }
 
-        try {
-            // Listen for input
-            String inputLine, outputLine;
-            while ((inputLine = in.readLine()) != null) {
-                processInput(lobby, inputLine);
+        Thread t = new Thread(new Runnable() {
+            public void run() {
+                try {
+                    // Listen for input
+                    String inputLine, outputLine;
+                    while ((inputLine = in.readLine()) != null) {
+                        processInput(lobby, inputLine);
 
-                // Send ack back to server
-                String ackMessage = generateAck(inputLine);
-                out.println(ackMessage);
+                        // Send ack back to server
+                        String ackMessage = generateAck(inputLine);
+                        out.println(ackMessage);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        });
+        t.start();
     }
 
     private void processInput(Lobby lobby, String input) {

@@ -75,6 +75,20 @@ public class SetServer {
         t.start();
     }
 
+    public void SendMessage(final String type, final String data) {
+        Thread t = new Thread(new Runnable() {
+            public void run() {
+                try {
+                    String message = createMessage(type, data);
+                    out.println(message);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        t.start();
+    }
+
     private void processInput(Lobby lobby, String input) {
         if (input != null) {
             // Parse JSON object
@@ -106,6 +120,14 @@ public class SetServer {
         response.put("msgType", "ack");
         response.put("data", new JSONObject("{ ackNum: " + ackId + " }"));
         return response.toString();
+    }
+
+    private String createMessage(String type, String data) {
+        JSONObject obj = new JSONObject();
+        obj.put("msgId", msgCount++);
+        obj.put("msgType", type);
+        obj.put("data", new JSONObject(data));
+        return obj.toString();
     }
 
 }

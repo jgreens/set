@@ -27,6 +27,8 @@ class Lobby{
         break;
       case "USER REGISTER":
         //create a User with the specified username and password and add into the database.
+        final SetServer server = SetServer.getSetServerSingleton();
+        server.SendMessage("REGISTER CONFIRMED", data);
         break;
       case "USER LOGIN":
         //create a User with the specified username and password

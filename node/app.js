@@ -40,7 +40,8 @@ client.on( 'connect', function() {
 });
 client.on( 'data', function( msg ) {
     var msgObj = JSON.parse(msg.toString());
-    console.log( 'Processed message ' + msgObj.msgId + ': ' + msgObj.msgType + (msgObj.msgType == "ack" ? (' for message ' + msgObj.data.ackNum) : '') );
+    console.log( 'Processed message ' + msgObj.msgId + ': ' + msgObj.msgType );
+    console.log( msgObj.data );
 });
 client.on( 'end', function() {
     console.log( 'disconnected from server' );

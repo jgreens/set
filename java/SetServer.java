@@ -17,7 +17,19 @@ public class SetServer {
 
     Lobby lobby;
 
-    public SetServer() {
+    // Singleton design pattern
+    private static SetServer setServerSingleton;
+    public static synchronized SetServer getSetServerSingleton() {
+        if (setServerSingleton == null) {
+            setServerSingleton = new SetServer();
+        }
+        return setServerSingleton;
+    }
+    public Object clone() throws CloneNotSupportedException {
+        throw new CloneNotSupportedException();
+    }
+
+    private SetServer() {
         msgCount = 0;
 
         // Initialize java server and listen for messages

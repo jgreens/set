@@ -121,7 +121,10 @@ io.on( 'connection', function( socket ) {
             }
         ];
         var games3;
-        setInterval( function() {
+        var updates = setInterval( function() {
+            socket.on( 'LOBBY LIST END', function() { // Unsubscribe from updates
+                clearInterval( updates );
+            });
             if( counter ) {
                 games3 = games2;
                 counter = false;
@@ -131,7 +134,7 @@ io.on( 'connection', function( socket ) {
             }
             
             socket.emit( 'LOBBY UPDATE', games3 );
-        }, 5000 );
+        }, 3000 );
     });
 
 });

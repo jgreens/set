@@ -35,6 +35,7 @@ define(
 
     Socket.endLobby = function() {
         socket.removeListener( 'LOBBY UPDATE' );
+        socket.emit( 'LOBBY LIST END' );
     }
 
     return Socket;

@@ -24,9 +24,9 @@ define(
         componentWillUnmount: function() {
             Socket.endLobby(); // Clean up socket.io listener
         },
-        _goToRegister: function( e ) {
+        _goToLogin: function( e ) {
             var customEvent = new CustomEvent( 'ViewController',  {
-                detail: { 'view': 'Register' },
+                detail: { 'view': 'Login' },
                 bubbles: true
             });
             window.dispatchEvent( customEvent );
@@ -50,6 +50,14 @@ define(
                     <div className="row">
                         <div className="column">
                                 {this._generateItems()}
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="eight wide column">
+                            <button className="ui red icon button" onClick={this._goToLogin}>Log Out<i className="chevron left icon"></i></button>
+                        </div>
+                        <div className="eight wide column right aligned">
+                            <button className="ui right floated green icon button">Create Game<i className="plus icon"></i></button>
                         </div>
                     </div>
                 </div>

@@ -10,7 +10,7 @@ define(
             var html = [];
 
             for( var i = 0; i < this.props.members.length; i++ )
-                html.push( <div key={this.props.members[i].id} className="ui green label">{this.props.members[i].name}</div> );
+                html.push( <div key={this.props.members[i].id} className="ui label">{this.props.members[i].name}</div> );
 
             return html;
         },

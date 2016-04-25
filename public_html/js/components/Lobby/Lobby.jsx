@@ -1,18 +1,23 @@
 define(
 [
     'react',
+    'jquery',
     'Socket',
     'jsx!components/Lobby/LobbyItem',
+    'jsx!components/Lobby/Modal',
 ]
 , function(
     React,
+    $,
     Socket,
-    LobbyItem
+    LobbyItem,
+    Modal 
 ) {
     var Lobby = React.createClass({
         getInitialState: function() {
             return {
-                'games': []
+                'games': [],
+                'modalId': 'createGame'
             };
         },
         componentWillMount: function() {
@@ -30,6 +35,9 @@ define(
                 bubbles: true
             });
             window.dispatchEvent( customEvent );
+        },
+        _openCreateModal: function() {
+            $( '#' + this.state.modalId ).modal( 'show' );
         },
         _generateItems: function() {
             var html = [];
@@ -49,7 +57,7 @@ define(
                     </div>
                     <div className="row">
                         <div className="column">
-                                {this._generateItems()}
+                            {this._generateItems()}
                         </div>
                     </div>
                     <div className="row">
@@ -57,9 +65,10 @@ define(
                             <button className="ui red icon button" onClick={this._goToLogin}>Log Out<i className="chevron left icon"></i></button>
                         </div>
                         <div className="eight wide column right aligned">
-                            <button className="ui right floated green icon button">Create Game<i className="plus icon"></i></button>
+                            <button className="ui right floated green icon button" onClick={this._openCreateModal}>Create Game<i className="plus icon"></i></button>
                         </div>
                     </div>
+                    <Modal modalId={this.state.modalId} />
                 </div>
             );
         }

@@ -38,5 +38,12 @@ define(
         socket.emit( 'LOBBY LIST END' );
     }
 
+    Socket.createGame = function( state, callback ) {
+        socket.emit( 'GAME CREATE', state );
+        socket.once( 'GAME CREATE ACK', function( data ) {
+            callback( data );
+        });
+    };
+
     return Socket;
 });

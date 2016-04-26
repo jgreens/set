@@ -137,4 +137,13 @@ io.on( 'connection', function( socket ) {
         }, 3000 );
     });
 
+    socket.on( 'GAME CREATE', function(data) {
+        var obj = createMessage( 'GAME CREATE', {
+            name: data.name
+        });
+        client.write( JSON.stringify( obj ) + '\n' );
+
+        socket.emit( 'GAME CREATE ACK', true );
+    });
+
 });

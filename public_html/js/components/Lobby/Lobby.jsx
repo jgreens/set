@@ -4,14 +4,14 @@ define(
     'jquery',
     'Socket',
     'jsx!components/Lobby/LobbyItem',
-    'jsx!components/Lobby/Modal',
+    'jsx!components/Lobby/CreateButton',
 ]
 , function(
     React,
     $,
     Socket,
     LobbyItem,
-    Modal 
+    CreateButton
 ) {
     var Lobby = React.createClass({
         getInitialState: function() {
@@ -26,9 +26,6 @@ define(
                 self.setState({ 'games': data });
             });
         },
-        componentDidMount: function() {
-            $( '#' + this.state.modalId ).modal({ detachable: false });
-        },
         componentWillUnmount: function() {
             Socket.endLobby(); // Clean up socket.io listener
         },
@@ -38,9 +35,6 @@ define(
                 bubbles: true
             });
             window.dispatchEvent( customEvent );
-        },
-        _openCreateModal: function() {
-            $( '#' + this.state.modalId ).modal( 'show' );
         },
         _generateItems: function() {
             var html = [];
@@ -66,10 +60,9 @@ define(
                     <div className="row">
                         <div className="column">
                             <button className="ui black icon button" onClick={this._goToLogin}>Log Out</button>
-                            <button className="ui green icon button" onClick={this._openCreateModal}>Create Game<i className="plus icon"></i></button>
+                            <CreateButton />
                         </div>
                     </div>
-                    <Modal modalId={this.state.modalId} />
                 </div>
             );
         }

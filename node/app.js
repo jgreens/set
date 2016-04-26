@@ -146,4 +146,13 @@ io.on( 'connection', function( socket ) {
         socket.emit( 'GAME CREATE ACK', true );
     });
 
+    socket.on( 'GAME DELETE', function(data) {
+        var obj = createMessage( 'GAME DELETE', {
+            id: data.id
+        });
+        client.write( JSON.stringify( obj ) + '\n' );
+
+        socket.emit( 'GAME DELETE ACK', true );
+    });
+
 });

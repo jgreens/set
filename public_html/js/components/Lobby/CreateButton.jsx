@@ -21,7 +21,6 @@ define(
                 else // Failure
                     console.log( 'Failure' );
             });
-
         },
         _inputChange: function( e ) {
             var update = {};

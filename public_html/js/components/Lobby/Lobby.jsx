@@ -26,6 +26,9 @@ define(
                 self.setState({ 'games': data });
             });
         },
+        componentDidMount: function() {
+            $( '#' + this.state.modalId ).modal({ detachable: false });
+        },
         componentWillUnmount: function() {
             Socket.endLobby(); // Clean up socket.io listener
         },

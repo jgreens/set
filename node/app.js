@@ -146,6 +146,20 @@ io.on( 'connection', function( socket ) {
         socket.emit( 'GAME CREATE ACK', true );
     });
 
+    socket.on( 'GAME JOIN', function(data) {
+        var obj = createMessage( 'GAME JOIN', {
+            id: data.id
+        });
+        client.write( JSON.stringify( obj ) + '\n' );
+
+        var game = {
+            id: 1,
+            name: 'Game 1',
+            members: [{ id: 101, name: 'Jonny' }, { id: 102, name: 'Jason' }]
+        };
+        socket.emit( 'GAME JOIN ACK', game );
+    });
+
     socket.on( 'GAME DELETE', function(data) {
         var obj = createMessage( 'GAME DELETE', {
             id: data.id

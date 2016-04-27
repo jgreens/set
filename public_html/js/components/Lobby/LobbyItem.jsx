@@ -10,11 +10,15 @@ define(
     var LobbyItem = React.createClass({
         getInitialState: function() {
             return {
-                buttonClass: this._buttonClass
+                deleteButtonClass: this._deleteButtonClass,
+                joinButtonClass: this._joinButtonClass,
+                game: {}
             };
         },
-        _buttonClass: 'ui right floated black icon button',
-        _buttonLoadingClass: 'ui right floated black icon loading button',
+        _joinButtonClass: 'ui right floated green icon button',
+        _joinButtonLoadingClass: 'ui right floated green icon loading button',
+        _deleteButtonClass: 'ui right floated black icon button',
+        _deleteButtonLoadingClass: 'ui right floated black icon loading button',
         _generateMembers: function() {
             var html = [];
 
@@ -23,8 +27,28 @@ define(
 
             return html;
         },
+        _goToGame: function() {
+            var customEvent = new CustomEvent( 'ViewController',  {
+                detail: { view: 'Game', game: this.state.game },
+                bubbles: true
+            });
+            window.dispatchEvent( customEvent );
+        },
+        _joinGame: function() {
+            this.setState({ joinButtonClass: this._joinButtonLoadingClass });
+
+            var self = this;
+            Socket.joinGame( { id: this.props.id }, function( data ) {
+                if( data ) { // Successfully joined game
+                    self.setState({ game: data });
+                    self._goToGame();
+                    console.log( 'Success' );
+                } else // Failure
+                    console.log( 'Failure' );
+            });
+        },
         _deleteGame: function() {
-            this.setState({ buttonClass: this._buttonLoadingClass });
+            this.setState({ deleteButtonClass: this._deleteButtonLoadingClass });
             Socket.deleteGame( { id: this.props.id }, function( data ) {
                 if( data ) // Successfully deleted game
                     console.log( 'Success' );
@@ -36,8 +60,8 @@ define(
             return(
                 <div className="Lobbyitem ui clearing segment">
                     <h2>{this.props.name}</h2>
-                    <button className="ui right floated green icon button">Join Game</button>
-                    <button className={this.state.buttonClass} onClick={this._deleteGame}>Delete Game</button>
+                    <button className={this.state.joinButtonClass} onClick={this._joinGame}>Join Game</button>
+                    <button className={this.state.deleteButtonClass} onClick={this._deleteGame}>Delete Game</button>
                     <div className="extra">
                         Waiting:&nbsp;
                         {this._generateMembers()}

@@ -99,13 +99,8 @@ public class SetServer {
 
             System.out.println("Processing message " + msgId + ": type '" + msgType + "'");
 
-            // Execute command (null response indicates no result to hand back to client)
-            String executeResult = lobby.executeCommand(msgType, dataString);
-            if (executeResult != null) {
-                System.out.println("Sending response:");
-                System.out.println(executeResult);
-                out.println(executeResult);
-            }
+            // Execute command
+            lobby.executeCommand(msgType, dataString);
         } else {
             System.out.println("Initialized link");
         }

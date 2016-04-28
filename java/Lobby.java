@@ -2,6 +2,7 @@ import java.util.*;
 class Lobby{
   
  HashMap<Game,List<String>> games;//games with the user ids of all the participants
+ SetServer server = null;
  
  
  public Lobby()
@@ -9,16 +10,14 @@ class Lobby{
    games = new HashMap<Game,List<String>>();
  }
   
-  public String executeCommand(String command, String data)
-  {
-    if(command.length() == 0) {
-      return "";
+  public void executeCommand(String command, String data) {
+    System.out.println("Executing " + command);
+
+    if (server == null) {
+        server = SetServer.getSetServerSingleton();
     }
-    //String returnstr = "{\"msg\": \"Default return\"}";
-    String returnstr = null;
-    System.out.println("Executing " + command + " command");
-    switch(command)
-    {
+
+    switch(command) {
       case "CLIENT CONNECT":
         // Create client with unique guid and no user logged in (user is null)
         break;
@@ -27,7 +26,6 @@ class Lobby{
         break;
       case "USER REGISTER":
         //create a User with the specified username and password and add into the database.
-        final SetServer server = SetServer.getSetServerSingleton();
         server.SendMessage("REGISTER CONFIRMED", data);
         break;
       case "USER LOGIN":
@@ -43,13 +41,13 @@ class Lobby{
         //start a game
         break;
       case "GAME SET":
-        // check if the next three cards make a successful group, and if they exist on the board. 
-        //If they do remove the three cards, update the corresponding score and returns three new cards if there are no more sets on the board. 
+        // check if the next three cards make a successful group, and if they exist on the board.
+        //If they do remove the three cards, update the corresponding score and returns three new cards if there are no more sets on the board.
         break;
       default:
         // Handle invalid command type here
         break;
     }
-    return returnstr;
+
   }
 }

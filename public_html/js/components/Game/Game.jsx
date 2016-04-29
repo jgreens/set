@@ -25,31 +25,106 @@ define(
                             <div className="ui three column grid">
                                 <div className="column">
                                     <div className="ui fluid card">
-                                        <div className="image">
-                                            <img src="/images/avatar/large/daniel.jpg" />
-                                        </div>
                                         <div className="content">
-                                            <a className="header">Daniel Louise</a>
+                                            <span className="header">CARD</span>
                                         </div>
                                     </div>
                                 </div>
                                 <div className="column">
                                     <div className="ui fluid card">
-                                        <div className="image">
-                                            <img src="/images/avatar/large/helen.jpg" />
-                                        </div>
                                         <div className="content">
-                                            <a className="header">Helen Troy</a>
+                                            <span className="header">CARD</span>
                                         </div>
                                     </div>
                                 </div>
                                 <div className="column">
                                     <div className="ui fluid card">
-                                        <div className="image">
-                                            <img src="/images/avatar/large/elliot.jpg" />
-                                        </div>
                                         <div className="content">
-                                            <a className="header">Elliot Fu</a>
+                                            <span className="header">CARD</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="column">
+                                    <div className="ui fluid card">
+                                        <div className="content">
+                                            <span className="header">CARD</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="column">
+                                    <div className="ui fluid card">
+                                        <div className="content">
+                                            <span className="header">CARD</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="column">
+                                    <div className="ui fluid card">
+                                        <div className="content">
+                                            <span className="header">CARD</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="column">
+                                    <div className="ui fluid card">
+                                        <div className="content">
+                                            <span className="header">CARD</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="column">
+                                    <div className="ui fluid card">
+                                        <div className="content">
+                                            <span className="header">CARD</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="column">
+                                    <div className="ui fluid card">
+                                        <div className="content">
+                                            <span className="header">CARD</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="column">
+                                    <div className="ui fluid card">
+                                        <div className="content">
+                                            <span className="header">CARD</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="column">
+                                    <div className="ui fluid card">
+                                        <div className="content">
+                                            <span className="header">CARD</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="column">
+                                    <div className="ui fluid card">
+                                        <div className="content">
+                                            <span className="header">CARD</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="column">
+                                    <div className="ui fluid card">
+                                        <div className="content">
+                                            <span className="header">CARD</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="column">
+                                    <div className="ui fluid card">
+                                        <div className="content">
+                                            <span className="header">CARD</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="column">
+                                    <div className="ui fluid card">
+                                        <div className="content">
+                                            <span className="header">CARD</span>
                                         </div>
                                     </div>
                                 </div>

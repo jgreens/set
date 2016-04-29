@@ -45,9 +45,9 @@ define(
         });
     };
 
-    Socket.deleteGame = function( state, callback ) {
-        socket.emit( 'GAME DELETE', state );
-        socket.once( 'GAME DELETE ACK', function( data ) {
+    Socket.createGame = function( state, callback ) {
+        socket.emit( 'GAME CREATE', state );
+        socket.once( 'GAME CREATE ACK', function( data ) {
             callback( data );
         });
     };

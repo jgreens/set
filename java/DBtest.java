@@ -1,7 +1,7 @@
 import java.sql.*;
 import java.util.*;
 
-public class lobbytest{
+public class DBtest{
   public static void main(String[] args){
 	  Connection con = null;    	
 	  try{

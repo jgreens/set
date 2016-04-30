@@ -177,15 +177,15 @@ class Lobby {
                     } else {
                         Boolean success = false;
                         int max = 0;
-                        String winnerid = new String();
+                        String winnerid = "invalid";
                         for (int i = game1.players.size() - 1; i >= 0; i--) {
-                            if (game1.players.get(i).username.compareTo(username) == 0 && game1.players.get(i).userid.compareTo(clientId) == 0) {
-                                game1.players.remove(i);
-                                success = true;
-                            }
                             if (game1.players.get(i).score > max) {
                                 max = game1.players.get(i).score;
                                 winnerid = game1.players.get(i).userid;
+                            }
+                            if (game1.players.get(i).username.compareTo(username) == 0 && game1.players.get(i).userid.compareTo(clientId) == 0) {
+                                game1.players.remove(i);
+                                success = true;
                             }
                         }
                         if (game1.players.size() == 0)//no more players so game finished

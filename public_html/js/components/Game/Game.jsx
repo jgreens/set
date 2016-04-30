@@ -25,7 +25,10 @@ define(
             return(
                 <div className="Game ui grid container">
                     <div className="row">
-                        <div className="column">
+                        <div className="ten wide column">
+                            <GameBoard cards={this.state.cards} />
+                        </div>
+                        <div className="six wide column">
                             <GameBoard cards={this.state.cards} />
                         </div>
                     </div>

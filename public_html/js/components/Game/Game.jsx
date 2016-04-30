@@ -1,13 +1,17 @@
 define(
 [
-    'react'
+    'react',
+    'jsx!components/Game/GameBoard'
 ]
 , function(
-    React
+    React,
+    GameBoard
 ) {
     var Game = React.createClass({
         getInitialState: function() {
             return {
+                cards: [ '0011', '1011', '2012', '0010', '1101', '1021',
+                         '0022', '2222', '1010', '1001', '1111', '2000' ]
             };
         },
         _goToLogin: function( e ) {
@@ -22,113 +26,7 @@ define(
                 <div className="Game ui grid container">
                     <div className="row">
                         <div className="column">
-                            <div className="ui three column grid">
-                                <div className="column">
-                                    <div className="ui fluid card">
-                                        <div className="content">
-                                            <span className="header">CARD</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="column">
-                                    <div className="ui fluid card">
-                                        <div className="content">
-                                            <span className="header">CARD</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="column">
-                                    <div className="ui fluid card">
-                                        <div className="content">
-                                            <span className="header">CARD</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="column">
-                                    <div className="ui fluid card">
-                                        <div className="content">
-                                            <span className="header">CARD</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="column">
-                                    <div className="ui fluid card">
-                                        <div className="content">
-                                            <span className="header">CARD</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="column">
-                                    <div className="ui fluid card">
-                                        <div className="content">
-                                            <span className="header">CARD</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="column">
-                                    <div className="ui fluid card">
-                                        <div className="content">
-                                            <span className="header">CARD</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="column">
-                                    <div className="ui fluid card">
-                                        <div className="content">
-                                            <span className="header">CARD</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="column">
-                                    <div className="ui fluid card">
-                                        <div className="content">
-                                            <span className="header">CARD</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="column">
-                                    <div className="ui fluid card">
-                                        <div className="content">
-                                            <span className="header">CARD</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="column">
-                                    <div className="ui fluid card">
-                                        <div className="content">
-                                            <span className="header">CARD</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="column">
-                                    <div className="ui fluid card">
-                                        <div className="content">
-                                            <span className="header">CARD</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="column">
-                                    <div className="ui fluid card">
-                                        <div className="content">
-                                            <span className="header">CARD</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="column">
-                                    <div className="ui fluid card">
-                                        <div className="content">
-                                            <span className="header">CARD</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="column">
-                                    <div className="ui fluid card">
-                                        <div className="content">
-                                            <span className="header">CARD</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            <GameBoard cards={this.state.cards} />
                         </div>
                     </div>
                 </div>

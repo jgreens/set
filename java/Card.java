@@ -1,20 +1,48 @@
 public class Card{
-  public int color,shape,fill,number;
+  public int shape,color, number, fill;
   public Card(int s,int c, int n, int f){
     shape = s;
     color = c;
     number = n;
     fill = f;
   }
-  
+  public int parseCard(String c)
+  {
+    String[] vals = c.split("|");
+    if(vals.length != 7){//three | and 4 values
+      return -1;
+    }
+    shape = getValidNum(vals[0].charAt(0));
+    color = getValidNum(vals[2].charAt(0));
+    number = getValidNum(vals[4].charAt(0));
+    fill = getValidNum(vals[6].charAt(0));
+    if(shape == -1 || color == -1 || number == -1 || fill == -1)
+    {
+      return -1; 
+    }
+    return 0;
+  }
+  public int getValidNum(char c)
+  {
+    if(c == '0'){
+      return 0;
+    }else if(c == '1'){
+      return 1;
+    }else if(c == '2'){
+      return 2;
+    }
+    else{
+      return -1; 
+    }
+  }
   public String toString()
   {
-    return shape+"|"+color+"|"+number+"|"+fill+"|  ";
+    return shape+"|"+color+"|"+number+"|"+fill;
   }
   
   public void print()
   {
-    System.out.print(toString());
+    System.out.print(toString()+" ");
   }
   /**
    * Overwriting the equals method so the HashMap understands what equivalent cards are.

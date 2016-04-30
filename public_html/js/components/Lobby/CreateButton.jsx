@@ -30,7 +30,7 @@ define(
         render: function() {
             return(
                 <div className="CreateButton ui left action input">
-                    <button className="ui green labeled icon button" onClick={this._createGame}><i className="plus icon"></i>Create Game</button>
+                    <button className="ui teal labeled icon button" onClick={this._createGame}><i className="plus icon"></i>Create Game</button>
                     <input type="text" name="name" placeholder="Game Name" onChange={this._inputChange}></input>
                 </div>
             );

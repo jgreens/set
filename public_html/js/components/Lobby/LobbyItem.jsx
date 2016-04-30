@@ -15,8 +15,8 @@ define(
                 game: {}
             };
         },
-        _joinButtonClass: 'ui right floated green icon button',
-        _joinButtonLoadingClass: 'ui right floated green icon loading button',
+        _joinButtonClass: 'ui right floated teal icon button',
+        _joinButtonLoadingClass: 'ui right floated teal icon loading button',
         _deleteButtonClass: 'ui right floated black icon button',
         _deleteButtonLoadingClass: 'ui right floated black icon loading button',
         _generateMembers: function() {

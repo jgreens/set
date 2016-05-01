@@ -42,7 +42,7 @@ public class Database {
 		public void connectDB(){
     	try{
     		Class.forName("com.mysql.jdbc.Driver").newInstance();
-    		con = DriverManager.getConnection("jdbc:mysql://localhost:3306/set","guest","password");
+    		con = DriverManager.getConnection("jdbc:mysql://localhost:3306/set_game","guest","password");
     		if (!con.isClosed())
     			System.out.println("Successfully connected to MySQL Server...");
     	}
@@ -78,7 +78,7 @@ public class Database {
     	//RegisterUser
     	public String registerUser(String username,String password){
     		try{    		
-    			String updateString = "INSERT INTO set.player (userName,passWord) VALUES (?,SHA2(?,256))";
+    			String updateString = "INSERT INTO player (userName,passWord) VALUES (?,SHA2(?,256))";
     			PreparedStatement updateName = con.prepareStatement(updateString);
     			updateName.setString(1,username);
     			updateName.setString(2,password);

@@ -220,6 +220,7 @@ class Lobby {
                     Game game1 = games.get(gameId);
                     if (game1 == null) {
                         sendJSONMessage("GAME LEAVE FAIL", "clientId", clientId, "errorMessage", "Invalid Game Id");
+                        return;
                     } else {
                         Boolean success = false;
                         int max = 0;
@@ -240,6 +241,7 @@ class Lobby {
                         }
                         if (!success) {
                             sendJSONMessage("GAME LEAVE FAIL", "clientId", clientId, "errorMessage", "User not in Game");
+                            return;
                         } else {
                             sendGameMemberUpdate(gameId);
                             sendJSONMessage("GAME LEAVE SUCCESS", "clientId", clientId, "username", username);
@@ -353,6 +355,7 @@ class Lobby {
                     Game temp = games.get(gameId);
                     if (temp == null) {
                         sendJSONMessage("GAME DELETE FAIL", "clientId", clientId, "errorMessage", "Invalid Game Id");
+                        return;
                     } else {
                         if (temp.owner.userid.compareTo(clientId) == 0) {
                             games.remove(gameId);

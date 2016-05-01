@@ -22,7 +22,6 @@
  */
 import java.util.*;
 import java.sql.*;
-import org.json.simple.*;
 
 public class Database {
     	public Connection con = null;     

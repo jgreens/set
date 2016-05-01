@@ -42,17 +42,46 @@ client.on( 'end', function() {
     console.log( 'disconnected from server' );
 });
 
+client.on( 'data', function( msg ) {
+    var msgObj = JSON.parse(msg);
+    console.log( 'Processed message ' + msgObj.msgId + ': ' + msgObj.msgType );
+    console.log( msgObj.data );
+
+    var data = msgObj.data;
+    switch( msgObj.msgType ) {
+        case 'USER LOGIN SUCCESS':
+            connectedClients[data.clientId].emit( 'USER LOGIN ACK', true );
+            break;
+        case 'USER LOGIN FAIL':
+            connectedClients[data.clientId].emit( 'USER LOGIN ACK', false );
+            break;
+        case 'LOBBY LIST SUCCESS':
+            for ( var i = 0; i < data.clients.length; ++i) {
+                connectedClients[data.clients[i]].emit( 'LOBBY UPDATE', data.games );
+            }
+            break;;
+        case 'GAME CREATE SUCCESS':
+            var obj = createMessage( 'LOBBY LIST', {} );
+            client.write( JSON.stringify( obj ) + '\n' );
+            break;
+        default:
+            break;
+    }
+});
 
 /*
  * Node - Browser Socket Connection (socket.io)
  */
 var io = require( 'socket.io' ).listen( expressServer );
+var connectedClients = {};
 io.on( 'connection', function( socket ) {
     var obj = createMessage( 'CLIENT CONNECT', { clientId: socket.id } );
+    connectedClients[socket.id] = socket;
     client.write( JSON.stringify( obj ) + '\n' );
 
     socket.on( 'disconnect', function() {
         var obj = createMessage( 'CLIENT DISCONNECT', { clientId: socket.id } );
+        delete connectedClients[socket.id]
         client.write( JSON.stringify( obj ) + '\n' );
     });
 
@@ -74,8 +103,6 @@ io.on( 'connection', function( socket ) {
             password: data.password,
         });
         client.write( JSON.stringify( obj ) + '\n' );
-
-        socket.emit( 'USER LOGIN ACK', true );
     });
 
     socket.on( 'USER LOGOUT', function(data) {
@@ -160,28 +187,4 @@ io.on( 'connection', function( socket ) {
         socket.emit( 'GAME LEAVE ACK', true );
     });
 
-    var lobby = false;
-    client.on( 'data', function( msg ) {
-        var msgObj = JSON.parse(msg);
-        console.log( 'Processed message ' + msgObj.msgId + ': ' + msgObj.msgType );
-        console.log( msgObj.data );
-
-        var data = msgObj.data;
-        switch( msgObj.msgType ) {
-            case 'LOBBY LIST SUCCESS':
-                if ( !lobby ) {
-                    socket.emit( 'LOBBY LIST ACK', data.games );
-                    lobby = true;
-                } else {
-                    socket.emit( 'LOBBY UPDATE', data.games );
-                }
-                break;;
-            case 'GAME CREATE SUCCESS':
-                var obj = createMessage( 'LOBBY LIST', {} );
-                client.write( JSON.stringify( obj ) + '\n' );
-                break;
-            default:
-                break;
-        }
-    });
 });

@@ -77,10 +77,13 @@ class Lobby {
                     String login = d.loginUser(username, password);
                     d.disconnectDB();
                     //should also first check if the guy exists in the database
-                    if (login!=username)
+                    if (login!=username) {
                     	sendJSONMessage("USER LOGIN FAIL", "clientId", clientId, "errorMessage", login);
+                        return;
+                    }
                     if (!currentUsers.containsKey(clientId)) {
                         sendJSONMessage("USER LOGIN FAIL", "clientId", clientId, "errorMessage", "Client was not connected");
+                        return;
                     }
                     User newU = new User(username, clientId);
                     currentUsers.put(clientId, newU);

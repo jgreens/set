@@ -16,7 +16,7 @@ define(
             var html = [];
 
             for( var i = 0; i < this.props.cards.length; i++ )
-                html.push( <Card key={this.props.cards[i]} card={this.props.cards[i]} /> );
+                html.push( <Card key={this.props.cards[i]} card={this.props.cards[i]} selectCards={this.props.selectCards} /> );
 
             return html;
         },

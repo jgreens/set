@@ -3,13 +3,15 @@ define(
     'react',
     'jsx!components/Login/Login',
     'jsx!components/Register/Register',
-    'jsx!components/Lobby/Lobby'
+    'jsx!components/Lobby/Lobby',
+    'jsx!components/Game/Game'
 ]
 , function(
     React,
     Login,
     Register,
-    Lobby
+    Lobby,
+    Game
 ) {
     var ViewController = React.createClass({
         getInitialState: function() {
@@ -18,7 +20,8 @@ define(
                 'user': {
                     'id': -1,
                     'name': ''
-                }
+                },
+                'game': {}
             };
         },
         componentWillMount: function() {
@@ -30,6 +33,8 @@ define(
             currState.view = e.detail.view;
             if( e.detail.user )
                 currState.user = e.detail.user;
+            if( e.detail.game )
+                currState.game = e.detail.game;
 
             this.setState( currState );
         },
@@ -45,6 +50,9 @@ define(
                     break;
                 case 'Lobby':
                     view.push( <Lobby key="Lobby" user={this.state.user} /> );
+                    break;
+                case 'Game':
+                    view.push( <Game key="Game" user={this.state.user} game={this.state.game} /> );
                     break;
                 default:
                     break;

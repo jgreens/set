@@ -38,5 +38,44 @@ define(
         socket.emit( 'LOBBY LIST END' );
     }
 
+    Socket.joinGame = function( state, callback ) {
+        socket.emit( 'GAME JOIN', state );
+        socket.once( 'GAME JOIN ACK', function( data ) {
+            callback( data );
+        });
+    };
+
+    Socket.createGame = function( state, callback ) {
+        socket.emit( 'GAME CREATE', state );
+        socket.once( 'GAME CREATE ACK', function( data ) {
+            callback( data );
+        });
+    };
+
+    Socket.deleteGame = function( state, callback ) {
+        socket.emit( 'GAME DELETE', state );
+        socket.once( 'GAME DELETE ACK', function( data ) {
+            callback( data );
+        });
+    };
+
+    Socket.startGame = function( callback ) {
+        socket.emit( 'GAME START' );
+        socket.once( 'GAME START ACK', function( data ) {
+            callback( data );
+        });
+        socket.on( 'GAME UPDATE', function( data ) {
+            callback( data );
+        });
+    }
+
+    Socket.endGame = function( state, callback ) {
+        socket.removeListener( 'GAME UPDATE' );
+        socket.emit( 'GAME LEAVE', state );
+        socket.on( 'GAME LEAVE ACK', function( data ) {
+            callback( data );
+        });
+    }
+
     return Socket;
 });

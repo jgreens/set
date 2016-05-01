@@ -1,18 +1,23 @@
 define(
 [
     'react',
+    'jquery',
     'Socket',
     'jsx!components/Lobby/LobbyItem',
+    'jsx!components/Lobby/CreateButton',
 ]
 , function(
     React,
+    $,
     Socket,
-    LobbyItem
+    LobbyItem,
+    CreateButton
 ) {
     var Lobby = React.createClass({
         getInitialState: function() {
             return {
-                'games': []
+                'games': [],
+                'modalId': 'createGame'
             };
         },
         componentWillMount: function() {
@@ -49,15 +54,13 @@ define(
                     </div>
                     <div className="row">
                         <div className="column">
-                                {this._generateItems()}
+                            {this._generateItems()}
                         </div>
                     </div>
                     <div className="row">
-                        <div className="eight wide column">
-                            <button className="ui red icon button" onClick={this._goToLogin}>Log Out<i className="chevron left icon"></i></button>
-                        </div>
-                        <div className="eight wide column right aligned">
-                            <button className="ui right floated green icon button">Create Game<i className="plus icon"></i></button>
+                        <div className="column">
+                            <button className="ui black icon button" onClick={this._goToLogin}>Log Out</button>
+                            <CreateButton />
                         </div>
                     </div>
                 </div>

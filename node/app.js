@@ -55,6 +55,12 @@ client.on( 'data', function( msg ) {
         case 'USER LOGIN FAIL':
             connectedClients[data.clientId].emit( 'USER LOGIN ACK', false );
             break;
+        case 'USER LOGOUT SUCCESS':
+            connectedClients[data.clientId].emit( 'USER LOGOUT ACK', true );
+            break;
+        case 'USER LOGOUT FAIL':
+            connectedClients[data.clientId].emit( 'USER LOGOUT ACK', false );
+            break;
         case 'LOBBY LIST SUCCESS':
             for ( var i = 0; i < data.clients.length; ++i) {
                 connectedClients[data.clients[i]].emit( 'LOBBY UPDATE', data.games );
@@ -108,11 +114,9 @@ io.on( 'connection', function( socket ) {
     socket.on( 'USER LOGOUT', function(data) {
         var obj = createMessage( 'USER LOGOUT', {
             clientId: socket.id,
-            id: data.id
+            username: data.name
         });
         client.write( JSON.stringify( obj ) + '\n' );
-
-        socket.emit( 'USER LOGOUT ACK', true );
     });
 
     socket.on( 'LOBBY LIST', function() {

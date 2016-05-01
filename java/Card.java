@@ -37,7 +37,7 @@ public class Card{
   }
   public String toString()
   {
-    return shape+"|"+color+"|"+number+"|"+fill;
+    return Integer.toString(shape) + Integer.toString(color) + Integer.toString(number) + Integer.toString(fill);
   }
   
   public void print()

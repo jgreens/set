@@ -49,6 +49,8 @@ client.on( 'data', function( msg ) {
 
     var data = msgObj.data;
     switch( msgObj.msgType ) {
+        case 'ack':
+            break;
         case 'USER LOGIN SUCCESS':
             connectedClients[data.clientId].emit( 'USER LOGIN ACK', true );
             break;
@@ -76,7 +78,19 @@ client.on( 'data', function( msg ) {
         case 'GAME JOIN FAIL':
             connectedClients[data.clientId].emit( 'GAME JOIN ACK', false );
             break;
+        case 'GAME START SUCCESS':
+            var obj = { scores: data.scores, feed: data.feed };
+            for ( var i = 0; i < data.clients.length; ++i) {
+                connectedClients[data.clients[i]].emit( 'GAME START ACK', obj );
+            }
+            break;
+        case 'GAME CARDS UPDATE':
+            for ( var i = 0; i < data.clients.length; ++i) {
+                connectedClients[data.clients[i]].emit( 'GAME UPDATE', data );
+            }
+            break;
         default:
+            console.log('Unhandled message: ' + msgObj.msgtype);
             break;
     }
 });
@@ -164,19 +178,18 @@ io.on( 'connection', function( socket ) {
 
     socket.on( 'GAME START', function(data) {
         var obj = createMessage( 'GAME START', {
-            clientId: socket.id
+            clientId: socket.id,
+            gameId: data.id
         });
         client.write( JSON.stringify( obj ) + '\n' );
 
-        var game = {
+        /*var game = {
             scores: {
                 jonny: 4,
                 akshay: 2,
                 jason: -11,
                 calvin: 1
             },
-            cards: [ '0011', '1011', '2012', '0010', '1101', '1021',
-                     '0022', '2222', '1010', '1001', '1111', '2000' ],
             feed: [
                 { type: 'join', user: 'jonny' },
                 { type: 'join', user: 'jason' },
@@ -192,15 +205,7 @@ io.on( 'connection', function( socket ) {
                 { type: 'set', user: 'calvin' },
                 { type: 'end' }
             ]
-        };
-
-        var obj = createMessage( 'GAME START', {
-            clientId: socket.id,
-            gameId: data.id
-        });
-        client.write( JSON.stringify( obj ) + '\n' );
-
-        socket.emit( 'GAME START ACK', game );
+        };*/
     });
 
     socket.on( 'GAME LEAVE', function(data) {

@@ -158,12 +158,6 @@ class Lobby {
                     gameName = data.getString("name");
                     gameId = "game" + (games.size() + 1);
                     Game g = new Game(gameId, gameName);
-                    User temp = currentUsers.get(clientId);
-                    if (temp == null) {
-                        sendJSONMessage("GAME CREATE FAIL", "clientId", clientId, "errorMessage", "User isn't registered");
-                        return;
-                    }
-                    g.addUser(temp, true);
                     games.put(gameId, g);
                     //Response:    GAME CREATE SUCCESS - { clientId, username, gameId }
                     sendLobbyUpdate();
@@ -173,7 +167,7 @@ class Lobby {
                 }
                 break;
             case "GAME JOIN":
-                //Request:    GAME JOIN - { clientId, username, gameId }
+                //Request:    GAME JOIN - { clientId, gameId }
                 //Response:    GAME JOIN SUCCESS - { clientId, username, [ membername, ... ] }
                 try {
                     clientId = data.getString("clientId");
@@ -273,14 +267,14 @@ class Lobby {
                     game.start();
                     sendCardUpdate(gameId);
                     clients = new JSONArray();
+                    JSONObject scores = new JSONObject();
                     for (int i = 0; i < game.players.size(); i++) {
-                        JSONObject tempJ = new JSONObject();
-                        tempJ.put("clientId", game.players.get(i).userid);
-                        tempJ.put("username", game.players.get(i).username);
-                        tempJ.put("score", game.players.get(i).score);
-                        clients.put(tempJ);
+                        clients.put(game.players.get(i).userid);
+                        scores.put(game.players.get(i).username, game.players.get(i).score);
                     }
-                    response.put("clientId", clients);
+                    response.put("clients", clients);
+                    response.put("scores", scores);
+                    response.put("feed", new JSONObject()); // Temporary
                     sendLobbyUpdate();
                     System.out.println("GAME START SUCCESS");
                     server.SendMessage("GAME START SUCCESS", response);
@@ -411,13 +405,13 @@ class Lobby {
         for (int i = 0; i < game.players.size(); i++) {
             clients.put(game.players.get(i).userid);
         }
-        response.put("clientId", clients);
+        response.put("clients", clients);
 
         JSONArray cards = new JSONArray();
         for (int i = 0; i < game.board.size(); i++) {
             cards.put(game.board.get(i));
         }
-        response.put("card", cards);
+        response.put("cards", cards);
         System.out.println("GAME CARDS UPDATE");
         server.SendMessage("GAME CARDS UPDATE", response);
     }
@@ -430,7 +424,7 @@ class Lobby {
 
         }
 
-        server.SendMessage("GAME CARDS UPDATE", response);
+        server.SendMessage("LOBBY UPDATE", response);
     }
 
     public void sendGameScoreUpdate(String gID) {

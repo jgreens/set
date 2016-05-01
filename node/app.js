@@ -103,8 +103,7 @@ var handleJavaData = function( msg ) {
             }
             break;
         default:
-            debugger;
-            console.log( 'Unhandled message: ' + msgObj.msgtype );
+            console.log( 'Unhandled message: ' + msgObj );
             break;
     }
 };

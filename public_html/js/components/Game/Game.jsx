@@ -2,12 +2,14 @@ define(
 [
     'react',
     'Socket',
-    'jsx!components/Game/GameBoard'
+    'jsx!components/Game/GameBoard',
+    'jsx!components/Game/Feed'
 ]
 , function(
     React,
     Socket,
-    GameBoard
+    GameBoard,
+    Feed
 ) {
     var Game = React.createClass({
         getInitialState: function() {
@@ -91,13 +93,12 @@ define(
             return(
                 <div className="Game ui grid container">
                     <div className="row">
-                        <div className="eight wide column">
+                        <div className="nine wide column">
                             <GameBoard cards={this.state.cards} selectCards={this._selectCards} />
                             <button className="huge fluid ui teal button" style={{marginTop: '25px'}} onClick={this._submitSet}>SET</button>
                         </div>
-                        <div className="two wide column">
-                        </div>
-                        <div className="six wide column">
+                        <div className="seven wide column">
+                            <Feed feed={this.state.feed} user={this.props.user} />
                         </div>
                     </div>
                 </div>

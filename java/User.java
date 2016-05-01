@@ -1,11 +1,13 @@
-
 public class User{
   
- String username, userid, password;
+  String username, userid,gameId;
   
-  int points;
-  User()
+  int score;
+  User(String uname, String uid)
   {
-   points = 0; 
+    username = uname;
+    gameId = null;
+    userid = uid;
+    score = 0; 
   }
 }

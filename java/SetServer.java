@@ -75,7 +75,7 @@ public class SetServer {
         t.start();
     }
 
-    public void SendMessage(final String type, final String data) {
+    public void SendMessage(final String type, final JSONObject data) {
         Thread t = new Thread(new Runnable() {
             public void run() {
                 try {
@@ -95,12 +95,12 @@ public class SetServer {
             JSONObject obj = new JSONObject(input);
             int msgId = obj.getInt("msgId");
             String msgType = obj.getString("msgType");
-            String dataString = obj.getJSONObject("data").toString(); // The structure will vary, so leave as String
+            JSONObject data = obj.getJSONObject("data"); // The structure will vary, so leave as String
 
             System.out.println("Processing message " + msgId + ": type '" + msgType + "'");
 
             // Execute command
-            lobby.executeCommand(msgType, dataString);
+            lobby.executeCommand(msgType, data);
         } else {
             System.out.println("Initialized link");
         }
@@ -117,11 +117,11 @@ public class SetServer {
         return response.toString();
     }
 
-    private String createMessage(String type, String data) {
+    private String createMessage(String type, JSONObject data) {
         JSONObject obj = new JSONObject();
         obj.put("msgId", msgCount++);
         obj.put("msgType", type);
-        obj.put("data", new JSONObject(data));
+        obj.put("data", data);
         return obj.toString();
     }
 

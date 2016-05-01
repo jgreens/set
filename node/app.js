@@ -108,7 +108,7 @@ io.on( 'connection', function( socket ) {
     socket.on( 'USER LOGOUT', function(data) {
         var obj = createMessage( 'USER LOGOUT', {
             clientId: socket.id,
-            username: data.username
+            id: data.id
         });
         client.write( JSON.stringify( obj ) + '\n' );
 

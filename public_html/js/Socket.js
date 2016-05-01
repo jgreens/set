@@ -23,6 +23,13 @@ define(
         });
     };
 
+    Socket.logout = function( state, callback ) {
+        socket.emit( 'USER LOGOUT', state );
+        socket.once( 'USER LOGOUT ACK', function( data ) {
+            callback( data );
+        });
+    };
+
     Socket.startLobby = function( callback ) {
         socket.emit( 'LOBBY LIST' );
         socket.once( 'LOBBY LIST ACK', function( data ) {

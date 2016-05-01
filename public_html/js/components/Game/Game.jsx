@@ -2,12 +2,16 @@ define(
 [
     'react',
     'Socket',
-    'jsx!components/Game/GameBoard'
+    'jsx!components/Game/GameBoard',
+    'jsx!components/Game/Feed',
+    'jsx!components/Game/Scoreboard'
 ]
 , function(
     React,
     Socket,
-    GameBoard
+    GameBoard,
+    Feed,
+    Scoreboard
 ) {
     var Game = React.createClass({
         getInitialState: function() {
@@ -50,7 +54,6 @@ define(
 
             Socket.submitSet({ set: selected }, function( data ) {
                 console.log( 'SUCCESSFUL SET' );
-                console.log( data );
             });
         },
         _selectCards: function() {
@@ -91,13 +94,21 @@ define(
             return(
                 <div className="Game ui grid container">
                     <div className="row">
-                        <div className="eight wide column">
+                        <div className="nine wide column">
                             <GameBoard cards={this.state.cards} selectCards={this._selectCards} />
                             <button className="huge fluid ui teal button" style={{marginTop: '25px'}} onClick={this._submitSet}>SET</button>
                         </div>
-                        <div className="two wide column">
-                        </div>
-                        <div className="six wide column">
+                        <div className="seven wide column">
+                            <Scoreboard scores={this.state.scores} user={this.props.user} />
+                            <div className="ui grid">
+                                <div className="eight wide column">
+                                    <button className="fluid ui teal button">Start Game</button>
+                                </div>
+                                <div className="eight wide column">
+                                    <button className="fluid ui black button">Return to Lobby</button>
+                                </div>
+                            </div>
+                            <Feed feed={this.state.feed} user={this.props.user} />
                         </div>
                     </div>
                 </div>

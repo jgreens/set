@@ -56,6 +56,13 @@ define(
                 console.log( 'SUCCESSFUL SET' );
             });
         },
+        _goToLobby: function() {
+            var customEvent = new CustomEvent( 'ViewController',  {
+                detail: { 'view': 'Lobby', 'user': this.props.user },
+                bubbles: true
+            });
+            window.dispatchEvent( customEvent );
+        },
         _selectCards: function() {
             var cardManip = {};
             var self = this;
@@ -105,7 +112,7 @@ define(
                                     <button className="fluid ui teal button">Start Game</button>
                                 </div>
                                 <div className="eight wide column">
-                                    <button className="fluid ui black button">Return to Lobby</button>
+                                    <button className="fluid ui black button" onClick={this._goToLobby}>Return to Lobby</button>
                                 </div>
                             </div>
                             <Feed feed={this.state.feed} user={this.props.user} />

@@ -53,7 +53,20 @@ class Lobby {
                 break;
             case "USER REGISTER":
                 //create a User with the specified username and password and add into the database.
-
+            	try{
+            		clientId = data.getString("clientId");
+            		username = data.getString("username");
+                    String password = data.getString("password");
+                    Database d = new Database();	 
+              	  	String register = d.registerUser(username, password);
+              	  	d.disconnectDB();
+              	  	if (register == username)
+              	  		sendJSONMessage("USER REGISTER SUCCESS", "clientId", clientId, "username", username);
+              	  	else 
+              	  		sendJSONMessage("USER REGISTER FAIL", "clientId", clientId, "errorMessage", register);
+            	} catch (JSONException j){
+            		sendJSONMessage("USER REGISTER FAIL", "clientId", clientId, "errorMessage", "Invalid naming of JSON file");
+            	}
 
                 //server.SendMessage("REGISTER CONFIRMED", data.toString());
                 break;
@@ -62,9 +75,12 @@ class Lobby {
                     clientId = data.getString("clientId");
                     username = data.getString("username");
                     String password = data.getString("password");
-
-
+                    Database d = new Database();
+                    String login = d.loginUser(username, password);
+                    d.disconnectDB();
                     //should also first check if the guy exists in the database
+                    if (login!=username)
+                    	sendJSONMessage("USER LOGIN FAIL", "clientId", clientId, "errorMessage", login);
                     if (!currentUsers.containsKey(clientId)) {
                         sendJSONMessage("USER LOGIN FAIL", "clientId", clientId, "errorMessage", "Client was not connected");
                     }

@@ -66,8 +66,8 @@ define(
         });
     };
 
-    Socket.startGame = function( callback ) {
-        socket.emit( 'GAME START' );
+    Socket.startGame = function( state, callback ) {
+        socket.emit( 'GAME START', state );
         socket.once( 'GAME START ACK', function( data ) {
             callback( data );
         });

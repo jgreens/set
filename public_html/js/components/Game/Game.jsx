@@ -26,7 +26,7 @@ define(
         _startGameListener: function() {
             // Receives game updates
             var self = this;
-            Socket.startGame( function( data ) {
+            Socket.startGame( { id: this.props.id }, function( data ) {
                 console.log( 'GAME UPDATE' );
                 self.setState( data );
             });

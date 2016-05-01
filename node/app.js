@@ -70,6 +70,12 @@ client.on( 'data', function( msg ) {
             var obj = createMessage( 'LOBBY LIST', {} );
             client.write( JSON.stringify( obj ) + '\n' );
             break;
+        case 'GAME JOIN SUCCESS':
+            connectedClients[data.clientId].emit( 'GAME JOIN ACK', true );
+            break;
+        case 'GAME JOIN FAIL':
+            connectedClients[data.clientId].emit( 'GAME JOIN ACK', false );
+            break;
         default:
             break;
     }
@@ -141,11 +147,10 @@ io.on( 'connection', function( socket ) {
 
     socket.on( 'GAME JOIN', function(data) {
         var obj = createMessage( 'GAME JOIN', {
-            id: data.id
+            clientId: socket.id,
+            gameId: data.id
         });
         client.write( JSON.stringify( obj ) + '\n' );
-
-        socket.emit( 'GAME JOIN ACK', true );
     });
 
     socket.on( 'GAME DELETE', function(data) {
@@ -183,6 +188,12 @@ io.on( 'connection', function( socket ) {
                 { type: 'end' }
             ]
         };
+
+        var obj = createMessage( 'GAME START', {
+            clientId: socket.id,
+            gameId: data.id
+        });
+        client.write( JSON.stringify( obj ) + '\n' );
 
         socket.emit( 'GAME START ACK', game );
     });

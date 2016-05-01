@@ -29,7 +29,7 @@ define(
         },
         _goToGame: function() {
             var customEvent = new CustomEvent( 'ViewController',  {
-                detail: { view: 'Game', game: this.state.game },
+                detail: { view: 'Game', game: this.state.game, id: this.props.id },
                 bubbles: true
             });
             window.dispatchEvent( customEvent );

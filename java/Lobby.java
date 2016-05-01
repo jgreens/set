@@ -81,7 +81,7 @@ class Lobby {
                     	sendJSONMessage("USER LOGIN FAIL", "clientId", clientId, "errorMessage", login);
                         return;
                     }
-                    if (!currentUsers.containsKey(clientId)) {
+                    if (!waitingClients.contains(clientId)) {
                         sendJSONMessage("USER LOGIN FAIL", "clientId", clientId, "errorMessage", "Client was not connected");
                         return;
                     }
@@ -177,7 +177,6 @@ class Lobby {
                 //Response:    GAME JOIN SUCCESS - { clientId, username, [ membername, ... ] }
                 try {
                     clientId = data.getString("clientId");
-                    username = data.getString("username");
                     gameId = data.getString("gameId");
 
                     Game temp = games.get(gameId);
@@ -193,7 +192,7 @@ class Lobby {
                     temp.addUser(newU, false);
                     JSONObject obj = new JSONObject();
                     obj.put("clientId", clientId);
-                    obj.put("username", username);
+                    obj.put("username", newU.getUsername());
                     JSONArray omember = new JSONArray();
                     for (int i = 0; i < temp.players.size(); i++) {
                         omember.put(temp.players.get(i).username);
@@ -204,6 +203,7 @@ class Lobby {
                     server.SendMessage("GAME JOIN SUCCESS", obj);
 
                 } catch (JSONException j) {
+                    j.printStackTrace();
                     sendJSONMessage("GAME JOIN FAIL", "clientId", clientId, "errorMessage", "Invalid naming of JSON file");
                 }
                 break;

@@ -97,6 +97,25 @@ class Lobby {
                     sendJSONMessage("USER LOGIN FAIL", "clientId", clientId, "errorMessage", "Invalid naming of JSON file");
                 }
                 break;
+            case "USER LOGOUT":
+                try {
+                    clientId = data.getString("clientId");
+                    username = data.getString("username");
+                    User u = currentUsers.get(clientId);
+                    if (u == null) {
+                        sendJSONMessage("USER LOGOUT FAIL", "clientId", clientId, "errorMessage", "User not currently logged in");
+                    } else {
+                        // Remove user from currentUsers
+                        currentUsers.remove(clientId);
+                        // Add client to waiting clients list
+                        waitingClients.add(clientId);
+                        sendJSONMessage("USER LOGOUT SUCCESS", "clientId", clientId);
+                    }
+                } catch (JSONException j) {
+                    j.printStackTrace();
+                    sendJSONMessage("USER LOGOUT FAIL", "clientId", clientId, "errorMessage", "Invalid naming of JSON file");
+                }
+                break;
             case "LOBBY LIST":
                 //list all the current users in JSON
                 JSONObject reply = new JSONObject();
@@ -126,7 +145,7 @@ class Lobby {
                 }
                 reply.put("clients", clients);
                 reply.put("games", gamesArray);
-                System.out.println("LOBBY LIST SUCCESS" + reply.toString());
+                System.out.println("LOBBY LIST SUCCESS");
                 server.SendMessage("LOBBY LIST SUCCESS", reply);
                 break;
             case "GAME CREATE":
@@ -177,7 +196,7 @@ class Lobby {
                     }
                     obj.put("membername", omember);
                     sendGameMemberUpdate(gameId);
-                    System.out.println("GAME JOIN SUCCESS" + obj.toString());
+                    System.out.println("GAME JOIN SUCCESS");
                     server.SendMessage("GAME JOIN SUCCESS", obj);
 
                 } catch (JSONException j) {
@@ -257,7 +276,7 @@ class Lobby {
                     }
                     response.put("clientId", clients);
                     sendLobbyUpdate();
-                    System.out.println("GAME START SUCCESS " + response.toString());
+                    System.out.println("GAME START SUCCESS");
                     server.SendMessage("GAME START SUCCESS", response);
 
                 } catch (JSONException j) {
@@ -365,7 +384,7 @@ class Lobby {
         for (int i = 0; i < args.length - 1; i += 2) {
             response.put(args[i], args[i + 1]);
         }
-        System.out.println(message + " " + response.toString());
+        System.out.println(message);
         server.SendMessage(message, response);
     }
 
@@ -392,7 +411,7 @@ class Lobby {
             cards.put(game.board.get(i));
         }
         response.put("card", cards);
-        System.out.println("GAME CARDS UPDATE" + response);
+        System.out.println("GAME CARDS UPDATE");
         server.SendMessage("GAME CARDS UPDATE", response);
     }
 
@@ -428,7 +447,7 @@ class Lobby {
         }
         response.put("clients", clients);
 
-        System.out.println("GAME SCORE UPDATE" + response.toString());
+        System.out.println("GAME SCORE UPDATE");
         server.SendMessage("GAME SCORE UPDATE", response);
     }
 
@@ -452,7 +471,7 @@ class Lobby {
         }
         response.put("clients", clients);
 
-        System.out.println("GAME MEMBERS UPDATE" + response.toString());
+        System.out.println("GAME MEMBERS UPDATE");
         server.SendMessage("GAME MEMBERS UPDATE", response);
     }
 
@@ -481,7 +500,7 @@ class Lobby {
         response.put("winnerScore", winner.score);
         response.put("clientId", clients);
 
-        System.out.println("GAME FINISHED" + response.toString());
+        System.out.println("GAME FINISHED");
         server.SendMessage("GAME FINISHED", response);
     }
 }

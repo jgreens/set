@@ -78,60 +78,19 @@ io.on( 'connection', function( socket ) {
         socket.emit( 'USER LOGIN ACK', true );
     });
 
+    socket.on( 'USER LOGOUT', function(data) {
+        var obj = createMessage( 'USER LOGOUT', {
+            clientId: socket.id,
+            username: data.username
+        });
+        client.write( JSON.stringify( obj ) + '\n' );
+
+        socket.emit( 'USER LOGOUT ACK', true );
+    });
+
     socket.on( 'LOBBY LIST', function() {
         var obj = createMessage( 'LOBBY LIST', {} );
         client.write( JSON.stringify( obj ) + '\n' );
-
-        /*// Just to send over some testing games
-        var games = [
-            {
-                id: 1,
-                name: 'Game 1',
-                members: [{ id: 101, name: 'Jonny' }, { id: 102, name: 'Jason' }]
-            },
-            {
-                id: 2,
-                name: 'Game 2',
-                members: [{ id: 103, name: 'Calvin' }, { id: 104, name: 'Akshay' }]
-            }
-        ];
-
-        socket.emit( 'LOBBY LIST ACK', games );
-
-        // Testing the update feature, updates every 5 seconds
-        var counter = true;
-        var games2 = [
-            {
-                id: 1,
-                name: 'Game 1',
-                members: [{ id: 101, name: 'Jonny' }, { id: 102, name: 'Jason' }]
-            },
-            {
-                id: 2,
-                name: 'Game 2',
-                members: [{ id: 103, name: 'Calvin' }, { id: 104, name: 'Akshay' }]
-            },
-            {
-                id: 3,
-                name: 'Game 3',
-                members: [{ id: 101, name: 'Jonny' }, { id: 102, name: 'Jason' }, { id: 103, name: 'Calvin' }, { id: 104, name: 'Akshay' }]
-            }
-        ];
-        var games3;
-        var updates = setInterval( function() {
-            socket.on( 'LOBBY LIST END', function() { // Unsubscribe from updates
-                clearInterval( updates );
-            });
-            if( counter ) {
-                games3 = games2;
-                counter = false;
-            } else {
-                games3 = games;
-                counter = true;
-            }
-            
-            socket.emit( 'LOBBY UPDATE', games3 );
-        }, 3000 );*/
     });
 
     socket.on( 'GAME CREATE', function(data) {
@@ -203,7 +162,7 @@ io.on( 'connection', function( socket ) {
 
     var lobby = false;
     client.on( 'data', function( msg ) {
-        var msgObj = JSON.parse(msg.toString());
+        var msgObj = JSON.parse(msg);
         console.log( 'Processed message ' + msgObj.msgId + ': ' + msgObj.msgType );
         console.log( msgObj.data );
 

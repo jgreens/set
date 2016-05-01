@@ -38,6 +38,21 @@ define(
                 console.log( 'RETURN TO LOBBY' );
             });
         },
+        _submitSet: function() {
+            var selected = [];
+
+            for( var key in this.state.selected )
+                if( this.state.selected.hasOwnProperty( key ) )
+                    selected.push( key );
+
+            if( selected.length != 3 )
+                return false;
+
+            Socket.submitSet({ set: selected }, function( data ) {
+                console.log( 'SUCCESSFUL SET' );
+                console.log( data );
+            });
+        },
         _selectCards: function() {
             var cardManip = {};
             var self = this;
@@ -78,7 +93,7 @@ define(
                     <div className="row">
                         <div className="eight wide column">
                             <GameBoard cards={this.state.cards} selectCards={this._selectCards} />
-                            <button className="huge fluid ui teal button" style={{marginTop: '25px'}}>SET</button>
+                            <button className="huge fluid ui teal button" style={{marginTop: '25px'}} onClick={this._submitSet}>SET</button>
                         </div>
                         <div className="two wide column">
                         </div>

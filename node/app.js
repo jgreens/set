@@ -154,6 +154,11 @@ io.on( 'connection', function( socket ) {
     });
 
     socket.on( 'GAME START', function(data) {
+        var obj = createMessage( 'GAME START', {
+            clientId: socket.id
+        });
+        client.write( JSON.stringify( obj ) + '\n' );
+
         var game = {
             scores: {
                 jonny: 4,
@@ -184,7 +189,22 @@ io.on( 'connection', function( socket ) {
     });
 
     socket.on( 'GAME LEAVE', function(data) {
+        var obj = createMessage( 'GAME LEAVE', {
+            clientId: socket.id
+        });
+        client.write( JSON.stringify( obj ) + '\n' );
+
         socket.emit( 'GAME LEAVE ACK', true );
+    });
+
+    socket.on( 'GAME SET', function(data) {
+        var obj = createMessage( 'GAME SET', {
+            clientId: socket.id,
+            set: data.set
+        });
+        client.write( JSON.stringify( obj ) + '\n' );
+
+        socket.emit( 'GAME SET ACK', true );
     });
 
 });

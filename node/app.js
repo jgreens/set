@@ -38,11 +38,6 @@ client.on( 'connect', function() {
     var obj = createMessage( "nodeConnect", { msg: "connected to server!" } );
     client.write( JSON.stringify( obj ) + '\n' );
 });
-client.on( 'data', function( msg ) {
-    var msgObj = JSON.parse(msg.toString());
-    console.log( 'Processed message ' + msgObj.msgId + ': ' + msgObj.msgType );
-    console.log( msgObj.data );
-});
 client.on( 'end', function() {
     console.log( 'disconnected from server' );
 });
@@ -63,6 +58,7 @@ io.on( 'connection', function( socket ) {
 
     socket.on( 'USER REGISTER', function(data) {
         var obj = createMessage( 'USER REGISTER', {
+            clientId: socket.id,
             username: data.username,
             password: data.password,
         });
@@ -73,6 +69,7 @@ io.on( 'connection', function( socket ) {
 
     socket.on( 'USER LOGIN', function(data) {
         var obj = createMessage( 'USER LOGIN', {
+            clientId: socket.id,
             username: data.username,
             password: data.password,
         });
@@ -85,7 +82,7 @@ io.on( 'connection', function( socket ) {
         var obj = createMessage( 'LOBBY LIST', {} );
         client.write( JSON.stringify( obj ) + '\n' );
 
-        // Just to send over some testing games
+        /*// Just to send over some testing games
         var games = [
             {
                 id: 1,
@@ -134,16 +131,22 @@ io.on( 'connection', function( socket ) {
             }
             
             socket.emit( 'LOBBY UPDATE', games3 );
-        }, 3000 );
+        }, 3000 );*/
     });
 
     socket.on( 'GAME CREATE', function(data) {
         var obj = createMessage( 'GAME CREATE', {
+            clientId: socket.id,
             name: data.name
         });
         client.write( JSON.stringify( obj ) + '\n' );
 
         socket.emit( 'GAME CREATE ACK', true );
+
+        socket.on( 'GAME CREATE SUCCESS', function ( data ) {
+            var obj = createMessage( 'LOBBY LIST', {} );
+            socket.emit( JSON.stingify( obj ) + '\n' );
+        });
     });
 
     socket.on( 'GAME JOIN', function(data) {
@@ -196,5 +199,30 @@ io.on( 'connection', function( socket ) {
 
     socket.on( 'GAME LEAVE', function(data) {
         socket.emit( 'GAME LEAVE ACK', true );
+    });
+
+    var lobby = false;
+    client.on( 'data', function( msg ) {
+        var msgObj = JSON.parse(msg.toString());
+        console.log( 'Processed message ' + msgObj.msgId + ': ' + msgObj.msgType );
+        console.log( msgObj.data );
+
+        var data = msgObj.data;
+        switch( msgObj.msgType ) {
+            case 'LOBBY LIST SUCCESS':
+                if ( !lobby ) {
+                    socket.emit( 'LOBBY LIST ACK', data.games );
+                    lobby = true;
+                } else {
+                    socket.emit( 'LOBBY UPDATE', data.games );
+                }
+                break;;
+            case 'GAME CREATE SUCCESS':
+                var obj = createMessage( 'LOBBY LIST', {} );
+                client.write( JSON.stringify( obj ) + '\n' );
+                break;
+            default:
+                break;
+        }
     });
 });

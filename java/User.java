@@ -10,4 +10,8 @@ public class User{
     userid = uid;
     score = 0; 
   }
+
+  public String getUsername() {
+      return username;
+  }
 }

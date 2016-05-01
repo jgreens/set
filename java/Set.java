@@ -6,8 +6,6 @@ public class Set {
 
         server.InitializeLobby(lobby);
         server.Listen();
-
-        System.out.println("hi");
     }
 
 }

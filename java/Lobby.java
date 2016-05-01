@@ -4,8 +4,8 @@ import org.json.*;
 class Lobby {
 
     HashMap<String, Game> games;//key is game id, list of games each game has a arraylist with all the users in that game
-    // SetServer server = null;
-    HashMap<String, User> currentUsers;//key is userId
+    static SetServer server = null;
+    HashMap<String, User> currentUsers;//key is clientId
     ArrayList<String> waitingClients;//these are the clients not in any game
 
     public Lobby() {
@@ -16,9 +16,9 @@ class Lobby {
 
     public void executeCommand(String command, JSONObject data) {
 
-        //if (server == null) {
-        //   server = SetServer.getSetServerSingleton();
-        //}
+        if (server == null) {
+           server = SetServer.getSetServerSingleton();
+        }
         System.out.println("Executing " + command);
         String username = "invalid";
         String clientId = "invalid";
@@ -67,7 +67,6 @@ class Lobby {
             		sendJSONMessage("USER REGISTER FAIL", "clientId", clientId, "errorMessage", "Invalid naming of JSON file");
             	}
 
-                //server.SendMessage("REGISTER CONFIRMED", data.toString());
                 break;
             case "USER LOGIN":
                 try {
@@ -94,6 +93,7 @@ class Lobby {
                     sendLobbyUpdate();
                     sendJSONMessage("USER LOGIN SUCCESS", "clientId", clientId, "username", username);
                 } catch (JSONException j) {
+                    j.printStackTrace();
                     sendJSONMessage("USER LOGIN FAIL", "clientId", clientId, "errorMessage", "Invalid naming of JSON file");
                 }
                 break;
@@ -109,22 +109,30 @@ class Lobby {
                 for (Game g : games.values()) {
                     JSONObject gameStuff = new JSONObject();
 
+                    gameStuff.put("gameId", g.gameid);
                     gameStuff.put("name", g.name);
+
+                    JSONArray playersArray = new JSONArray();
                     for (int i = 0; i < g.players.size(); i++) {
-                        gameStuff.put("clientId", g.players.get(i).userid);
+                        JSONObject userObj = new JSONObject();
+                        String cId = g.players.get(i).userid;
+                        userObj.put("clientId", cId);
+                        userObj.put("username", currentUsers.get(cId).getUsername());
+                        playersArray.put(userObj);
                     }
+                    gameStuff.put("members", playersArray);
+
                     gamesArray.put(gameStuff);
                 }
                 reply.put("clients", clients);
                 reply.put("games", gamesArray);
                 System.out.println("LOBBY LIST SUCCESS" + reply.toString());
-                //server.SendMessage("LOBBY LIST SUCCESS", reply.toString());
+                server.SendMessage("LOBBY LIST SUCCESS", reply);
                 break;
             case "GAME CREATE":
-                //Request:    GAME CREATE - { clientId, username, name }
+                //Request:    GAME CREATE - { clientId, name }
                 try {
                     clientId = data.getString("clientId");
-                    username = data.getString("username");
                     gameName = data.getString("name");
                     gameId = "game" + (games.size() + 1);
                     Game g = new Game(gameId, gameName);
@@ -137,7 +145,7 @@ class Lobby {
                     games.put(gameId, g);
                     //Response:    GAME CREATE SUCCESS - { clientId, username, gameId }
                     sendLobbyUpdate();
-                    sendJSONMessage("GAME CREATE SUCCESS", "clientId", clientId, "username", username, "gameId", gameId);
+                    sendJSONMessage("GAME CREATE SUCCESS", "clientId", clientId, "username", currentUsers.get(clientId).getUsername(), "gameId", gameId);
                 } catch (JSONException j) {
                     sendJSONMessage("GAME CREATE FAIL", "clientId", clientId, "errorMessage", "Invalid naming of JSON file");
                 }
@@ -170,7 +178,7 @@ class Lobby {
                     obj.put("membername", omember);
                     sendGameMemberUpdate(gameId);
                     System.out.println("GAME JOIN SUCCESS" + obj.toString());
-                    //server.SendMessage("GAME JOIN SUCCESS", response.toString());
+                    server.SendMessage("GAME JOIN SUCCESS", obj);
 
                 } catch (JSONException j) {
                     sendJSONMessage("GAME JOIN FAIL", "clientId", clientId, "errorMessage", "Invalid naming of JSON file");
@@ -250,7 +258,7 @@ class Lobby {
                     response.put("clientId", clients);
                     sendLobbyUpdate();
                     System.out.println("GAME START SUCCESS " + response.toString());
-                    //server.SendMessage("GAME START SUCCESS", response.toString());
+                    server.SendMessage("GAME START SUCCESS", response);
 
                 } catch (JSONException j) {
                     sendJSONMessage("GAME START FAIL", "clientId", clientId, "errorMessage", "Invalid naming of JSON file");
@@ -358,7 +366,7 @@ class Lobby {
             response.put(args[i], args[i + 1]);
         }
         System.out.println(message + " " + response.toString());
-        //server.SendMessage(message, response.toString());
+        server.SendMessage(message, response);
     }
 
     public void sendCardUpdate(String gID) {
@@ -385,7 +393,7 @@ class Lobby {
         }
         response.put("card", cards);
         System.out.println("GAME CARDS UPDATE" + response);
-        //server.SendMessage("GAME CARDS UPDATE", response.toString());
+        server.SendMessage("GAME CARDS UPDATE", response);
     }
 
     public void sendLobbyUpdate() {
@@ -396,7 +404,7 @@ class Lobby {
 
         }
 
-        //server.SendMessage("GAME CARDS UPDATE", response.toString());
+        server.SendMessage("GAME CARDS UPDATE", response);
     }
 
     public void sendGameScoreUpdate(String gID) {
@@ -421,7 +429,7 @@ class Lobby {
         response.put("clients", clients);
 
         System.out.println("GAME SCORE UPDATE" + response.toString());
-        //server.SendMessage("GAME SCORE UPDATE", response.toString());
+        server.SendMessage("GAME SCORE UPDATE", response);
     }
 
     public void sendGameMemberUpdate(String gID) {
@@ -445,7 +453,7 @@ class Lobby {
         response.put("clients", clients);
 
         System.out.println("GAME MEMBERS UPDATE" + response.toString());
-        //server.SendMessage("GAME MEMBERS UPDATE", response.toString());
+        server.SendMessage("GAME MEMBERS UPDATE", response);
     }
 
     public void sendGameFinishedUpdate(String gID, String winnerID) {
@@ -474,6 +482,6 @@ class Lobby {
         response.put("clientId", clients);
 
         System.out.println("GAME FINISHED" + response.toString());
-        //server.SendMessage("GAME FINISHED", response.toString());
+        server.SendMessage("GAME FINISHED", response);
     }
 }

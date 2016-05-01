@@ -14,7 +14,8 @@ define(
             return {
                 cards: [],
                 feed: [],
-                scores: {}
+                scores: {},
+                selected: {}
             };
         },
         componentWillMount: function() {
@@ -37,12 +38,64 @@ define(
                 console.log( 'RETURN TO LOBBY' );
             });
         },
+        _submitSet: function() {
+            var selected = [];
+
+            for( var key in this.state.selected )
+                if( this.state.selected.hasOwnProperty( key ) )
+                    selected.push( key );
+
+            if( selected.length != 3 )
+                return false;
+
+            Socket.submitSet({ set: selected }, function( data ) {
+                console.log( 'SUCCESSFUL SET' );
+                console.log( data );
+            });
+        },
+        _selectCards: function() {
+            var cardManip = {};
+            var self = this;
+            cardManip.count = function() {
+                var count = 0;
+
+                for( var key in self.state.selected )
+                    if( self.state.selected.hasOwnProperty( key ) )
+                        count++;
+
+                return count;
+            };
+            cardManip.add = function( card ) {
+                // Only select if less than three cards currently selected
+                if( cardManip.count() < 3 ) {
+                    var selected = self.state.selected;
+                    selected[card] = true;
+                    self.setState({ selected: selected });
+
+                    return true;
+                }
+
+                return false;
+            };
+            cardManip.remove = function( card ) {
+                var selected = self.state.selected;
+                delete selected[card];
+                self.setState({ selected: selected });
+
+                return true;
+            };
+
+            return cardManip;
+        },
         render: function() {
             return(
                 <div className="Game ui grid container">
                     <div className="row">
-                        <div className="ten wide column">
-                            <GameBoard cards={this.state.cards} />
+                        <div className="eight wide column">
+                            <GameBoard cards={this.state.cards} selectCards={this._selectCards} />
+                            <button className="huge fluid ui teal button" style={{marginTop: '25px'}} onClick={this._submitSet}>SET</button>
+                        </div>
+                        <div className="two wide column">
                         </div>
                         <div className="six wide column">
                         </div>

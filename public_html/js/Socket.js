@@ -76,10 +76,17 @@ define(
         });
     }
 
+    Socket.submitSet = function( state, callback ) {
+        socket.emit( 'GAME SET', state );
+        socket.once( 'GAME SET ACK', function( data ) {
+            callback( data );
+        });
+    };
+
     Socket.endGame = function( state, callback ) {
         socket.removeListener( 'GAME UPDATE' );
         socket.emit( 'GAME LEAVE', state );
-        socket.on( 'GAME LEAVE ACK', function( data ) {
+        socket.once( 'GAME LEAVE ACK', function( data ) {
             callback( data );
         });
     }

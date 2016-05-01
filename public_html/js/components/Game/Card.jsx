@@ -13,16 +13,13 @@ define(
             };
         },
         _toggleSelected: function() {
+            var selectCards = this.props.selectCards();
             if( this.state.selected ) {
-                this.setState({
-                    selected: false,
-                    className: 'ui fluid card'
-                });
+                if( selectCards.remove( this.props.card ) )
+                    this.setState({ selected: false, className: 'ui fluid card' });
             } else {
-                this.setState({
-                    selected: true,
-                    className: 'ui fluid green card'
-                });
+                if( selectCards.add( this.props.card ) )
+                    this.setState({ selected: true, className: 'ui fluid teal card' });
             } 
         },
         render: function() {

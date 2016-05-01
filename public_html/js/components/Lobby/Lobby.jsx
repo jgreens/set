@@ -29,6 +29,13 @@ define(
         componentWillUnmount: function() {
             Socket.endLobby(); // Clean up socket.io listener
         },
+        _logout: function() {
+            var self = this;
+            Socket.logout( this.props.user, function( data ) {
+                if( data ) // Successfully logged out 
+                    self._goToLogin();
+            });
+        },
         _goToLogin: function( e ) {
             var customEvent = new CustomEvent( 'ViewController',  {
                 detail: { 'view': 'Login' },
@@ -59,7 +66,7 @@ define(
                     </div>
                     <div className="row">
                         <div className="column">
-                            <button className="ui black icon button" onClick={this._goToLogin}>Log Out</button>
+                            <button className="ui black icon button" onClick={this._logout}>Log Out</button>
                             <CreateButton />
                         </div>
                     </div>

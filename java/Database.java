@@ -42,7 +42,7 @@ public class Database {
 		public void connectDB(){
     	try{
     		Class.forName("com.mysql.jdbc.Driver").newInstance();
-    		con = DriverManager.getConnection("jdbc:mysql://localhost:3306/set","guest","password");
+    		con = DriverManager.getConnection("jdbc:mysql://localhost:3306/set_game","guest","password");
     		if (!con.isClosed())
     			System.out.println("Successfully connected to MySQL Server...");
     	}

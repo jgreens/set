@@ -152,12 +152,7 @@ io.on( 'connection', function( socket ) {
         });
         client.write( JSON.stringify( obj ) + '\n' );
 
-        var game = {
-            id: 1,
-            name: 'Game 1',
-            members: [{ id: 101, name: 'Jonny' }, { id: 102, name: 'Jason' }]
-        };
-        socket.emit( 'GAME JOIN ACK', game );
+        socket.emit( 'GAME JOIN ACK', true );
     });
 
     socket.on( 'GAME DELETE', function(data) {
@@ -169,4 +164,37 @@ io.on( 'connection', function( socket ) {
         socket.emit( 'GAME DELETE ACK', true );
     });
 
+    socket.on( 'GAME START', function(data) {
+        var game = {
+            scores: {
+                jonny: 4,
+                akshay: 2,
+                jason: -11,
+                calvin: 1
+            },
+            cards: [ '0011', '1011', '2012', '0010', '1101', '1021',
+                     '0022', '2222', '1010', '1001', '1111', '2000' ],
+            feed: [
+                { type: 'join', user: 'jonny' },
+                { type: 'join', user: 'jason' },
+                { type: 'join', user: 'calvin' },
+                { type: 'chat', user: 'jonny', message: 'greetings' },
+                { type: 'join', user: 'akshay' },
+                { type: 'chat', user: 'akshay', message: 'hi' },
+                { type: 'start' },
+                { type: 'set', user: 'jonny' },
+                { type: 'set', user: 'jonny' },
+                { type: 'set', user: 'calvin' },
+                { type: 'fail', user: 'jason' },
+                { type: 'set', user: 'calvin' },
+                { type: 'end' }
+            ]
+        };
+
+        socket.emit( 'GAME START ACK', game );
+    });
+
+    socket.on( 'GAME LEAVE', function(data) {
+        socket.emit( 'GAME LEAVE ACK', true );
+    });
 });

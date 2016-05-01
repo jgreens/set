@@ -1,25 +1,42 @@
 define(
 [
     'react',
+    'Socket',
     'jsx!components/Game/GameBoard'
 ]
 , function(
     React,
+    Socket,
     GameBoard
 ) {
     var Game = React.createClass({
         getInitialState: function() {
             return {
-                cards: [ '0011', '1011', '2012', '0010', '1101', '1021',
-                         '0022', '2222', '1010', '1001', '1111', '2000' ]
+                cards: [],
+                feed: [],
+                scores: {}
             };
         },
-        _goToLogin: function( e ) {
-            var customEvent = new CustomEvent( 'ViewController',  {
-                detail: { 'view': 'Login' },
-                bubbles: true
+        componentWillMount: function() {
+            this._startGameListener();
+        },
+        componentWillUnmount: function() {
+            this._endGameListener();
+        },
+        _startGameListener: function() {
+            // Receives game updates
+            var self = this;
+            Socket.startGame( function( data ) {
+                console.log( 'GAME UPDATE' );
+console.log( data );
+                self.setState( data );
             });
-            window.dispatchEvent( customEvent );
+        },
+        _endGameListener: function() {
+            Socket.endGame( this.props.user, function() {
+                // Return to lobby    
+                console.log( 'RETURN TO LOBBY' );
+            });
         },
         render: function() {
             return(

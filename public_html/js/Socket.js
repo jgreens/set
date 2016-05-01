@@ -59,5 +59,23 @@ define(
         });
     };
 
+    Socket.startGame = function( callback ) {
+        socket.emit( 'GAME START' );
+        socket.once( 'GAME START ACK', function( data ) {
+            callback( data );
+        });
+        socket.on( 'GAME UPDATE', function( data ) {
+            callback( data );
+        });
+    }
+
+    Socket.endGame = function( state, callback ) {
+        socket.removeListener( 'GAME UPDATE' );
+        socket.emit( 'GAME LEAVE', state );
+        socket.on( 'GAME LEAVE ACK', function( data ) {
+            callback( data );
+        });
+    }
+
     return Socket;
 });

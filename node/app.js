@@ -43,6 +43,15 @@ client.on( 'end', function() {
 });
 
 client.on( 'data', function( msg ) {
+    var msgs = msg.toString().split('\n');
+    for ( var i = 0; i < msgs.length; ++i ) {
+        if (msgs[i].length) {
+            handleJavaData(msgs[i]);
+        }
+    }
+});
+
+var handleJavaData = function( msg ) {
     var msgObj = JSON.parse(msg);
     console.log( 'Processed message ' + msgObj.msgId + ': ' + msgObj.msgType );
     console.log( msgObj.data );
@@ -52,48 +61,53 @@ client.on( 'data', function( msg ) {
         case 'ack':
             break;
         case 'USER LOGIN SUCCESS':
-            connectedClients[data.clientId].emit( 'USER LOGIN ACK', true );
+            connectedClients[ data.clientId ].emit( 'USER LOGIN ACK', true );
             break;
         case 'USER LOGIN FAIL':
-            connectedClients[data.clientId].emit( 'USER LOGIN ACK', false );
+            connectedClients[ data.clientId ].emit( 'USER LOGIN ACK', false );
             break;
         case 'USER LOGOUT SUCCESS':
-            connectedClients[data.clientId].emit( 'USER LOGOUT ACK', true );
+            connectedClients[ data.clientId ].emit( 'USER LOGOUT ACK', true );
             break;
         case 'USER LOGOUT FAIL':
-            connectedClients[data.clientId].emit( 'USER LOGOUT ACK', false );
+            connectedClients[ data.clientId ].emit( 'USER LOGOUT ACK', false );
             break;
         case 'LOBBY LIST SUCCESS':
-            for ( var i = 0; i < data.clients.length; ++i) {
-                connectedClients[data.clients[i]].emit( 'LOBBY UPDATE', data.games );
+            for ( var i = 0; i < data.clients.length; ++i ) {
+                connectedClients[ data.clients[i] ].emit( 'LOBBY UPDATE', data.games );
             }
             break;;
+        case 'LOBBY UPDATE':
+            /*for ( var i = 0; i < data.clients.length; ++i ) {
+                connectedClients[ data.clients[i] ].emit( 'LOBBY UPDATE', data.games );
+            }*/
         case 'GAME CREATE SUCCESS':
             var obj = createMessage( 'LOBBY LIST', {} );
             client.write( JSON.stringify( obj ) + '\n' );
             break;
         case 'GAME JOIN SUCCESS':
-            connectedClients[data.clientId].emit( 'GAME JOIN ACK', true );
+            connectedClients[ data.clientId ].emit( 'GAME JOIN ACK', true );
             break;
         case 'GAME JOIN FAIL':
-            connectedClients[data.clientId].emit( 'GAME JOIN ACK', false );
+            connectedClients[ data.clientId ].emit( 'GAME JOIN ACK', false );
             break;
         case 'GAME START SUCCESS':
             var obj = { scores: data.scores, feed: data.feed };
-            for ( var i = 0; i < data.clients.length; ++i) {
-                connectedClients[data.clients[i]].emit( 'GAME START ACK', obj );
+            for ( var i = 0; i < data.clients.length; ++i ) {
+                connectedClients[ data.clients[i] ].emit( 'GAME START ACK', obj );
             }
             break;
         case 'GAME CARDS UPDATE':
-            for ( var i = 0; i < data.clients.length; ++i) {
-                connectedClients[data.clients[i]].emit( 'GAME UPDATE', data );
+            for ( var i = 0; i < data.clients.length; ++i ) {
+                connectedClients[ data.clients[i] ].emit( 'GAME UPDATE', data );
             }
             break;
         default:
-            console.log('Unhandled message: ' + msgObj.msgtype);
+            debugger;
+            console.log( 'Unhandled message: ' + msgObj.msgtype );
             break;
     }
-});
+};
 
 /*
  * Node - Browser Socket Connection (socket.io)

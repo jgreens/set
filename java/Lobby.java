@@ -188,6 +188,7 @@ class Lobby {
                     User newU = currentUsers.get(clientId);
                     if (newU == null) {
                         sendJSONMessage("GAME JOIN FAIL", "clientId", clientId, "errorMessage", "User not registered");
+                        return;
                     }
                     temp.addUser(newU, false);
                     JSONObject obj = new JSONObject();

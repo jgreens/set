@@ -3,13 +3,15 @@ define(
     'react',
     'Socket',
     'jsx!components/Game/GameBoard',
-    'jsx!components/Game/Feed'
+    'jsx!components/Game/Feed',
+    'jsx!components/Game/Scoreboard'
 ]
 , function(
     React,
     Socket,
     GameBoard,
-    Feed
+    Feed,
+    Scoreboard
 ) {
     var Game = React.createClass({
         getInitialState: function() {
@@ -52,7 +54,6 @@ define(
 
             Socket.submitSet({ set: selected }, function( data ) {
                 console.log( 'SUCCESSFUL SET' );
-                console.log( data );
             });
         },
         _selectCards: function() {
@@ -98,6 +99,7 @@ define(
                             <button className="huge fluid ui teal button" style={{marginTop: '25px'}} onClick={this._submitSet}>SET</button>
                         </div>
                         <div className="seven wide column">
+                            <Scoreboard scores={this.state.scores} user={this.props.user} />
                             <Feed feed={this.state.feed} user={this.props.user} />
                         </div>
                     </div>

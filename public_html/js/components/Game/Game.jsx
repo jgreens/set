@@ -28,7 +28,6 @@ define(
             var self = this;
             Socket.startGame( function( data ) {
                 console.log( 'GAME UPDATE' );
-console.log( data );
                 self.setState( data );
             });
         },
@@ -46,7 +45,6 @@ console.log( data );
                             <GameBoard cards={this.state.cards} />
                         </div>
                         <div className="six wide column">
-                            <GameBoard cards={this.state.cards} />
                         </div>
                     </div>
                 </div>

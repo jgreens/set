@@ -1,5 +1,3 @@
-import com.sun.org.apache.xpath.internal.operations.Bool;
-
 import java.util.*;
 
 //REMEMBER CHANGE THE CONSTRUCTOR
@@ -117,6 +115,10 @@ public class Game {
             if (drawThree() == false) {
                 return 2;
             }
+            while(hasSet() == false)
+            {
+
+            }
             return 1;
         }
         for (int i = 0; i < players.size(); i++) {
@@ -195,7 +197,7 @@ public class Game {
      * @return Boolean-Returns true if there is a set on the board, false otherwise
      */
     public Boolean hasSet() {
-        System.out.println("Checking for set");
+        //System.out.println("Checking for set");
         for (int i = 0; i < boardSize - 1; i++) {
             for (int j = i + 1; j < boardSize; j++) {
                 Card c1 = board.get(i);

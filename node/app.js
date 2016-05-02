@@ -61,7 +61,8 @@ var handleJavaData = function( msg ) {
         case 'ack':
             break;
         case 'USER LOGIN SUCCESS':
-            connectedClients[ data.clientId ].emit( 'USER LOGIN ACK', true );
+            var obj = { user: data.username, id: data.clientId };
+            connectedClients[ data.clientId ].emit( 'USER LOGIN ACK', obj );
             break;
         case 'USER LOGIN FAIL':
             connectedClients[ data.clientId ].emit( 'USER LOGIN ACK', false );

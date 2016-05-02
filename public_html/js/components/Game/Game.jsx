@@ -19,24 +19,39 @@ define(
                 cards: [],
                 feed: [],
                 scores: {},
-                selected: {}
+                selected: {},
+                started: false,
+                finished: false
             };
         },
         componentWillMount: function() {
-            this._startGameListener();
+            this._gameUpdateListener();
         },
         componentWillUnmount: function() {
             this._endGameListener();
         },
-        _startGameListener: function() {
-            // Receives game updates
+        _gameUpdateListener: function() {
             var self = this;
-            Socket.startGame( { id: this.props.id }, function( data ) {
+            // Receives updated board, score, feed, etc
+            Socket.gameUpdate( function( data ) {
+                // Reset 
+                // CHECK GAME ID
                 var prevCards = self.state.cards;
                 if( prevCards != data.cards )
                     data.selected = {};
 
+                console.log( 'RECEIVING DATA' );
+                console.log( data );
+
                 self.setState( data );
+            });
+        },
+        _startGame: function() {
+            // STARTS GAME
+            var self = this;
+            Socket.startGame( { id: this.props.id }, function( data ) {
+                console.log( 'GAME STARTING' );
+                console.log( data );
             });
         },
         _endGameListener: function() {
@@ -56,7 +71,7 @@ define(
                 return false;
 
             Socket.submitSet({ id: this.props.id, set: selected }, function( data ) {
-                console.log( 'SUCCESSFUL SET' );
+                console.log( data );
             });
         },
         _goToLobby: function() {
@@ -112,7 +127,7 @@ define(
                             <Scoreboard scores={this.state.scores} user={this.props.user} />
                             <div className="ui grid">
                                 <div className="eight wide column">
-                                    <button className="fluid ui teal button">Start Game</button>
+                                    <button className="fluid ui teal button" onClick={this._startGame}>Start Game</button>
                                 </div>
                                 <div className="eight wide column">
                                     <button className="fluid ui black button" onClick={this._goToLobby}>Return to Lobby</button>

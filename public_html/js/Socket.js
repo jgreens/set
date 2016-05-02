@@ -71,10 +71,14 @@ define(
         socket.once( 'GAME START ACK', function( data ) {
             callback( data );
         });
+    };
+
+    Socket.gameUpdate = function( callback ) {
+        socket.emit( 'GAME UPDATE SUBSCRIBE' );
         socket.on( 'GAME UPDATE', function( data ) {
             callback( data );
         });
-    }
+    };
 
     Socket.submitSet = function( state, callback ) {
         socket.emit( 'GAME SET', state );

@@ -17,18 +17,9 @@ define(
             var self = this;
             Socket.createGame( { name: this.state.name }, function( data ) {
                 if( data ) // Successfully created game
-                    console.log( 'Success' );
+                    self._goToGame( data.id );
                 else // Failure
                     console.log( 'Failure' );
-                console.log( data );
-
-                Socket.joinGame( { id: data.id }, function( data ) {
-                    if( data ) { // Successfully joined game
-                        self._goToGame( data.id );
-                        console.log( 'Success' );
-                    } else // Failure
-                        console.log( 'Failure' );
-                });
             });
         },
         _goToGame: function( id ) {

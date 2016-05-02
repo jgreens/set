@@ -33,8 +33,6 @@ define(
             currState.view = e.detail.view;
             if( e.detail.user )
                 currState.user = e.detail.user;
-            if( e.detail.game )
-                currState.game = e.detail.game;
             if( e.detail.id )
                 currState.id = e.detail.id;
 
@@ -54,7 +52,7 @@ define(
                     view.push( <Lobby key="Lobby" user={this.state.user} /> );
                     break;
                 case 'Game':
-                    view.push( <Game key="Game" user={this.state.user} game={this.state.game} id={this.state.id} /> );
+                    view.push( <Game key="Game" user={this.state.user} id={this.state.id} /> );
                     break;
                 default:
                     break;

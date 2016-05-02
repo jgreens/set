@@ -27,9 +27,9 @@ define(
 
             return html;
         },
-        _goToGame: function() {
+        _goToGame: function( id ) {
             var customEvent = new CustomEvent( 'ViewController',  {
-                detail: { view: 'Game', game: this.state.game, id: this.props.id },
+                detail: { view: 'Game', id: this.props.id },
                 bubbles: true
             });
             window.dispatchEvent( customEvent );
@@ -40,8 +40,7 @@ define(
             var self = this;
             Socket.joinGame( { id: this.props.id }, function( data ) {
                 if( data ) { // Successfully joined game
-                    self.setState({ game: data });
-                    self._goToGame();
+                    self._goToGame( data.id );
                     console.log( 'Success' );
                 } else // Failure
                     console.log( 'Failure' );

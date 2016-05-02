@@ -345,11 +345,9 @@ class Lobby {
                             break;
                         case 1:
                             sendGameUpdate(gameId);
-                            sendGameUpdate(gameId);
                             sendJSONMessage("GAME SET SUCCESS", "clientId", clientId, "gameId", gameId);
                             break;
                         case 2:
-                            sendGameUpdate(gameId);
                             sendGameUpdate(gameId);
                             finishGame(gameId);//sends game finished update
                             sendJSONMessage("GAME SET SUCCESS", "clientId", clientId, "gameId", gameId);
@@ -487,33 +485,6 @@ class Lobby {
         server.SendMessage("GAME UPDATE", response);
     }
 
-    public void sendCardUpdate(String gID) {
-        //Message:    GAME CARDS UPDATE - { gameId, [ clientId, ... ], [ card, ... ] } (this should only go to clients in the specific game)
-
-        JSONObject response = new JSONObject();
-        response.put("gameId", gID);
-
-        Game game = (Game) games.get(gID);
-        if (game == null) {
-            sendJSONMessage("GAME CARD UPDATE ERROR", "gameID", gID);
-            return;
-        }
-
-        JSONArray clients = new JSONArray();
-        for (int i = 0; i < game.players.size(); i++) {
-            clients.put(game.players.get(i).userid);
-        }
-        response.put("clients", clients);
-
-        JSONArray cards = new JSONArray();
-        for (int i = 0; i < game.board.size(); i++) {
-            cards.put(game.board.get(i));
-        }
-        response.put("cards", cards);
-        System.out.println("GAME CARDS UPDATE" + response);
-        server.SendMessage("GAME CARDS UPDATE", response);
-    }
-
     public void sendLobbyUpdate() {
         //Message:    LOBBY UPDATE - { [ clientId, ... ], games:[ { gameId, name, [members],started }, ... ] } (this should only go to clients that are not in any game)
         JSONObject response = new JSONObject();
@@ -540,88 +511,6 @@ class Lobby {
         response.put("games", gamearr);
         System.out.println("LOBBY UPDATE" + response.toString());
         server.SendMessage("LOBBY UPDATE", response);
-    }
-
-    public void sendGameScoreUpdate(String gID) {
-        //Message:    GAME SCORE UPDATE - { gameId, [clientId: {username, score}, ... ] } (this should only go to clients in the specific game)
-        JSONObject response = new JSONObject();
-        response.put("gameId", gID);
-
-        Game game = (Game) games.get(gID);
-        if (game == null) {
-            sendJSONMessage("GAME SCORE UPDATE ERROR", "gameId", gID);
-            return;
-        }
-
-        JSONArray clients = new JSONArray();
-        JSONObject scores = new JSONObject();
-        for (int i = 0; i < game.players.size(); i++) {
-            clients.put(game.players.get(i).userid);
-            scores.put(game.players.get(i).username, game.players.get(i).score);
-        }
-        response.put("clients", clients);
-        response.put("scores", scores);
-
-        System.out.println("GAME SCORE UPDATE" + response);
-        server.SendMessage("GAME SCORE UPDATE", response);
-    }
-
-    public void sendGameMemberUpdate(String gID) {
-        //Message:    GAME MEMBERS UPDATE - { gameId, [ clientId:{username}, ... ] } (this should only go to clients in the specific game)
-        JSONObject response = new JSONObject();
-        response.put("gameId", gID);
-
-        Game game = (Game) games.get(gID);
-        if (game == null) {
-            sendJSONMessage("GAME MEMBER UPDATE ERROR", "gameId", gID);
-            return;
-        }
-
-        JSONArray clients = new JSONArray();
-        for (int i = 0; i < game.players.size(); i++) {
-            JSONObject c = new JSONObject();
-            c.put("clientId", game.players.get(i).userid);
-            c.put("username", game.players.get(i).username);
-            clients.put(c);
-        }
-        response.put("clients", clients);
-
-        System.out.println("GAME MEMBERS UPDATE" + response);
-        server.SendMessage("GAME MEMBERS UPDATE", response);
-    }
-
-    public int sendGameFinishedUpdate(String gID) {
-        //Message:    GAME FINISHED - { gameId, [ clientId, ... ], winnerClientId, winnerUsername, winnerScore }
-        JSONObject response = new JSONObject();
-        response.put("gameId", gID);
-
-        Game game = (Game) games.get(gID);
-        if (game == null) {
-            sendJSONMessage("GAME FINISHED UPDATE ERROR", "gameId", gID);
-            return -1;
-        }
-        User winner = game.getWinner();
-        String winnerID = "";
-        String winnerUN = "";
-        int winnerSc = 0;
-        if (winner != null) {
-            winnerID = winner.userid;
-            winnerSc = winner.score;
-            winnerUN = winner.username;
-        }
-        JSONArray clients = new JSONArray();
-        for (int i = 0; i < game.players.size(); i++) {
-            clients.put(game.players.get(i).userid);
-        }
-
-        response.put("winnerClientId", winnerID);
-        response.put("winnerUsername", winnerUN);
-        response.put("winnerScore", winnerSc);
-        response.put("clientId", clients);
-
-        System.out.println("GAME FINISHED" + response);
-        server.SendMessage("GAME FINISHED", response);
-        return 0;
     }
 
 }

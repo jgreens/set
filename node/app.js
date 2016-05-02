@@ -82,7 +82,10 @@ var handleJavaData = function( msg ) {
             for ( var i = 0; i < data.clients.length; ++i ) {
                 connectedClients[ data.clients[i] ].emit( 'LOBBY UPDATE', data.games );
             }
+            break;
         case 'GAME CREATE SUCCESS':
+            var obj = { gameid: data.gameId };
+            connectedClients[ data.clientId ].emit( 'GAME CREATE ACK', obj );
             var obj = createMessage( 'LOBBY LIST', {} );
             client.write( JSON.stringify( obj ) + '\n' );
             break;

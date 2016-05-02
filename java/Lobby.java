@@ -175,7 +175,9 @@ class Lobby {
                     gameName = data.getString("name");
                     gameId = "game" + (games.size() + 1);
                     Game g = new Game(gameId, gameName);
+                    g.addUser(currentUsers.get(clientId), true);
                     games.put(gameId, g);
+                    lobbyClients.remove(clientId);
                     //Response:    GAME CREATE SUCCESS - { clientId, username, gameId }
                     sendLobbyUpdate();
                     sendJSONMessage("GAME CREATE SUCCESS", "clientId", clientId, "username", currentUsers.get(clientId).getUsername(), "gameId", gameId);

@@ -24,7 +24,7 @@ define(
         },
         _goToGame: function( id ) {
             var customEvent = new CustomEvent( 'ViewController',  {
-                detail: { view: 'Game', id: this.props.id },
+                detail: { view: 'Game', id: id },
                 bubbles: true
             });
             window.dispatchEvent( customEvent );

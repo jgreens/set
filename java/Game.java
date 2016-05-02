@@ -51,6 +51,10 @@ public class Game {
         for (User u : players) {
             u.score = 0;
         }
+        while(!hasSet())
+        {
+            drawThree();
+        }
     }
 
     int removeUser(User u) {
@@ -115,9 +119,12 @@ public class Game {
             if (drawThree() == false) {
                 return 2;
             }
-            while(hasSet() == false)
+            while(hasSet() == false)//keep drawing till there is atleast one set on the board
             {
-
+                if(drawThree() == false)
+                {
+                    return 2;
+                }
             }
             return 1;
         }

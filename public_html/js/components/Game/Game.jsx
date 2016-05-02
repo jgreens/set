@@ -33,7 +33,7 @@ define(
         _gameUpdateListener: function() {
             var self = this;
             // Receives updated board, score, feed, etc
-            Socket.gameUpdate( function( data ) {
+            Socket.gameUpdate({ id: this.props.id }, function( data ) {
                 // Reset 
                 // CHECK GAME ID
                 var prevCards = self.state.cards;

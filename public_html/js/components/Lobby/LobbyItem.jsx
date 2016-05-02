@@ -42,8 +42,10 @@ define(
                 if( data ) { // Successfully joined game
                     self._goToGame( data.id );
                     console.log( 'Success' );
-                } else // Failure
+                } else { // Failure
                     console.log( 'Failure' );
+                    this.setState({ joinButtonClass: this._joinButtonLoadingClass });
+                }
             });
         },
         _deleteGame: function() {

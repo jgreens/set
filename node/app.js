@@ -105,7 +105,13 @@ var handleJavaData = function( msg ) {
             break;
         case 'GAME DELETE FAIL':
             // TODO: This should show some sort of error message and stop the button load state
-            connectedClients[ data.clientId ].emit( 'GAME DELETE FAIL', false );
+            connectedClients[ data.clientId ].emit( 'GAME DELETE ACK', false );
+            break;
+        case 'GAME LEAVE SUCCESS':
+            connectedClients[ data.clientId ].emit( 'GAME LEAVE ACK', true );
+            break;
+        case 'GAME LEAVE FAIL':
+            connectedClients[ data.clientId ].emit( 'GAME LEAVE ACK', false );
             break;
         case 'GAME START SUCCESS':
             var obj = { scores: data.scores, feed: data.feed };
@@ -238,11 +244,10 @@ io.on( 'connection', function( socket ) {
 
     socket.on( 'GAME LEAVE', function(data) {
         var obj = createMessage( 'GAME LEAVE', {
-            clientId: socket.id
+            clientId: socket.id,
+            gameId: data.id
         });
         client.write( JSON.stringify( obj ) + '\n' );
-
-        socket.emit( 'GAME LEAVE ACK', true );
     });
 
     socket.on( 'GAME SET', function(data) {

@@ -37,7 +37,7 @@ define(
             });
         },
         _endGameListener: function() {
-            Socket.endGame( this.props.user, function() {
+            Socket.endGame( { user: this.props.user, id: this.props.id }, function() {
                 // Return to lobby    
                 console.log( 'RETURN TO LOBBY' );
             });

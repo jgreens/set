@@ -179,9 +179,9 @@ class Lobby {
                     gameName = data.getString("name");
                     gameId = "game" + (games.size() + 1);
                     Game g = new Game(gameId, gameName);
-                    g.addUser(currentUsers.get(clientId), true); //UNCOMMENT THIS
+                    g.addUser(currentUsers.get(clientId), true);
                     games.put(gameId, g);
-                    lobbyClients.remove(clientId); //UNCOMMENT THIS
+                    lobbyClients.remove(clientId);
                     //Response:    GAME CREATE SUCCESS - { clientId, username, gameId }
                     sendLobbyUpdate();
                     sendJSONMessage("GAME CREATE SUCCESS", "clientId", clientId, "username", currentUsers.get(clientId).getUsername(), "gameId", gameId);
@@ -228,14 +228,14 @@ class Lobby {
                 }
                 break;
             case "GAME LEAVE":
-                //Request:    GAME LEAVE - { clientId, username, gameId }
-                //Response:    GAME LEAVE SUCCESS - { clientId, username }
+                //Request:    GAME LEAVE - { clientId, gameId }
+                //Response:    GAME LEAVE SUCCESS - { clientId }
                 //GAME LEAVE FAIL - { clientId, errorMessage }
 
                 try {
                     clientId = data.getString("clientId");
-                    username = data.getString("username");
                     gameId = data.getString("gameId");
+                    username = currentUsers.get(clientId).getUsername();
 
                     Game game1 = games.get(gameId);
                     if (game1 == null) {
@@ -263,7 +263,7 @@ class Lobby {
                         } else {
                             lobbyClients.put(clientId, currentUsers.get(clientId));
                             sendLobbyUpdate();
-                            sendJSONMessage("GAME LEAVE SUCCESS", "clientId", clientId, "username", username);
+                            sendJSONMessage("GAME LEAVE SUCCESS", "clientId", clientId);
                         }
                     }
                 } catch (JSONException j) {

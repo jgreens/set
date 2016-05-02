@@ -36,12 +36,11 @@ define(
             Socket.gameUpdate({ id: this.props.id }, function( data ) {
                 // Reset 
                 // CHECK GAME ID
-                var prevCards = self.state.cards;
-                if( prevCards != data.cards )
-                    data.selected = {};
-
                 console.log( 'RECEIVING DATA' );
                 console.log( data );
+
+                self.setState({ cards: [] }); // Reset cards
+                data.selected = {};
 
                 self.setState( data );
             });

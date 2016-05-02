@@ -104,7 +104,6 @@ public class Game {
         }
 
         if (isSet(card1, card2, card3)) {
-
             //if set loop through board and delete the specfied cards
             for (int i = board.size() - 1; i >= 0; i--) {
                 if (board.get(i).equals(card1) || board.get(i).equals(card2) || board.get(i).equals(card3)) {

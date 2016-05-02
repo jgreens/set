@@ -173,7 +173,7 @@ class Lobby {
                 try {
                     clientId = data.getString("clientId");
                     gameName = data.getString("name");
-                    gameId = "game" + (games.size() + 1);
+                    gameId = ""+ (games.size() + 1);
                     Game g = new Game(gameId, gameName);
                     g.addUser(currentUsers.get(clientId), true);
                     games.put(gameId, g);

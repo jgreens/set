@@ -52,7 +52,7 @@ define(
             if( selected.length != 3 )
                 return false;
 
-            Socket.submitSet({ set: selected }, function( data ) {
+            Socket.submitSet({ id: this.props.id, set: selected }, function( data ) {
                 console.log( 'SUCCESSFUL SET' );
             });
         },

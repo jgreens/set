@@ -119,6 +119,15 @@ var handleJavaData = function( msg ) {
                 connectedClients[ data.clients[i] ].emit( 'GAME START ACK', obj );
             }
             break;
+        case 'GAME SET SUCCESS':
+            connectedClients[ data.clientId ].emit( 'GAME SET ACK', true );
+            break;
+        case 'GAME SET INVALID':
+            connectedClients[ data.clientId ].emit( 'GAME SET ACK', false );
+            break;
+        case 'GAME SET FAIL':
+            connectedClients[ data.clientId ].emit( 'GAME SET ACK', false );
+            break;
         case 'GAME CARDS UPDATE':
             for ( var i = 0; i < data.clients.length; ++i ) {
                 connectedClients[ data.clients[i] ].emit( 'GAME UPDATE', data );
@@ -253,11 +262,10 @@ io.on( 'connection', function( socket ) {
     socket.on( 'GAME SET', function(data) {
         var obj = createMessage( 'GAME SET', {
             clientId: socket.id,
-            set: data.set
+            gameId: data.id,
+            cards: data.set
         });
         client.write( JSON.stringify( obj ) + '\n' );
-
-        socket.emit( 'GAME SET ACK', true );
     });
 
 });

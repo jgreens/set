@@ -311,16 +311,16 @@ class Lobby {
             case "GAME SET":
                 // check if the next three cards make a successful group, and if they exist on the board.
                 //If they do remove the three cards, update the corresponding score and returns three new cards if there are no more sets on the board.
-                //Request:    GAME SET - { setClientId, setGameId, card: [card[0], card[1], card[2]] }
-                //Response:    GAME SET SUCCESS - { setClientId, setGameId }
-                //GAME SET INVALID - { setClientId, setGameId }
-                //GAME SET FAIL - { setClientId, errorMessage }
+                //Request:    GAME SET - { clientId, gameId, cards: [card[0], card[1], card[2]] }
+                //Response:    GAME SET SUCCESS - { clientId, gameId }
+                //GAME SET INVALID - { clientId, gameId }
+                //GAME SET FAIL - { clientId, errorMessage }
                 //(Note: a successful set should trigger a GAME CARDS UPDATE message, specified below, and this should also check for a win condition)
                 try {
-                    clientId = data.getString("setClientId");
-                    gameId = data.getString("setGameId");
+                    clientId = data.getString("clientId");
+                    gameId = data.getString("gameId");
 
-                    JSONArray cards = data.getJSONArray("card");
+                    JSONArray cards = data.getJSONArray("cards");
 
                     Game game = (Game) games.get(gameId);
                     if (game == null) {
@@ -335,25 +335,25 @@ class Lobby {
                     int retval = game.pickSet(clientId, cards.getString(0), cards.getString(1), cards.getString(2));
                     switch (retval) {
                         case -2:
-                            sendJSONMessage("GAME SET FAIL", "setClientId", clientId, "errorMessage", "Cards are not on the board");
+                            sendJSONMessage("GAME SET FAIL", "clientId", clientId, "errorMessage", "Cards are not on the board");
                             break;
                         case -1:
-                            sendJSONMessage("GAME SET FAIL", "setClientId", clientId, "errorMessage", "Cards are formatted wrong");
+                            sendJSONMessage("GAME SET FAIL", "clientId", clientId, "errorMessage", "Cards are formatted wrong");
                             break;
                         case 0:
                             sendGameScoreUpdate(gameId);
-                            sendJSONMessage("GAME SET INVALID", "setClientId", clientId, "setGameId", gameId);
+                            sendJSONMessage("GAME SET INVALID", "clientId", clientId, "gameId", gameId);
                             break;
                         case 1:
                             sendCardUpdate(gameId);
                             sendGameScoreUpdate(gameId);
-                            sendJSONMessage("GAME SET SUCCESS", "setClientId", clientId, "setGameId", gameId);
+                            sendJSONMessage("GAME SET SUCCESS", "clientId", clientId, "gameId", gameId);
                             break;
                         case 2:
                             sendCardUpdate(gameId);
                             sendGameScoreUpdate(gameId);
                             finishGame(gameId);//sends game finished update
-                            sendJSONMessage("GAME SET SUCCESS", "setClientId", clientId, "setGameId", gameId);
+                            sendJSONMessage("GAME SET SUCCESS", "clientId", clientId, "gameId", gameId);
                             break;
                         default://nothing
                             break;

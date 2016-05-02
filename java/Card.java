@@ -8,14 +8,13 @@ public class Card{
   }
   public int parseCard(String c)
   {
-    String[] vals = c.split("|");
-    if(vals.length != 7){//three | and 4 values
+    if (c.length() != 4) {
       return -1;
     }
-    shape = getValidNum(vals[0].charAt(0));
-    color = getValidNum(vals[2].charAt(0));
-    number = getValidNum(vals[4].charAt(0));
-    fill = getValidNum(vals[6].charAt(0));
+    shape = getValidNum(c.charAt(0));
+    color = getValidNum(c.charAt(1));
+    number = getValidNum(c.charAt(2));
+    fill = getValidNum(c.charAt(3));
     if(shape == -1 || color == -1 || number == -1 || fill == -1)
     {
       return -1; 

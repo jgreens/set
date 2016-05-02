@@ -86,8 +86,9 @@ var handleJavaData = function( msg ) {
             }
             break;
         case 'GAME CREATE SUCCESS':
-            var obj = { gameid: data.gameId };
+            var obj = { id: data.gameId };
             connectedClients[ data.clientId ].emit( 'GAME CREATE ACK', obj );
+
             var obj = createMessage( 'LOBBY LIST', {} );
             client.write( JSON.stringify( obj ) + '\n' );
             break;
@@ -201,13 +202,6 @@ io.on( 'connection', function( socket ) {
             name: data.name
         });
         client.write( JSON.stringify( obj ) + '\n' );
-
-        socket.emit( 'GAME CREATE ACK', true );
-
-        socket.on( 'GAME CREATE SUCCESS', function ( data ) {
-            var obj = createMessage( 'LOBBY LIST', {} );
-            socket.emit( JSON.stingify( obj ) + '\n' );
-        });
     });
 
     socket.on( 'GAME JOIN', function(data) {

@@ -1,3 +1,5 @@
+import com.sun.org.apache.xpath.internal.operations.Bool;
+
 import java.util.*;
 
 //REMEMBER CHANGE THE CONSTRUCTOR
@@ -53,8 +55,25 @@ public class Game {
         }
     }
 
+    int removeUser(User u) {
+        Boolean success = false;
+        for (int i = players.size() - 1; i >= 0; i--) {
+            if (players.get(i).userid.compareTo(u.userid) == 0 && players.get(i).username.compareTo(u.username) == 0) {
+                players.remove(i);
+                success = true;
+                break;
+            }
+        }
+        if (success) {
+            return players.size();
+        } else {
+            return -1;
+        }
+    }
+
     void addUser(User user, Boolean isOwner) {
         players.add(user);
+        user.gameId = gameid;
         if (isOwner) {
             owner = user;
         }

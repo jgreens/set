@@ -80,7 +80,9 @@ var handleJavaData = function( msg ) {
             break;;
         case 'LOBBY UPDATE':
             for ( var i = 0; i < data.clients.length; ++i ) {
-                connectedClients[ data.clients[i] ].emit( 'LOBBY UPDATE', data.games );
+                if ( connectedClients[ data.clients[i] ] ) {
+                    connectedClients[ data.clients[i] ].emit( 'LOBBY UPDATE', data.games );
+                }
             }
             break;
         case 'GAME CREATE SUCCESS':
@@ -94,6 +96,16 @@ var handleJavaData = function( msg ) {
             break;
         case 'GAME JOIN FAIL':
             connectedClients[ data.clientId ].emit( 'GAME JOIN ACK', false );
+            break;
+        case 'GAME DELETE SUCCESS':
+            // TODO: This should send game members back to the lobby
+            for ( var i = 0; i < data.clients.length; ++i ) {
+                connectedClients[ data.clients[i] ].emit( 'GAME DELETE ACK', true );
+            }
+            break;
+        case 'GAME DELETE FAIL':
+            // TODO: This should show some sort of error message and stop the button load state
+            connectedClients[ data.clientId ].emit( 'GAME DELETE FAIL', false );
             break;
         case 'GAME START SUCCESS':
             var obj = { scores: data.scores, feed: data.feed };
@@ -186,11 +198,10 @@ io.on( 'connection', function( socket ) {
 
     socket.on( 'GAME DELETE', function(data) {
         var obj = createMessage( 'GAME DELETE', {
-            id: data.id
+            clientId: socket.id,
+            gameId: data.id
         });
         client.write( JSON.stringify( obj ) + '\n' );
-
-        socket.emit( 'GAME DELETE ACK', true );
     });
 
     socket.on( 'GAME START', function(data) {

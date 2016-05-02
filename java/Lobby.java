@@ -45,20 +45,24 @@ class Lobby {
                         username = currentUsers.get(clientId).getUsername();
 
                         // Remove user from any active games
-                        for (Game g : games.values()) {
-                            for (int i = g.players.size() - 1; i >= 0; i--) {
-                                if (g.players.get(i).username.compareTo(username) == 0 && g.players.get(i).userid.compareTo(clientId) == 0) {
-                                    g.players.remove(i);
-                                    break;
+                        try {
+                            for (Game g : games.values()) {
+                                for (int i = g.players.size() - 1; i >= 0; i--) {
+                                    if (g.players.get(i).username.compareTo(username) == 0 && g.players.get(i).userid.compareTo(clientId) == 0) {
+                                        g.players.remove(i);
+                                        break;
+                                    }
                                 }
+                                // No more players; game finished
+                                if (g.players.size() == 0) {
+                                    finishGame(g.gameid);
+                                } else {
+                                    sendGameMemberUpdate(g.gameid);
+                                }
+                                sendLobbyUpdate();
                             }
-                            // No more players; game finished
-                            if (g.players.size() == 0) {
-                                finishGame(g.gameid);
-                            } else {
-                                sendGameMemberUpdate(g.gameid);
-                            }
-                            sendLobbyUpdate();
+                        } catch (ConcurrentModificationException e) {
+                            e.printStackTrace();
                         }
 
                         // Remove user from lobby
@@ -175,9 +179,9 @@ class Lobby {
                     gameName = data.getString("name");
                     gameId = "game" + (games.size() + 1);
                     Game g = new Game(gameId, gameName);
-                    g.addUser(currentUsers.get(clientId), true);
+                    g.addUser(currentUsers.get(clientId), true); //UNCOMMENT THIS
                     games.put(gameId, g);
-                    lobbyClients.remove(clientId);
+                    lobbyClients.remove(clientId); //UNCOMMENT THIS
                     //Response:    GAME CREATE SUCCESS - { clientId, username, gameId }
                     sendLobbyUpdate();
                     sendJSONMessage("GAME CREATE SUCCESS", "clientId", clientId, "username", currentUsers.get(clientId).getUsername(), "gameId", gameId);
@@ -363,17 +367,24 @@ class Lobby {
             case "GAME DELETE":
                 try {
                     clientId = data.getString("clientId");
-                    username = data.getString("username");
                     gameId = data.getString("gameId");
+                    username = currentUsers.get(clientId).getUsername();
 
                     Game temp = games.get(gameId);
                     if (temp == null) {
                         sendJSONMessage("GAME DELETE FAIL", "clientId", clientId, "errorMessage", "Invalid Game Id");
                         return;
                     } else {
-                        if (temp.owner.userid.compareTo(clientId) == 0) {
-                            if (finishGame(gameId) != 0) {
-                                sendJSONMessage("GAME DELETE SUCCESS", "clientId", clientId);
+                        if (temp.owner.getUsername().compareTo(username) == 0) {
+                            if (finishGame(gameId) == 0) {
+                                JSONObject response = new JSONObject();
+                                clients = new JSONArray();
+                                for (User u : temp.players) {
+                                    clients.put(u.userid);
+                                }
+                                response.put("clients", clients);
+                                sendLobbyUpdate();
+                                server.SendMessage("GAME DELETE SUCCESS", response);
                             } else {
                                 sendJSONMessage("GAME DELETE FAIL", "clientId", clientId, "errorMessage", "Error in Finish Game");
                             }
@@ -382,6 +393,7 @@ class Lobby {
                         }
                     }
                 } catch (JSONException j) {
+                    j.printStackTrace();
                     sendJSONMessage("GAME DELETE FAIL", "clientId", clientId, "errorMessage", "Invalid naming of JSON file");
                 }
                 break;

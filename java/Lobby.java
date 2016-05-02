@@ -53,7 +53,7 @@ class Lobby {
                             } else if (retval == 0) {
                                 finishGame(clientGameID);
                             } else {
-                                sendGameMemberUpdate(clientGameID);
+                                sendGameUpdate(clientGameID);
                             }
                             sendLobbyUpdate();
 
@@ -213,7 +213,7 @@ class Lobby {
                         omember.put(temp.players.get(i).username);
                     }
                     obj.put("membername", omember);
-                    sendGameMemberUpdate(gameId);
+                    sendGameUpdate(gameId);
                     sendLobbyUpdate();
                     System.out.println("GAME JOIN SUCCESS");
                     server.SendMessage("GAME JOIN SUCCESS", obj);
@@ -251,7 +251,7 @@ class Lobby {
                         {
                             finishGame(gameId);
                         } else {
-                            sendGameMemberUpdate(gameId);
+                            sendGameUpdate(gameId);
                         }
                         if (!success) {
                             sendJSONMessage("GAME LEAVE FAIL", "clientId", clientId, "errorMessage", "User not in Game");
@@ -286,7 +286,7 @@ class Lobby {
                         return;
                     }
                     game.start();
-                    sendCardUpdate(gameId);
+                    sendGameUpdate(gameId);
                     clients = new JSONArray();
                     JSONObject scores = new JSONObject();
                     for (int i = 0; i < game.players.size(); i++) {
@@ -337,17 +337,17 @@ class Lobby {
                             sendJSONMessage("GAME SET FAIL", "clientId", clientId, "errorMessage", "Cards are formatted wrong");
                             break;
                         case 0:
-                            sendGameScoreUpdate(gameId);
+                            sendGameUpdate(gameId);
                             sendJSONMessage("GAME SET INVALID", "clientId", clientId, "gameId", gameId);
                             break;
                         case 1:
-                            sendCardUpdate(gameId);
-                            sendGameScoreUpdate(gameId);
+                            sendGameUpdate(gameId);
+                            sendGameUpdate(gameId);
                             sendJSONMessage("GAME SET SUCCESS", "clientId", clientId, "gameId", gameId);
                             break;
                         case 2:
-                            sendCardUpdate(gameId);
-                            sendGameScoreUpdate(gameId);
+                            sendGameUpdate(gameId);
+                            sendGameUpdate(gameId);
                             finishGame(gameId);//sends game finished update
                             sendJSONMessage("GAME SET SUCCESS", "clientId", clientId, "gameId", gameId);
                             break;
@@ -373,6 +373,11 @@ class Lobby {
                     } else {
                         if (temp.owner.getUsername().compareTo(username) == 0) {
                             if (finishGame(gameId) == 0) {
+                                // Make all the players in the game go to the lobby
+                                for (User u : temp.players) {
+                                    lobbyClients.put(u.userid, u);
+                                }
+
                                 JSONObject response = new JSONObject();
                                 clients = new JSONArray();
                                 for (User u : temp.players) {
@@ -400,15 +405,15 @@ class Lobby {
     }
 
     public int finishGame(String gId) {
-        if (sendGameFinishedUpdate(gId) == -1) {
+        Game g = games.get(gId);
+        if (g == null) {
             return -1;
         }
-        Game g = games.get(gId);
-        for (User u : g.players) {
-            //make all the players in the game go to the lobby
-            lobbyClients.put(u.userid, u);
+        sendGameUpdate(gId);
+
+        if (g.players.size() == 0) {
+            games.remove(gId);
         }
-        games.remove(gId);
         return 0;
     }
 
@@ -430,6 +435,47 @@ class Lobby {
         }
         System.out.println(message + response);
         server.SendMessage(message, response);
+    }
+
+    public void sendGameUpdate(String gId) {
+        // Message:     GAME UPDATE - { gameId, clients: [ clientId, ... ], cards: [ card, ... ], feed: [ msg, ... ], started, finished }
+
+        JSONObject response = new JSONObject();
+        response.put("gameId", gId);
+
+        Game game = (Game) games.get(gId);
+        if (game == null) {
+            sendJSONMessage("GAME UPDATE FAIL", "gameId", gId);
+            return;
+        }
+
+        JSONArray clients = new JSONArray();
+        for (int i = 0; i < game.players.size(); ++i) {
+            clients.put(game.players.get(i).userid);
+        }
+        response.put("clients", clients);
+
+        JSONArray cards = new JSONArray();
+        for (int i = 0; i < game.board.size(); ++i) {
+            cards.put(game.board.get(i));
+        }
+        response.put("cards", cards);
+
+        JSONObject scores = new JSONObject();
+        for (int i = 0; i < game.players.size(); i++) {
+            scores.put(game.players.get(i).username, game.players.get(i).score);
+        }
+        response.put("scores", scores);
+
+        JSONArray feed = new JSONArray();
+        // TODO: Add feed items here
+        response.put("feed", feed);
+
+        response.put("started", (game.status != 0));
+        response.put("finished", (game.status == 2));
+
+        System.out.println("GAME UPDATE");
+        server.SendMessage("GAME UPDATE", response);
     }
 
     public void sendCardUpdate(String gID) {
@@ -559,10 +605,7 @@ class Lobby {
         for (int i = 0; i < game.players.size(); i++) {
             clients.put(game.players.get(i).userid);
         }
-//        if (winner == null) {
-//            sendJSONMessage("GAME FINISHED ERROR- WINNER NOT IN GAME", "gameId", gID);
-//            return -1;
-//        }
+
         response.put("winnerClientId", winnerID);
         response.put("winnerUsername", winnerUN);
         response.put("winnerScore", winnerSc);

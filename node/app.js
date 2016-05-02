@@ -129,17 +129,10 @@ var handleJavaData = function( msg ) {
         case 'GAME SET FAIL':
             connectedClients[ data.clientId ].emit( 'GAME SET ACK', false );
             break;
-        case 'GAME CARDS UPDATE':
+        case 'GAME UPDATE':
             for ( var i = 0; i < data.clients.length; ++i ) {
                 connectedClients[ data.clients[i] ].emit( 'GAME UPDATE', data );
             }
-            break;
-        case 'GAME SCORE UPDATE':
-            var obj = { scores: data.scores };
-            for ( var i = 0; i < data.clients.length; ++i ) {
-                connectedClients[ data.clients[i] ].emit( 'GAME UPDATE', data );
-            }
-            break;
             break;
         default:
             console.log( 'Unhandled message: ' + msgObj );

@@ -14,7 +14,7 @@ public class Game {
     int deckSize;
 
     //status of hte game, whether it has started or is just waiting in the lobby
-    //0 means it has not started. 1 means it has started
+    //0 means it has not started, 1 means it has started, 2 means it has finished
     int status;
 
     /**

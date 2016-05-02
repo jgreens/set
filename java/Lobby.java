@@ -1,4 +1,5 @@
 import java.util.*;
+
 import org.json.*;
 
 class Lobby {
@@ -6,18 +7,18 @@ class Lobby {
     HashMap<String, Game> games;//key is game id, list of games each game has a arraylist with all the users in that game
     static SetServer server = null;
     HashMap<String, User> currentUsers;//key is clientId
-    ArrayList<String> waitingClients;//these are the clients not in any game
+    HashMap<String, User> lobbyClients;//these are the clients that are logged in but not in a game; they are also in Map currentUser
 
     public Lobby() {
         games = new HashMap<String, Game>();
         currentUsers = new HashMap<String, User>();
-        waitingClients = new ArrayList<String>();
+        lobbyClients = new HashMap<String, User>();
     }
 
     public void executeCommand(String command, JSONObject data) {
 
         if (server == null) {
-           server = SetServer.getSetServerSingleton();
+            server = SetServer.getSetServerSingleton();
         }
         System.out.println("Executing " + command);
         String username = "invalid";
@@ -30,7 +31,6 @@ class Lobby {
                 try {
                     clientId = data.getString("clientId");
                     currentUsers.put(clientId, null);
-                    waitingClients.add(clientId);
                 } catch (JSONException j) {
                     sendJSONMessage("CLIENT CONNECT ERROR", "clientId", clientId);
                 }
@@ -40,32 +40,26 @@ class Lobby {
                 try {
                     clientId = data.getString("clientId");
                     currentUsers.remove(clientId);
-                    for (int i = 0; i < waitingClients.size(); i++) {
-                        if (waitingClients.get(i).compareTo(clientId) == 0) {
-                            waitingClients.remove(i);
-                            break;
-                        }
-                    }
                 } catch (JSONException j) {
                     sendJSONMessage("CLIENT DISCONNECT ERROR", "clientId", clientId);
                 }
                 break;
             case "USER REGISTER":
                 //create a User with the specified username and password and add into the database.
-            	try{
-            		clientId = data.getString("clientId");
-            		username = data.getString("username");
+                try {
+                    clientId = data.getString("clientId");
+                    username = data.getString("username");
                     String password = data.getString("password");
-                    Database d = new Database();	 
-              	  	String register = d.registerUser(username, password);
-              	  	d.disconnectDB();
-              	  	if (register == username)
-              	  		sendJSONMessage("USER REGISTER SUCCESS", "clientId", clientId, "username", username);
-              	  	else 
-              	  		sendJSONMessage("USER REGISTER FAIL", "clientId", clientId, "errorMessage", register);
-            	} catch (JSONException j){
-            		sendJSONMessage("USER REGISTER FAIL", "clientId", clientId, "errorMessage", "Invalid naming of JSON file");
-            	}
+                    Database d = new Database();
+                    String register = d.registerUser(username, password);
+                    d.disconnectDB();
+                    if (register == username)
+                        sendJSONMessage("USER REGISTER SUCCESS", "clientId", clientId, "username", username);
+                    else
+                        sendJSONMessage("USER REGISTER FAIL", "clientId", clientId, "errorMessage", register);
+                } catch (JSONException j) {
+                    sendJSONMessage("USER REGISTER FAIL", "clientId", clientId, "errorMessage", "Invalid naming of JSON file");
+                }
 
                 break;
             case "USER LOGIN":
@@ -77,22 +71,17 @@ class Lobby {
                     String login = d.loginUser(username, password);
                     d.disconnectDB();
                     //should also first check if the guy exists in the database
-                    if (login!=username) {
-                    	sendJSONMessage("USER LOGIN FAIL", "clientId", clientId, "errorMessage", login);
+                    if (login != username) {
+                        sendJSONMessage("USER LOGIN FAIL", "clientId", clientId, "errorMessage", login);
                         return;
                     }
-                    if (!waitingClients.contains(clientId)) {
+                    if (!currentUsers.containsKey(clientId)) {
                         sendJSONMessage("USER LOGIN FAIL", "clientId", clientId, "errorMessage", "Client was not connected");
                         return;
                     }
                     User newU = new User(username, clientId);
                     currentUsers.put(clientId, newU);
-                    for (int i = 0; i < waitingClients.size(); i++) {//take user out of the waiting clients list
-                        if (waitingClients.get(i).compareTo(clientId) == 0) {
-                            waitingClients.remove(i);
-                            break;
-                        }
-                    }
+                    lobbyClients.put(clientId, newU);
                     sendLobbyUpdate();
                     sendJSONMessage("USER LOGIN SUCCESS", "clientId", clientId, "username", username);
                 } catch (JSONException j) {
@@ -108,10 +97,10 @@ class Lobby {
                     if (u == null) {
                         sendJSONMessage("USER LOGOUT FAIL", "clientId", clientId, "errorMessage", "User not currently logged in");
                     } else {
-                        // Remove user from currentUsers
-                        currentUsers.remove(clientId);
+                        // Remove user from currentUsers by making user associated with clientId null
+                        currentUsers.put(clientId, null);
+                        lobbyClients.remove(clientId);
                         // Add client to waiting clients list
-                        waitingClients.add(clientId);
                         sendJSONMessage("USER LOGOUT SUCCESS", "clientId", clientId);
                     }
                 } catch (JSONException j) {
@@ -148,7 +137,7 @@ class Lobby {
                 }
                 reply.put("clients", clients);
                 reply.put("games", gamesArray);
-                System.out.println("LOBBY LIST SUCCESS");
+                System.out.println("LOBBY LIST SUCCESS" + reply);
                 server.SendMessage("LOBBY LIST SUCCESS", reply);
                 break;
             case "GAME CREATE":
@@ -158,7 +147,9 @@ class Lobby {
                     gameName = data.getString("name");
                     gameId = "game" + (games.size() + 1);
                     Game g = new Game(gameId, gameName);
+                    g.addUser(currentUsers.get(clientId), true);
                     games.put(gameId, g);
+                    lobbyClients.remove(clientId);
                     //Response:    GAME CREATE SUCCESS - { clientId, username, gameId }
                     sendLobbyUpdate();
                     sendJSONMessage("GAME CREATE SUCCESS", "clientId", clientId, "username", currentUsers.get(clientId).getUsername(), "gameId", gameId);
@@ -184,6 +175,8 @@ class Lobby {
                         return;
                     }
                     temp.addUser(newU, false);
+                    lobbyClients.remove(clientId);
+
                     JSONObject obj = new JSONObject();
                     obj.put("clientId", clientId);
                     obj.put("username", newU.getUsername());
@@ -193,6 +186,7 @@ class Lobby {
                     }
                     obj.put("membername", omember);
                     sendGameMemberUpdate(gameId);
+                    sendLobbyUpdate();
                     System.out.println("GAME JOIN SUCCESS");
                     server.SendMessage("GAME JOIN SUCCESS", obj);
 
@@ -218,26 +212,25 @@ class Lobby {
                     } else {
                         Boolean success = false;
                         int max = 0;
-                        String winnerid = "invalid";
-                        for (int i = game1.players.size() - 1; i >= 0; i--) {
-                            if (game1.players.get(i).score > max) {
-                                max = game1.players.get(i).score;
-                                winnerid = game1.players.get(i).userid;
-                            }
+                        for (int i = game1.players.size() - 1; i >= 0; i--) {//removes client from game
                             if (game1.players.get(i).username.compareTo(username) == 0 && game1.players.get(i).userid.compareTo(clientId) == 0) {
                                 game1.players.remove(i);
                                 success = true;
+                                break;
                             }
                         }
                         if (game1.players.size() == 0)//no more players so game finished
                         {
-                            sendGameFinishedUpdate(gameId, winnerid);
+                            finishGame(gameId);
+                        } else {
+                            sendGameMemberUpdate(gameId);
                         }
                         if (!success) {
                             sendJSONMessage("GAME LEAVE FAIL", "clientId", clientId, "errorMessage", "User not in Game");
                             return;
                         } else {
-                            sendGameMemberUpdate(gameId);
+                            lobbyClients.put(clientId, currentUsers.get(clientId));
+                            sendLobbyUpdate();
                             sendJSONMessage("GAME LEAVE SUCCESS", "clientId", clientId, "username", username);
                         }
                     }
@@ -313,7 +306,7 @@ class Lobby {
                             sendJSONMessage("GAME SET FAIL", "setClientId", clientId, "errorMessage", "Cards are not on the board");
                             break;
                         case -1:
-                            sendJSONMessage("GAME SET FAIL", "setClientId", clientId, "errorMessage", "Cards are formated wrong");
+                            sendJSONMessage("GAME SET FAIL", "setClientId", clientId, "errorMessage", "Cards are formatted wrong");
                             break;
                         case 0:
                             sendGameScoreUpdate(gameId);
@@ -327,8 +320,7 @@ class Lobby {
                         case 2:
                             sendCardUpdate(gameId);
                             sendGameScoreUpdate(gameId);
-                            User winner = game.getWinner();
-                            sendGameFinishedUpdate(gameId, winner.userid);
+                            finishGame(gameId);//sends game finished update
                             sendJSONMessage("GAME SET SUCCESS", "setClientId", clientId, "setGameId", gameId);
                             break;
                         default://nothing
@@ -352,8 +344,11 @@ class Lobby {
                         return;
                     } else {
                         if (temp.owner.userid.compareTo(clientId) == 0) {
-                            games.remove(gameId);
-                            sendJSONMessage("GAME DELETE SUCCESS", "clientId", clientId);
+                            if (finishGame(gameId) != 0) {
+                                sendJSONMessage("GAME DELETE SUCCESS", "clientId", clientId);
+                            } else {
+                                sendJSONMessage("GAME DELETE FAIL", "clientId", clientId, "errorMessage", "Error in Finish Game");
+                            }
                         } else {
                             sendJSONMessage("GAME DELETE FAIL", "clientId", clientId, "errorMessage", "User lack permission to delete");
                         }
@@ -366,7 +361,19 @@ class Lobby {
                 // Handle invalid command type here
                 break;
         }
+    }
 
+    public int finishGame(String gId) {
+        if (sendGameFinishedUpdate(gId) == -1) {
+            return -1;
+        }
+        Game g = games.get(gId);
+        for (User u : g.players) {
+            //make all the players in the game go to the lobby
+            lobbyClients.put(u.userid, u);
+        }
+        games.remove(gId);
+        return 0;
     }
 
     private static JSONObject getJSONObject(ArrayList<String> args) {
@@ -385,7 +392,7 @@ class Lobby {
         for (int i = 0; i < args.length - 1; i += 2) {
             response.put(args[i], args[i + 1]);
         }
-        System.out.println(message);
+        System.out.println(message + response);
         server.SendMessage(message, response);
     }
 
@@ -412,18 +419,36 @@ class Lobby {
             cards.put(game.board.get(i));
         }
         response.put("cards", cards);
-        System.out.println("GAME CARDS UPDATE");
+        System.out.println("GAME CARDS UPDATE" + response);
         server.SendMessage("GAME CARDS UPDATE", response);
     }
 
     public void sendLobbyUpdate() {
-        //Message:    LOBBY UPDATE - { [ clientId, ... ], [ { gameId, name, members,started }, ... ] } (this should only go to clients that are not in any game)
+        //Message:    LOBBY UPDATE - { [ clientId, ... ], games:[ { gameId, name, [members],started }, ... ] } (this should only go to clients that are not in any game)
         JSONObject response = new JSONObject();
-        for (Object val : currentUsers.values()) {
-
-
+        JSONArray clients = new JSONArray();
+        for (String c : lobbyClients.keySet()) {
+            clients.put(c);
         }
-
+        response.put("clientId", clients);
+        JSONArray gamearr = new JSONArray();
+        for (Game g : games.values()) {
+            JSONObject game = new JSONObject();
+            game.put("gameId", g.gameid);
+            game.put("name", g.name);
+            JSONArray members = new JSONArray();
+            for (User mem : g.players) {
+                members.put(mem.username);
+            }
+            game.put("members", members);
+            if (g.status == 1)
+                game.put("started", "yes");
+            else if (g.status == 1)
+                game.put("started", "yes");
+            gamearr.put(game);
+        }
+        response.put("games", gamearr);
+        System.out.println("LOBBY UPDATE" + response.toString());
         server.SendMessage("LOBBY UPDATE", response);
     }
 
@@ -448,7 +473,7 @@ class Lobby {
         }
         response.put("clients", clients);
 
-        System.out.println("GAME SCORE UPDATE");
+        System.out.println("GAME SCORE UPDATE" + response);
         server.SendMessage("GAME SCORE UPDATE", response);
     }
 
@@ -472,11 +497,11 @@ class Lobby {
         }
         response.put("clients", clients);
 
-        System.out.println("GAME MEMBERS UPDATE");
+        System.out.println("GAME MEMBERS UPDATE" + response);
         server.SendMessage("GAME MEMBERS UPDATE", response);
     }
 
-    public void sendGameFinishedUpdate(String gID, String winnerID) {
+    public int sendGameFinishedUpdate(String gID) {
         //Message:    GAME FINISHED - { gameId, [ clientId, ... ], winnerClientId, winnerUsername, winnerScore }
         JSONObject response = new JSONObject();
         response.put("gameId", gID);
@@ -484,24 +509,33 @@ class Lobby {
         Game game = (Game) games.get(gID);
         if (game == null) {
             sendJSONMessage("GAME FINISHED UPDATE ERROR", "gameId", gID);
-            return;
+            return -1;
         }
-
+        User winner = game.getWinner();
+        String winnerID = "";
+        String winnerUN = "";
+        int winnerSc = 0;
+        if (winner != null) {
+            winnerID = winner.userid;
+            winnerSc = winner.score;
+            winnerUN = winner.username;
+        }
         JSONArray clients = new JSONArray();
         for (int i = 0; i < game.players.size(); i++) {
             clients.put(game.players.get(i).userid);
         }
-        User winner = currentUsers.get(winnerID);
-        if (winner == null) {
-            sendJSONMessage("GAME FINISHED ERROR- WINNER NOT IN GAME", "gameId", gID);
-            return;
-        }
+//        if (winner == null) {
+//            sendJSONMessage("GAME FINISHED ERROR- WINNER NOT IN GAME", "gameId", gID);
+//            return -1;
+//        }
         response.put("winnerClientId", winnerID);
-        response.put("winnerUsername", winner.username);
-        response.put("winnerScore", winner.score);
+        response.put("winnerUsername", winnerUN);
+        response.put("winnerScore", winnerSc);
         response.put("clientId", clients);
 
-        System.out.println("GAME FINISHED");
+        System.out.println("GAME FINISHED" + response);
         server.SendMessage("GAME FINISHED", response);
+        return 0;
     }
+
 }

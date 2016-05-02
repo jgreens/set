@@ -44,21 +44,6 @@ public class Game {
         drawThree();
         drawThree();
         drawThree();
-//        for (int i = 0; i < 3; i++) {
-//            for (int k = 0; k < 3; k++) {
-//                Card temp = new Card(i, i, k, i);
-//                Card temp2 = null;
-//                if (k != i) {
-//                    temp2 = new Card(i, i, i, k);
-//                    board.add(temp2);
-//                    deck.put(temp2, 1);
-//
-//                }
-//                deck.put(temp, 1);
-//                board.add(temp);
-//                System.out.println(temp.toString() + " " + temp2);
-//            }
-//        }
     }
 
     void start() {

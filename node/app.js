@@ -78,9 +78,9 @@ var handleJavaData = function( msg ) {
             }
             break;;
         case 'LOBBY UPDATE':
-            /*for ( var i = 0; i < data.clients.length; ++i ) {
+            for ( var i = 0; i < data.clients.length; ++i ) {
                 connectedClients[ data.clients[i] ].emit( 'LOBBY UPDATE', data.games );
-            }*/
+            }
         case 'GAME CREATE SUCCESS':
             var obj = createMessage( 'LOBBY LIST', {} );
             client.write( JSON.stringify( obj ) + '\n' );

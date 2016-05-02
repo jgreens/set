@@ -142,7 +142,7 @@ class Lobby {
                 JSONArray clients = new JSONArray();
                 JSONArray gamesArray = new JSONArray();
 
-                for (String user : currentUsers.keySet()) {
+                for (String user : lobbyClients.keySet()) {
                     clients.put(user);
                 }
                 for (Game g : games.values()) {
@@ -175,9 +175,7 @@ class Lobby {
                     gameName = data.getString("name");
                     gameId = "game" + (games.size() + 1);
                     Game g = new Game(gameId, gameName);
-                    g.addUser(currentUsers.get(clientId), true);
                     games.put(gameId, g);
-                    lobbyClients.remove(clientId);
                     //Response:    GAME CREATE SUCCESS - { clientId, username, gameId }
                     sendLobbyUpdate();
                     sendJSONMessage("GAME CREATE SUCCESS", "clientId", clientId, "username", currentUsers.get(clientId).getUsername(), "gameId", gameId);
@@ -458,7 +456,7 @@ class Lobby {
         for (String c : lobbyClients.keySet()) {
             clients.put(c);
         }
-        response.put("clientId", clients);
+        response.put("clients", clients);
         JSONArray gamearr = new JSONArray();
         for (Game g : games.values()) {
             JSONObject game = new JSONObject();

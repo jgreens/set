@@ -32,7 +32,10 @@ define(
             // Receives game updates
             var self = this;
             Socket.startGame( { id: this.props.id }, function( data ) {
-                console.log( 'GAME UPDATE' );
+                var prevCards = self.state.cards;
+                if( prevCards != data.cards )
+                    data.selected = {};
+
                 self.setState( data );
             });
         },

@@ -116,15 +116,16 @@ public class Game {
                     players.get(i).score += 1;
                 }
             }
-            if (drawThree() == false) {
-                return 2;
-            }
-            while(hasSet() == false)//keep drawing till there is atleast one set on the board
+
+            if(boardSize > 12 && hasSet())//if the game board is large and there is a set don't draw
             {
-                if(drawThree() == false)
-                {
-                    return 2;
-                }
+                return 1;
+            }else{
+                do{
+                    if (drawThree() == false) {
+                        return 2;//game has finished
+                    }
+                }while(!hasSet());
             }
             return 1;
         }

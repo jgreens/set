@@ -40,10 +40,6 @@ public class Game {
         boardSize = 0;
         deckSize = 81;
         status = 0;
-        drawThree();
-        drawThree();
-        drawThree();
-        drawThree();
     }
 
     void start() {
@@ -51,6 +47,10 @@ public class Game {
         for (User u : players) {
             u.score = 0;
         }
+        drawThree();
+        drawThree();
+        drawThree();
+        drawThree();
         while(!hasSet())
         {
             drawThree();
@@ -204,7 +204,6 @@ public class Game {
      * @return Boolean-Returns true if there is a set on the board, false otherwise
      */
     public Boolean hasSet() {
-        //System.out.println("Checking for set");
         for (int i = 0; i < boardSize - 1; i++) {
             for (int j = i + 1; j < boardSize; j++) {
                 Card c1 = board.get(i);
@@ -216,6 +215,7 @@ public class Game {
                     c2.print();
                     Card c3 = nextCard(c1, c2);
                     c3.print();
+                    System.out.println();
                     return true;
                 }
             }

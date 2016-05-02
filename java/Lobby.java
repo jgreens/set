@@ -160,6 +160,9 @@ class Lobby {
                         playersArray.put(userObj);
                     }
                     gameStuff.put("members", playersArray);
+                    gameStuff.put("owner", g.owner.userid);
+                    gameStuff.put("started", (g.status != 0));
+                    gameStuff.put("finished", (g.status == 2));
 
                     gamesArray.put(gameStuff);
                 }
@@ -398,6 +401,10 @@ class Lobby {
                     sendJSONMessage("GAME DELETE FAIL", "clientId", clientId, "errorMessage", "Invalid naming of JSON file");
                 }
                 break;
+            case "GAME UPDATE SUBSCRIBE":
+                gameId = data.getString("gameId");
+                sendGameUpdate(gameId);
+                break;
             default:
                 // Handle invalid command type here
                 break;
@@ -471,6 +478,8 @@ class Lobby {
         // TODO: Add feed items here
         response.put("feed", feed);
 
+        response.put("owner", game.owner.userid);
+
         response.put("started", (game.status != 0));
         response.put("finished", (game.status == 2));
 
@@ -523,10 +532,9 @@ class Lobby {
                 members.put(mem.username);
             }
             game.put("members", members);
-            if (g.status == 1)
-                game.put("started", "yes");
-            else if (g.status == 1)
-                game.put("started", "yes");
+            game.put("owner", g.owner.userid);
+            game.put("started", (g.status != 0));
+            game.put("finished", (g.status == 2));
             gamearr.put(game);
         }
         response.put("games", gamearr);

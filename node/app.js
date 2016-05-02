@@ -205,6 +205,13 @@ io.on( 'connection', function( socket ) {
         client.write( JSON.stringify( obj ) + '\n' );
     });
 
+    socket.on( 'GAME UPDATE SUBSCRIBE', function(data) {
+        var obj = createMessage( 'GAME UPDATE SUBSCRIBE', {
+            gameId: data.id
+        });
+        client.write( JSON.stringify( obj ) + '\n' );
+    });
+
     socket.on( 'GAME DELETE', function(data) {
         var obj = createMessage( 'GAME DELETE', {
             clientId: socket.id,

@@ -39,6 +39,34 @@ class Lobby {
                 // Remove client with specified id due to disconnect
                 try {
                     clientId = data.getString("clientId");
+
+                    // If the client is logged in, clean up any leftovers
+                    if (currentUsers.get(clientId) != null) {
+                        username = currentUsers.get(clientId).getUsername();
+
+                        // Remove user from any active games
+                        for (Game g : games.values()) {
+                            for (int i = g.players.size() - 1; i >= 0; i--) {
+                                if (g.players.get(i).username.compareTo(username) == 0 && g.players.get(i).userid.compareTo(clientId) == 0) {
+                                    g.players.remove(i);
+                                    break;
+                                }
+                            }
+                            // No more players; game finished
+                            if (g.players.size() == 0) {
+                                finishGame(g.gameid);
+                            } else {
+                                sendGameMemberUpdate(g.gameid);
+                            }
+                            sendLobbyUpdate();
+                        }
+
+                        // Remove user from lobby
+                        if (lobbyClients.get(clientId) != null) {
+                            lobbyClients.remove(clientId);
+                        }
+                    }
+
                     currentUsers.remove(clientId);
                 } catch (JSONException j) {
                     sendJSONMessage("CLIENT DISCONNECT ERROR", "clientId", clientId);

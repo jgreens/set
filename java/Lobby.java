@@ -504,14 +504,13 @@ class Lobby {
         }
 
         JSONArray clients = new JSONArray();
+        JSONObject scores = new JSONObject();
         for (int i = 0; i < game.players.size(); i++) {
-            JSONObject c = new JSONObject();
-            c.put("clientId", game.players.get(i).userid);
-            c.put("username", game.players.get(i).username);
-            c.put("score", game.players.get(i).score);
-            clients.put(c);
+            clients.put(game.players.get(i).userid);
+            scores.put(game.players.get(i).username, game.players.get(i).score);
         }
         response.put("clients", clients);
+        response.put("scores", scores);
 
         System.out.println("GAME SCORE UPDATE" + response);
         server.SendMessage("GAME SCORE UPDATE", response);

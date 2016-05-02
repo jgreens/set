@@ -133,6 +133,13 @@ var handleJavaData = function( msg ) {
                 connectedClients[ data.clients[i] ].emit( 'GAME UPDATE', data );
             }
             break;
+        case 'GAME SCORE UPDATE':
+            var obj = { scores: data.scores };
+            for ( var i = 0; i < data.clients.length; ++i ) {
+                connectedClients[ data.clients[i] ].emit( 'GAME UPDATE', data );
+            }
+            break;
+            break;
         default:
             console.log( 'Unhandled message: ' + msgObj );
             break;

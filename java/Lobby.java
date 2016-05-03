@@ -46,16 +46,18 @@ class Lobby {
                         // Remove user from any active games
                         try {
                             String clientGameID = currentUsers.get(clientId).gameId;
-                            int retval = games.get(clientGameID).removeUser(currentUsers.get(clientId));//removes user from the game they are a part of
-                            // If No more players; game finished
-                            if (retval == -1) {
-                                sendJSONMessage("CLIENT DISCONNECT ERROR", "clientId", clientId);
-                            } else if (retval == 0) {
-                                finishGame(clientGameID);
-                            } else {
-                                sendGameUpdate(clientGameID);
+                            if (clientGameID != null) {
+                                int retval = games.get(clientGameID).removeUser(currentUsers.get(clientId));//removes user from the game they are a part of
+                                // If no more players; game finished
+                                if (retval == -1) {
+                                    sendJSONMessage("CLIENT DISCONNECT ERROR", "clientId", clientId);
+                                } else if (retval == 0) {
+                                    finishGame(clientGameID);
+                                } else {
+                                    sendGameUpdate(clientGameID);
+                                }
+                                sendLobbyUpdate();
                             }
-                            sendLobbyUpdate();
 
                         } catch (ConcurrentModificationException e) {
                             e.printStackTrace();

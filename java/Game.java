@@ -321,4 +321,8 @@ public class Game {
         }
         return winner;
     }
+
+    public void addFeedMessage(String username, String msgType, String data) {
+        feed.add(new FeedMessage(username, msgType, data));
+    }
 }

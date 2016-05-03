@@ -311,10 +311,12 @@ class Lobby {
                             sendJSONMessage("GAME SET FAIL", "clientId", clientId, "errorMessage", "Cards are formatted wrong");
                             break;
                         case 0:
+                            game.addFeedMessage(currentUsers.get(clientId).username, "setInvalid", "Invalid set (-1)!");
                             sendGameUpdate(gameId);
                             sendJSONMessage("GAME SET INVALID", "clientId", clientId, "gameId", gameId);
                             break;
                         case 1:
+                            game.addFeedMessage(currentUsers.get(clientId).username, "setSuccess", "Successful set (+1)!");
                             sendGameUpdate(gameId);
                             sendJSONMessage("GAME SET SUCCESS", "clientId", clientId, "gameId", gameId);
                             break;
@@ -387,7 +389,7 @@ class Lobby {
 
                     Game g = games.get(gameId);
                     if (g != null) {
-                        g.feed.add(new FeedMessage(username, msgType, d));
+                        g.addFeedMessage(username, msgType, d);
                         sendGameUpdate(gameId);
                     } else {
                         System.err.println("Couldn't update feed of nonexistent game");

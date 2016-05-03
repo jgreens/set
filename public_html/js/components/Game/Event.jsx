@@ -31,10 +31,10 @@ define(
                     content = 'The game has ended';
                     break;
                 case 'set':
-                    content = obj.username + ' has scored a set';
+                    content = obj.username + ' has scored a set (+1)';
                     break;
                 case 'fail':
-                    content = obj.username + ' has submitted an invalid set';
+                    content = obj.username + ' has submitted an invalid set (-1)';
                     break;
                 default:
                     break;

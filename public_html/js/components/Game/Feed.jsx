@@ -20,6 +20,10 @@ define(
                 chat: ''
             };
         },
+        componentDidUpdate: function() {
+            var scrollBox = document.getElementsByClassName( 'Feed' )[0].children[0];
+            scrollBox.scrollTop = scrollBox.scrollHeight; 
+        },
         _enterCall: function( e ) { 
             // Call click on enter
             if( e.keyCode == 13 )

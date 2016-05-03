@@ -30,6 +30,10 @@ define(
                 this._submitChat();
         },
         _submitChat: function() {
+            // Don't send if empty
+            if( this.state.chat == '' )
+                return false;
+
             Socket.sendChat({ message: this.state.chat, user: this.props.user.name, id: this.props.id, type: 'chat' });
             this.setState({ chat: '' });
         },

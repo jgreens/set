@@ -186,8 +186,11 @@ class Lobby {
                         omember.put(temp.players.get(i).username);
                     }
                     obj.put("membername", omember);
+
+                    temp.addFeedMessage(currentUsers.get(clientId).username, "join", "A user has joined");
                     sendGameUpdate(gameId);
                     sendLobbyUpdate();
+
                     System.out.println("GAME JOIN SUCCESS");
                     server.SendMessage("GAME JOIN SUCCESS", obj);
 
@@ -224,6 +227,7 @@ class Lobby {
                         {
                             finishGame(gameId);
                         } else {
+                            game1.addFeedMessage(currentUsers.get(clientId).username, "leave", "A user has left");
                             sendGameUpdate(gameId);
                         }
                         if (!success) {
@@ -249,28 +253,22 @@ class Lobby {
                     clientId = data.getString("clientId");
                     gameId = data.getString("gameId");
 
-                    JSONObject response = new JSONObject();
-                    response.put("gameId", gameId);
-
                     Game game = (Game) games.get(gameId);
                     if (game == null) {
                         sendJSONMessage("GAME START FAIL", "clientId", clientId, "errorMessage", "Invalid Game Id");
                         return;
                     }
                     game.start();
+
+                    game.addFeedMessage(currentUsers.get(clientId).username, "start", "Game started");
                     sendGameUpdate(gameId);
 
-                    JSONArray clients = new JSONArray();
-                    JSONObject scores = new JSONObject();
-                    for (int i = 0; i < game.players.size(); i++) {
-                        clients.put(game.players.get(i).userid);
-                        username = game.players.get(i).username;
-                        scores.put(username, game.playerScores.get(username));
-                    }
-                    response.put("clients", clients);
-                    response.put("scores", scores);
-                    response.put("feed", new JSONObject()); // Temporary
+                    JSONObject response = new JSONObject();
+
                     sendLobbyUpdate();
+
+                    response.put("clientId", clientId);
+
                     System.out.println("GAME START SUCCESS");
                     server.SendMessage("GAME START SUCCESS", response);
 

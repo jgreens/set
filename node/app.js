@@ -107,10 +107,7 @@ var handleJavaData = function( msg ) {
             connectedClients[ data.clientId ].emit( 'GAME LEAVE ACK', false );
             break;
         case 'GAME START SUCCESS':
-            var obj = { scores: data.scores, feed: data.feed };
-            for ( var i = 0; i < data.clients.length; ++i ) {
-                connectedClients[ data.clients[i] ].emit( 'GAME START ACK', obj );
-            }
+            connectedClients[ data.clientId ].emit( 'GAME START ACK', true );
             break;
         case 'GAME SET SUCCESS':
             connectedClients[ data.clientId ].emit( 'GAME SET ACK', true );

@@ -50,10 +50,11 @@ define(
 
                     Socket.login( self.state, function( data ) { // TODO: Get userId from callback and update state
                         self.setState({ 'segmentClass': 'ui segment' }); // Remove loader
-                        if( data ) // Successfully created account
+
+                        if( data.success ) // Successfully created account
                             self._goToLobby();
                         else // Failure
-                            form.form( 'add errors', [ 'The username/password combination provided is not valid.' ] );
+                            form.form( 'add errors', [ data.message ] );
                     });
                 }
             }).submit( function( e ) {

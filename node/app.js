@@ -86,9 +86,10 @@ var handleJavaData = function( msg ) {
             connectedClients[ data.clientId ].emit( 'USER LOGOUT ACK', false );
             break;
         case 'LOBBY UPDATE':
+            var obj = { users: data.lobbyUsers, games: data.games };
             for ( var i = 0; i < data.clients.length; ++i ) {
                 if ( connectedClients[ data.clients[i] ] ) {
-                    connectedClients[ data.clients[i] ].emit( 'LOBBY UPDATE', data.games );
+                    connectedClients[ data.clients[i] ].emit( 'LOBBY UPDATE', obj );
                 }
             }
             break;

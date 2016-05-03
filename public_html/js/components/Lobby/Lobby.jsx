@@ -23,7 +23,7 @@ define(
         componentWillMount: function() {
             var self = this;
             Socket.startLobby( function( data ) {
-                self.setState({ 'games': data });
+                self.setState({ 'users': data.users, 'games': data.games });
             });
         },
         componentWillUnmount: function() {

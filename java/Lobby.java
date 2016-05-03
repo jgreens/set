@@ -138,6 +138,7 @@ class Lobby {
                         // Remove user from currentUsers by making user associated with clientId null
                         currentUsers.put(clientId, null);
                         lobbyClients.remove(clientId);
+                        sendLobbyUpdate();
                         // Add client to waiting clients list
                         sendJSONMessage("USER LOGOUT SUCCESS", "clientId", clientId);
                     }
@@ -499,11 +500,19 @@ class Lobby {
     public void sendLobbyUpdate() {
         //Message:    LOBBY UPDATE - { [ clientId, ... ], games:[ { gameId, name, [members],started }, ... ] } (this should only go to clients that are not in any game)
         JSONObject response = new JSONObject();
+
         JSONArray clients = new JSONArray();
         for (String c : lobbyClients.keySet()) {
             clients.put(c);
         }
         response.put("clients", clients);
+
+        JSONArray lobbyUsers = new JSONArray();
+        for (User u : lobbyClients.values()) {
+            lobbyUsers.put(u.username);
+        }
+        response.put("lobbyUsers", lobbyUsers);
+
         JSONArray gamearr = new JSONArray();
         for (Game g : games.values()) {
             JSONObject game = new JSONObject();
@@ -520,6 +529,7 @@ class Lobby {
             gamearr.put(game);
         }
         response.put("games", gamearr);
+
         System.out.println("LOBBY UPDATE" + response.toString());
         server.SendMessage("LOBBY UPDATE", response);
     }

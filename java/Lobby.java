@@ -139,39 +139,7 @@ class Lobby {
                 }
                 break;
             case "LOBBY LIST":
-                //list all the current users in JSON
-                JSONObject reply = new JSONObject();
-                JSONArray clients = new JSONArray();
-                JSONArray gamesArray = new JSONArray();
-
-                for (String user : lobbyClients.keySet()) {
-                    clients.put(user);
-                }
-                for (Game g : games.values()) {
-                    JSONObject gameStuff = new JSONObject();
-
-                    gameStuff.put("gameId", g.gameid);
-                    gameStuff.put("name", g.name);
-
-                    JSONArray playersArray = new JSONArray();
-                    for (int i = 0; i < g.players.size(); i++) {
-                        JSONObject userObj = new JSONObject();
-                        String cId = g.players.get(i).userid;
-                        userObj.put("clientId", cId);
-                        userObj.put("username", currentUsers.get(cId).getUsername());
-                        playersArray.put(userObj);
-                    }
-                    gameStuff.put("members", playersArray);
-                    gameStuff.put("owner", g.owner.userid);
-                    gameStuff.put("started", (g.status != 0));
-                    gameStuff.put("finished", (g.status == 2));
-
-                    gamesArray.put(gameStuff);
-                }
-                reply.put("clients", clients);
-                reply.put("games", gamesArray);
-                System.out.println("LOBBY LIST SUCCESS" + reply);
-                server.SendMessage("LOBBY LIST SUCCESS", reply);
+                sendLobbyUpdate();
                 break;
             case "GAME CREATE":
                 //Request:    GAME CREATE - { clientId, name }
@@ -271,7 +239,6 @@ class Lobby {
                     sendJSONMessage("GAME LEAVE FAIL", "clientId", clientId, "errorMessage", "Invalid naming of JSON file");
                 }
                 break;
-
             case "GAME START":
                 //start a game
                 //Request:    GAME START - { clientId, gameId }
@@ -292,7 +259,8 @@ class Lobby {
                     }
                     game.start();
                     sendGameUpdate(gameId);
-                    clients = new JSONArray();
+
+                    JSONArray clients = new JSONArray();
                     JSONObject scores = new JSONObject();
                     for (int i = 0; i < game.players.size(); i++) {
                         clients.put(game.players.get(i).userid);
@@ -382,7 +350,7 @@ class Lobby {
                                 }
 
                                 JSONObject response = new JSONObject();
-                                clients = new JSONArray();
+                                JSONArray clients = new JSONArray();
                                 for (User u : temp.players) {
                                     clients.put(u.userid);
                                 }

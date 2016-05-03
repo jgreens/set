@@ -73,11 +73,6 @@ var handleJavaData = function( msg ) {
         case 'USER LOGOUT FAIL':
             connectedClients[ data.clientId ].emit( 'USER LOGOUT ACK', false );
             break;
-        case 'LOBBY LIST SUCCESS':
-            for ( var i = 0; i < data.clients.length; ++i ) {
-                connectedClients[ data.clients[i] ].emit( 'LOBBY UPDATE', data.games );
-            }
-            break;;
         case 'LOBBY UPDATE':
             for ( var i = 0; i < data.clients.length; ++i ) {
                 if ( connectedClients[ data.clients[i] ] ) {
@@ -88,9 +83,6 @@ var handleJavaData = function( msg ) {
         case 'GAME CREATE SUCCESS':
             var obj = { id: data.gameId };
             connectedClients[ data.clientId ].emit( 'GAME CREATE ACK', obj );
-
-            var obj = createMessage( 'LOBBY LIST', {} );
-            client.write( JSON.stringify( obj ) + '\n' );
             break;
         case 'GAME JOIN SUCCESS':
             connectedClients[ data.clientId ].emit( 'GAME JOIN ACK', true );

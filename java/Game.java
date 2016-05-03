@@ -5,6 +5,7 @@ public class Game {
 
     ArrayList<User> players;
     HashMap<String, Integer> playerScores;
+    ArrayList<FeedMessage> feed;
     User owner;
     String gameid, name;
     Queue<String> commandQ;
@@ -39,6 +40,7 @@ public class Game {
         board = new ArrayList<Card>();
         players = new ArrayList<User>();
         playerScores = new HashMap<String, Integer>();
+        feed = new ArrayList<FeedMessage>();
         boardSize = 0;
         deckSize = 81;
         status = 0;

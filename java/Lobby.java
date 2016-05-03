@@ -371,9 +371,30 @@ class Lobby {
                 }
                 break;
             case "GAME UPDATE SUBSCRIBE":
-                gameId = data.getString("gameId");
-                sendGameUpdate(gameId);
+                try {
+                    gameId = data.getString("gameId");
+                    sendGameUpdate(gameId);
+                } catch (JSONException j) {
+                    j.printStackTrace();
+                }
                 break;
+            case "GAME FEED MESSAGE":
+                try {
+                    gameId = data.getString("gameId");
+                    username = data.getString("username");
+                    String msgType = data.getString("msgType");
+                    String d = data.getString("data");
+
+                    Game g = games.get(gameId);
+                    if (g != null) {
+                        g.feed.add(new FeedMessage(username, msgType, d));
+                        sendGameUpdate(gameId);
+                    } else {
+                        System.err.println("Couldn't update feed of nonexistent game");
+                    }
+                } catch (JSONException j) {
+                    j.printStackTrace();
+                }
             default:
                 // Handle invalid command type here
                 break;
@@ -444,7 +465,14 @@ class Lobby {
         response.put("scores", scores);
 
         JSONArray feed = new JSONArray();
-        // TODO: Add feed items here
+        for (int i = 0; i < game.feed.size(); ++i) {
+            JSONObject obj = new JSONObject();
+            FeedMessage msg = game.feed.get(i);
+            obj.put("username", msg.username);
+            obj.put("msgType", msg.msgType);
+            obj.put("data", msg.data);
+            feed.put(obj);
+        }
         response.put("feed", feed);
 
         response.put("owner", game.owner.username);

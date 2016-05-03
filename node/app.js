@@ -218,30 +218,6 @@ io.on( 'connection', function( socket ) {
             gameId: data.id
         });
         client.write( JSON.stringify( obj ) + '\n' );
-
-        /*var game = {
-            scores: {
-                jonny: 4,
-                akshay: 2,
-                jason: -11,
-                calvin: 1
-            },
-            feed: [
-                { type: 'join', user: 'jonny' },
-                { type: 'join', user: 'jason' },
-                { type: 'join', user: 'calvin' },
-                { type: 'chat', user: 'jonny', message: 'greetings' },
-                { type: 'join', user: 'akshay' },
-                { type: 'chat', user: 'akshay', message: 'hi' },
-                { type: 'start' },
-                { type: 'set', user: 'jonny' },
-                { type: 'set', user: 'jonny' },
-                { type: 'set', user: 'calvin' },
-                { type: 'fail', user: 'jason' },
-                { type: 'set', user: 'calvin' },
-                { type: 'end' }
-            ]
-        };*/
     });
 
     socket.on( 'GAME LEAVE', function(data) {
@@ -257,6 +233,16 @@ io.on( 'connection', function( socket ) {
             clientId: socket.id,
             gameId: data.id,
             cards: data.set
+        });
+        client.write( JSON.stringify( obj ) + '\n' );
+    });
+
+    socket.on( 'GAME FEED', function(data) {
+        var obj = createMessage( 'GAME FEED MESSAGE', {
+            gameId: data.id,
+            username: data.user,
+            msgType: data.type,
+            data: data.message
         });
         client.write( JSON.stringify( obj ) + '\n' );
     });

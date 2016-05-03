@@ -47,13 +47,13 @@ public class Game {
         for (User u : players) {
             u.score = 0;
         }
-        drawThree();
-        drawThree();
-        drawThree();
-        drawThree();
+        drawThree(0,0,0);
+        drawThree(0,0,0);
+        drawThree(0,0,0);
+        drawThree(0,0,0);
         while(!hasSet())
         {
-            drawThree();
+            drawThree(0,0,0);
         }
     }
 
@@ -102,12 +102,14 @@ public class Game {
         if (deck.get(card1) != 1 || deck.get(card2) != 1 || deck.get(card3) != 1) {//if any of the cards are not on the board return -2
             return -2;
         }
-
+        int[] removedCards = new int[3];
+        int ii = 0;//indices of removed cards
         if (isSet(card1, card2, card3)) {
             //if set loop through board and delete the specfied cards
             for (int i = board.size() - 1; i >= 0; i--) {
                 if (board.get(i).equals(card1) || board.get(i).equals(card2) || board.get(i).equals(card3)) {
                     removeCard(i);
+                    removedCards[ii++] = i;
                 }
             }
             for (int i = 0; i < players.size(); i++) {
@@ -121,7 +123,7 @@ public class Game {
                 return 1;
             }else{
                 do{
-                    if (drawThree() == false) {
+                    if (drawThree(removedCards[0],removedCards[1],removedCards[2]) == false) {
                         return 2;//game has finished
                     }
                 }while(!hasSet());
@@ -153,11 +155,12 @@ public class Game {
 
     /**
      * Draws three cards and sticks them on the board.
+     * indexes are the indices in the arraylist where cards are placed
      * <p>
      * returns true if three cards were drawn
      * false if not enough cards in the deck
      */
-    public Boolean drawThree() {
+    public Boolean drawThree(int index1,int index2, int index3) {
         if (deckSize < 3) {
             return false;
         }
@@ -178,7 +181,9 @@ public class Game {
             deck.put(card, 1);//makes the value of that card 1, indicating its on the board
             temp.add(card);
         }
-        board.addAll(temp);
+        board.add(index1,temp.get(0));
+        board.add(index2,temp.get(1));
+        board.add(index3,temp.get(2));
         deckSize -= 3;
         boardSize += 3;
         return true;

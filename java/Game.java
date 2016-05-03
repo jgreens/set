@@ -162,7 +162,7 @@ public class Game {
      * false if not enough cards in the deck
      */
     public Boolean drawThree(int index1,int index2, int index3) {
-        printBoard();
+
         if (deckSize < 3) {
             return false;
         }

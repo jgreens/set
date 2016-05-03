@@ -60,6 +60,14 @@ var handleJavaData = function( msg ) {
     switch( msgObj.msgType ) {
         case 'ack':
             break;
+        case 'USER REGISTER SUCCESS':
+            var obj = { success: true };
+            connectedClients[ data.clientId ].emit( 'USER REGISTER ACK', obj );
+            break;
+        case 'USER REGISTER FAIL':
+            var obj = { success: false, msg: data.errorMessage };
+            connectedClients[ data.clientId ].emit( 'USER REGISTER ACK', obj );
+            break;
         case 'USER LOGIN SUCCESS':
             var obj = { user: data.username, id: data.clientId };
             connectedClients[ data.clientId ].emit( 'USER LOGIN ACK', obj );
@@ -152,8 +160,6 @@ io.on( 'connection', function( socket ) {
             password: data.password,
         });
         client.write( JSON.stringify( obj ) + '\n' );
-
-        socket.emit( 'USER REGISTER ACK', true );
     });
 
     socket.on( 'USER LOGIN', function(data) {

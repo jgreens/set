@@ -156,11 +156,13 @@ public class Game {
     /**
      * Draws three cards and sticks them on the board.
      * indexes are the indices in the arraylist where cards are placed
+     * they are placed one by one so 1,1,1 would just place three cards in a row
      * <p>
      * returns true if three cards were drawn
      * false if not enough cards in the deck
      */
     public Boolean drawThree(int index1,int index2, int index3) {
+        printBoard();
         if (deckSize < 3) {
             return false;
         }
@@ -181,9 +183,11 @@ public class Game {
             deck.put(card, 1);//makes the value of that card 1, indicating its on the board
             temp.add(card);
         }
-        board.add(index1,temp.get(0));
-        board.add(index2,temp.get(1));
         board.add(index3,temp.get(2));
+        board.add(index2,temp.get(1));
+        board.add(index1,temp.get(0));
+
+
         deckSize -= 3;
         boardSize += 3;
         return true;
@@ -195,9 +199,9 @@ public class Game {
     public void printBoard() {
         for (int i = 0; i < board.size(); i++) {
             board.get(i).print();
-            if (i % 3 == 2) {
-                System.out.println("");
-            }
+//            if (i % 3 == 2) {
+//                System.out.println("");
+//            }
         }
         System.out.println("");
     }

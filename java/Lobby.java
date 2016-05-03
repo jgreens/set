@@ -109,6 +109,13 @@ class Lobby {
                         sendJSONMessage("USER LOGIN FAIL", "clientId", clientId, "errorMessage", "Client was not connected");
                         return;
                     }
+                    for (User u : currentUsers.values()) {
+                        if (u != null && u.username.equals(username)) {
+                            sendJSONMessage("USER LOGIN FAIL", "clientId", clientId, "errorMessage", "User logged in somewhere else");
+                            return;
+                        }
+                    }
+
                     User newU = new User(username, clientId);
                     currentUsers.put(clientId, newU);
                     lobbyClients.put(clientId, newU);

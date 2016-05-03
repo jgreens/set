@@ -23,7 +23,9 @@ define(
                 started: false,
                 finished: false,
                 startClass: 'fluid ui teal disabled button',
-                buttonStyles: { marginTop: '25px', display: 'none' }
+                buttonStyles: { marginTop: '25px', display: 'none' },
+                buttonClass: 'huge fluid ui teal button',
+                buttonText: 'SET'
             };
         },
         componentWillMount: function() {
@@ -51,6 +53,13 @@ define(
                 // If nonzero cards, show set button
                 if( data.cards && data.cards.length > 0 )
                     self.setState({ buttonStyles: { marginTop: '25px', display: 'block' } });
+
+                if( data.finished ) {
+                    self.setState({
+                        buttonClass: 'huge fluid ui teal disabled button',
+                        buttonText: 'Game Over'
+                    });
+                }
 
                 self.setState({ cards: [] }); // Reset cards
                 data.selected = {};
@@ -133,7 +142,7 @@ define(
                     <div className="row">
                         <div className="nine wide column">
                             <GameBoard cards={this.state.cards} selectCards={this._selectCards} />
-                            <button className="huge fluid ui teal button" style={this.state.buttonStyles} onClick={this._submitSet}>SET</button>
+                            <button className={this.state.buttonClass} style={this.state.buttonStyles} onClick={this._submitSet}>{this.state.buttonText}</button>
                         </div>
                         <div className="seven wide column">
                             <Scoreboard scores={this.state.scores} user={this.props.user} />

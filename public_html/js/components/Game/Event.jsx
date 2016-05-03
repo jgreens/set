@@ -9,17 +9,17 @@ define(
         getInitialState: function() {
             var obj = this.props.feedEvent;
             var content = '';
-            var className = ( this.props.user == obj.user ) ? 'current' : '';
-            className += ' ' + obj.type;
-            switch( obj.type ) {
+            var className = ( this.props.user == obj.username ) ? 'current' : '';
+            className += ' ' + obj.msgType;
+            switch( obj.msgType ) {
                 case 'chat':
-                    content = obj.user + ': ' + obj.message;
+                    content = obj.username + ': ' + obj.data;
                     break;
                 case 'join':
-                    content = obj.user + ' has joined the room.';
+                    content = obj.username + ' has joined the room.';
                     break;
                 case 'leave':
-                    content = obj.user + ' has left the room.';
+                    content = obj.username + ' has left the room.';
                     break;
                 case 'start':
                     content = 'The game has started.';
@@ -28,10 +28,10 @@ define(
                     content = 'The game has ended.';
                     break;
                 case 'set':
-                    content = obj.user + ' has scored a set.';
+                    content = obj.username + ' has scored a set.';
                     break;
                 case 'fail':
-                    content = obj.user + ' has submitted an invalid set.';
+                    content = obj.username + ' has submitted an invalid set.';
                     break;
                 default:
                     break;

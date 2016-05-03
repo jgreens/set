@@ -46,7 +46,7 @@ class Lobby {
                         // Remove user from any active games
                         try {
                             String clientGameID = currentUsers.get(clientId).gameId;
-                            if (clientGameID != null) {
+                            if (games.get(clientGameID) != null) {
                                 int retval = games.get(clientGameID).removeUser(currentUsers.get(clientId));//removes user from the game they are a part of
                                 // If no more players; game finished
                                 if (retval == -1) {

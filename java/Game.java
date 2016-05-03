@@ -46,6 +46,7 @@ public class Game {
 
     void start() {
         status = 1;
+        // Reset all scores (probably not necessary)
         for (User u : players) {
             playerScores.put(u.username, 0);
         }
@@ -63,7 +64,7 @@ public class Game {
         Boolean success = false;
         for (int i = players.size() - 1; i >= 0; i--) {
             if (players.get(i).userid.compareTo(u.userid) == 0 && players.get(i).username.compareTo(u.username) == 0) {
-                playerScores.remove(players.get(i).username);
+                // Don't remove score to retain score data
                 players.remove(i);
                 success = true;
                 break;
@@ -78,7 +79,10 @@ public class Game {
 
     void addUser(User user, Boolean isOwner) {
         players.add(user);
-        playerScores.put(user.username, 0);
+        // Retain any old score data!
+        if (playerScores.get(user.username) == null) {
+            playerScores.put(user.username, 0);
+        }
         user.gameId = gameid;
         if (isOwner) {
             owner = user;

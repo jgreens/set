@@ -124,6 +124,7 @@ public class Game {
             }else{
                 do{
                     if (drawThree(removedCards[0],removedCards[1],removedCards[2]) == false) {
+                        status = 2;
                         return 2;//game has finished
                     }
                 }while(!hasSet());

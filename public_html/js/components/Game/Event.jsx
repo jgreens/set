@@ -15,6 +15,9 @@ define(
                 case 'chat':
                     content = obj.username + ': ' + obj.data;
                     break;
+                case 'create':
+                    content = obj.username + ' has created the game';
+                    break;
                 case 'join':
                     content = obj.username + ' has joined the room';
                     break;

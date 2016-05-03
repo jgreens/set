@@ -151,6 +151,10 @@ class Lobby {
                     g.addUser(currentUsers.get(clientId), true);
                     games.put(gameId, g);
                     lobbyClients.remove(clientId);
+
+
+                    g.addFeedMessage(currentUsers.get(clientId).username, "create", null);
+                    sendGameUpdate(gameId);
                     //Response:    GAME CREATE SUCCESS - { clientId, username, gameId }
                     sendLobbyUpdate();
                     sendJSONMessage("GAME CREATE SUCCESS", "clientId", clientId, "username", currentUsers.get(clientId).getUsername(), "gameId", gameId);
@@ -187,7 +191,7 @@ class Lobby {
                     }
                     obj.put("membername", omember);
 
-                    temp.addFeedMessage(currentUsers.get(clientId).username, "join", "A user has joined");
+                    temp.addFeedMessage(currentUsers.get(clientId).username, "join", null);
                     sendGameUpdate(gameId);
                     sendLobbyUpdate();
 
@@ -227,7 +231,7 @@ class Lobby {
                         {
                             finishGame(gameId);
                         } else {
-                            game1.addFeedMessage(currentUsers.get(clientId).username, "leave", "A user has left");
+                            game1.addFeedMessage(currentUsers.get(clientId).username, "leave", null);
                             sendGameUpdate(gameId);
                         }
                         if (!success) {
@@ -260,7 +264,7 @@ class Lobby {
                     }
                     game.start();
 
-                    game.addFeedMessage(currentUsers.get(clientId).username, "start", "Game started");
+                    game.addFeedMessage(currentUsers.get(clientId).username, "start", null);
                     sendGameUpdate(gameId);
 
                     JSONObject response = new JSONObject();
@@ -309,12 +313,12 @@ class Lobby {
                             sendJSONMessage("GAME SET FAIL", "clientId", clientId, "errorMessage", "Cards are formatted wrong");
                             break;
                         case 0:
-                            game.addFeedMessage(currentUsers.get(clientId).username, "fail", "Invalid set (-1)!");
+                            game.addFeedMessage(currentUsers.get(clientId).username, "fail", cards.toString());
                             sendGameUpdate(gameId);
                             sendJSONMessage("GAME SET INVALID", "clientId", clientId, "gameId", gameId);
                             break;
                         case 1:
-                            game.addFeedMessage(currentUsers.get(clientId).username, "set", "Successful set (+1)!");
+                            game.addFeedMessage(currentUsers.get(clientId).username, "set", cards.toString());
                             sendGameUpdate(gameId);
                             sendJSONMessage("GAME SET SUCCESS", "clientId", clientId, "gameId", gameId);
                             break;

@@ -14,7 +14,7 @@ define(
             for( var key in scores ) {
                 var className = ( key == user.name ) ? 'ui small teal label' : 'ui small label';
                 html.push( 
-                    <div className="item">
+                    <div key={key} className="item">
                         <div className={className}>{scores[key]}</div>
                         {key}
                     </div>

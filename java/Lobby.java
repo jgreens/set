@@ -459,6 +459,8 @@ class Lobby {
             return;
         }
 
+        response.put("name", game.name);
+
         JSONArray clients = new JSONArray();
         for (int i = 0; i < game.players.size(); ++i) {
             clients.put(game.players.get(i).userid);

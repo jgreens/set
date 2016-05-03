@@ -65,15 +65,16 @@ var handleJavaData = function( msg ) {
             connectedClients[ data.clientId ].emit( 'USER REGISTER ACK', obj );
             break;
         case 'USER REGISTER FAIL':
-            var obj = { success: false, msg: data.errorMessage };
+            var obj = { success: false, message: data.errorMessage };
             connectedClients[ data.clientId ].emit( 'USER REGISTER ACK', obj );
             break;
         case 'USER LOGIN SUCCESS':
-            var obj = { user: data.username, id: data.clientId };
+            var obj = { success: true, user: data.username, id: data.clientId };
             connectedClients[ data.clientId ].emit( 'USER LOGIN ACK', obj );
             break;
         case 'USER LOGIN FAIL':
-            connectedClients[ data.clientId ].emit( 'USER LOGIN ACK', false );
+            var obj = { success: false, message: data.errorMessage };
+            connectedClients[ data.clientId ].emit( 'USER LOGIN ACK', obj );
             break;
         case 'USER LOGOUT SUCCESS':
             connectedClients[ data.clientId ].emit( 'USER LOGOUT ACK', true );

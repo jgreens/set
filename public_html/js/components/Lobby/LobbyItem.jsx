@@ -17,12 +17,11 @@ define(
                 joinText: joinText 
             };
         },
-        componentWillReceiveProps: function() {
-            var joinText = this.props.started ? 'Join Ongoing Game' : 'Join New Game';
+        componentWillReceiveProps: function( newProps ) {
+            var joinText = newProps.started ? 'Join Ongoing Game' : 'Join New Game';
             this.setState({ joinText: joinText });
         },
         componentDidMount: function() {
-            console.log( this.props );
             $( '.pop' ).popup();
         },
         componentDidUpdate: function() {

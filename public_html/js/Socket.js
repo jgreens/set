@@ -59,13 +59,6 @@ define(
         });
     };
 
-    Socket.deleteGame = function( state, callback ) {
-        socket.emit( 'GAME DELETE', state );
-        socket.once( 'GAME DELETE ACK', function( data ) {
-            callback( data );
-        });
-    };
-
     Socket.startGame = function( state, callback ) {
         socket.emit( 'GAME START', state );
         socket.once( 'GAME START ACK', function( data ) {

@@ -16,22 +16,22 @@ define(
                     content = obj.username + ': ' + obj.data;
                     break;
                 case 'join':
-                    content = obj.username + ' has joined the room.';
+                    content = obj.username + ' has joined the room';
                     break;
                 case 'leave':
-                    content = obj.username + ' has left the room.';
+                    content = obj.username + ' has left the room';
                     break;
                 case 'start':
-                    content = 'The game has started.';
+                    content = 'The game has started';
                     break;
                 case 'end':
-                    content = 'The game has ended.';
+                    content = 'The game has ended';
                     break;
                 case 'set':
-                    content = obj.username + ' has scored a set.';
+                    content = obj.username + ' has scored a set';
                     break;
                 case 'fail':
-                    content = obj.username + ' has submitted an invalid set.';
+                    content = obj.username + ' has submitted an invalid set';
                     break;
                 default:
                     break;

@@ -73,6 +73,10 @@ define(
         });
     };
 
+    Socket.sendChat = function( state ) {
+        socket.emit( 'GAME FEED', state );
+    };
+
     Socket.submitSet = function( state, callback ) {
         socket.emit( 'GAME SET', state );
         socket.once( 'GAME SET ACK', function( data ) {

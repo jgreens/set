@@ -146,15 +146,15 @@ define(
                         </div>
                         <div className="seven wide column">
                             <Scoreboard scores={this.state.scores} user={this.props.user} />
-                            <div className="ui grid">
-                                <div className="eight wide column">
-                                    <button className={this.state.startClass} onClick={this._startGame}>Start Game</button>
-                                </div>
+                            <Feed feed={this.state.feed} user={this.props.user} id={this.props.id} />
+                            <div className="ui grid" style={{ marginTop: '0px' }}>
                                 <div className="eight wide column">
                                     <button className="fluid ui black button" onClick={this._goToLobby}>Return to Lobby</button>
                                 </div>
+                                <div className="eight wide column">
+                                    <button className={this.state.startClass} onClick={this._startGame}>Start Game</button>
+                                </div>
                             </div>
-                            <Feed feed={this.state.feed} user={this.props.user} />
                         </div>
                     </div>
                 </div>

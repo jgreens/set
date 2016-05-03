@@ -22,6 +22,11 @@ define(
                     console.log( 'Failure' );
             });
         },
+        _enterCall: function( e ) {
+            // Call click on enter
+            if( e.keyCode == 13 )
+                this._createGame();
+        },
         _goToGame: function( id ) {
             var customEvent = new CustomEvent( 'ViewController',  {
                 detail: { view: 'Game', id: id },
@@ -38,7 +43,7 @@ define(
             return(
                 <div className="CreateButton ui left action input">
                     <button className="ui teal labeled icon button" onClick={this._createGame}><i className="plus icon"></i>Create Game</button>
-                    <input type="text" name="name" placeholder="Game Name" onChange={this._inputChange}></input>
+                    <input type="text" name="name" value={this.state.name} placeholder="Game Name" onKeyDown={this._enterCall} onChange={this._inputChange}></input>
                 </div>
             );
         }

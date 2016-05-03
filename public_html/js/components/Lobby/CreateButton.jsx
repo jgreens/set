@@ -14,6 +14,10 @@ define(
             };
         },
         _createGame: function() {
+            // Make sure it's not empty
+            if( this.state.name == '' )
+                return false;
+
             var self = this;
             Socket.createGame( { name: this.state.name }, function( data ) {
                 if( data ) // Successfully created game

@@ -31,6 +31,7 @@ class Lobby {
                 try {
                     clientId = data.getString("clientId");
                     currentUsers.put(clientId, null);
+                    sendJSONMessage("CLIENT CONNECT SUCCESS", "clientId", clientId);
                 } catch (JSONException j) {
                     sendJSONMessage("CLIENT CONNECT ERROR", "clientId", clientId);
                 }

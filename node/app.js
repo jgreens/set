@@ -60,6 +60,9 @@ var handleJavaData = function( msg ) {
     switch( msgObj.msgType ) {
         case 'ack':
             break;
+        case 'CLIENT CONNECT SUCCESS':
+            connectedClients[ data.clientId ].emit( 'CLIENT CONNECT ACK', true );
+            break;
         case 'USER REGISTER SUCCESS':
             var obj = { success: true };
             connectedClients[ data.clientId ].emit( 'USER REGISTER ACK', obj );

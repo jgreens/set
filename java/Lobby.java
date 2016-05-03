@@ -264,7 +264,8 @@ class Lobby {
                     JSONObject scores = new JSONObject();
                     for (int i = 0; i < game.players.size(); i++) {
                         clients.put(game.players.get(i).userid);
-                        scores.put(game.players.get(i).username, game.players.get(i).score);
+                        username = game.players.get(i).username;
+                        scores.put(username, game.playerScores.get(username));
                     }
                     response.put("clients", clients);
                     response.put("scores", scores);
@@ -438,7 +439,7 @@ class Lobby {
 
         JSONObject scores = new JSONObject();
         for (int i = 0; i < game.players.size(); i++) {
-            scores.put(game.players.get(i).username, game.players.get(i).score);
+            scores.put(game.players.get(i).username, game.playerScores.get(game.players.get(i).username));
         }
         response.put("scores", scores);
 

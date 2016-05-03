@@ -4,6 +4,7 @@ import java.util.*;
 public class Game {
 
     ArrayList<User> players;
+    HashMap<String, Integer> playerScores;
     User owner;
     String gameid, name;
     Queue<String> commandQ;
@@ -37,6 +38,7 @@ public class Game {
         initDeck();
         board = new ArrayList<Card>();
         players = new ArrayList<User>();
+        playerScores = new HashMap<String, Integer>();
         boardSize = 0;
         deckSize = 81;
         status = 0;
@@ -45,7 +47,7 @@ public class Game {
     void start() {
         status = 1;
         for (User u : players) {
-            u.score = 0;
+            playerScores.put(u.username, 0);
         }
         drawThree(0,0,0);
         drawThree(0,0,0);
@@ -61,6 +63,7 @@ public class Game {
         Boolean success = false;
         for (int i = players.size() - 1; i >= 0; i--) {
             if (players.get(i).userid.compareTo(u.userid) == 0 && players.get(i).username.compareTo(u.username) == 0) {
+                playerScores.remove(players.get(i).username);
                 players.remove(i);
                 success = true;
                 break;
@@ -75,6 +78,7 @@ public class Game {
 
     void addUser(User user, Boolean isOwner) {
         players.add(user);
+        playerScores.put(user.username, 0);
         user.gameId = gameid;
         if (isOwner) {
             owner = user;
@@ -114,7 +118,8 @@ public class Game {
             }
             for (int i = 0; i < players.size(); i++) {
                 if (players.get(i).userid.compareTo(uid) == 0) {
-                    players.get(i).score += 1;
+                    int newScore = playerScores.get(players.get(i).username) + 1;
+                    playerScores.put(players.get(i).username, newScore);
                 }
             }
 
@@ -133,7 +138,8 @@ public class Game {
         }
         for (int i = 0; i < players.size(); i++) {
             if (players.get(i).userid.compareTo(uid) == 0) {
-                players.get(i).score -= 1;
+                int newScore = playerScores.get(players.get(i).username) - 1;
+                playerScores.put(players.get(i).username, newScore);
             }
         }
         return 0;
@@ -302,8 +308,8 @@ public class Game {
         int max = 0;
         User winner = null;
         for (int i = 0; i < players.size(); i++) {
-            if (players.get(i).score > max) {
-                max = players.get(i).score;
+            if (playerScores.get(players.get(i).username) > max) {
+                max = playerScores.get(players.get(i).username);
                 winner = players.get(i);
             }
         }

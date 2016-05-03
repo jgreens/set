@@ -66,12 +66,13 @@ define(
                     self.setState({ 'segmentClass': 'ui segment loading' }); // Dim and show loader while waiting for response
 
                     Socket.register( self.state, function( data ) {
+                        console.log( data );
                         self.setState({ 'segmentClass': 'ui segment' }); // Remove loader
 
-                        if( data ) // Successfully created account
+                        if( data.success ) // Successfully created account
                             self._goToLogin();
                         else // Failure
-                            form.form( 'add errors', [ 'An account already exists with this username.' ] );
+                            form.form( 'add errors', [ data.message ] );
                     });
                 }
             }).submit( function( e ) {

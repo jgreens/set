@@ -49,11 +49,12 @@ define(
                     self.setState({ 'segmentClass': 'ui segment loading' }); // Dim and show loader while waiting for response
 
                     Socket.login( self.state, function( data ) { // TODO: Get userId from callback and update state
-                        self.setState({ 'segmentClass': 'ui segment' }); // Remove loader
-                        if( data ) // Successfully created account
+                        if( data ) // Successfully logged in account
                             self._goToLobby();
-                        else // Failure
+                        else { // Failure
+                            self.setState({ 'segmentClass': 'ui segment' }); // Remove loader
                             form.form( 'add errors', [ 'The username/password combination provided is not valid.' ] );
+                        }
                     });
                 }
             }).submit( function( e ) {
@@ -74,11 +75,32 @@ define(
             window.dispatchEvent( customEvent );
         },
         _goToLobby: function() {
-            var customEvent = new CustomEvent( 'ViewController',  {
-                detail: { 'view': 'Lobby', 'user': { name: this.state.username, id: 99 } }, // TODO: Temporary ID
-                bubbles: true
+            var self = this;
+            this._preloadImages( function() {
+                var customEvent = new CustomEvent( 'ViewController',  {
+                    detail: { 'view': 'Lobby', 'user': { name: self.state.username, id: 99 } }, // TODO: Temporary ID
+                    bubbles: true
+                });
+                window.dispatchEvent( customEvent );
             });
-            window.dispatchEvent( customEvent );
+        },
+        _preloadImages: function( callback ) {
+            var image = new Image();
+            var images = [];
+            for( var i = 0; i <= 2; i++ )
+                for( var j = 0; j <= 2; j++ )
+                    for( var k = 0; k <= 2; k++ )
+                        for( var l = 0; l <= 2; l++ )
+                            images.push( i.toString() + j.toString() + k.toString() + l.toString() );
+
+            var load = function() {
+                if( images.length > 0 ) {
+                    image.onload = load;
+                    image.src = 'img/cards/' + images.shift() + '.png';
+                } else
+                    callback();
+            };
+            load();
         },
         render: function() {
             return(

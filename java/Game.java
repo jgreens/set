@@ -123,7 +123,7 @@ public class Game {
                 return 1;
             }else{
                 do{
-                    if (drawThree(removedCards[0],removedCards[1],removedCards[2]) == false) {
+                    if (drawThree(removedCards[0],removedCards[1],removedCards[2]) == false && !hasSet()) {
                         status = 2;
                         return 2;//game has finished
                     }

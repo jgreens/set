@@ -1,26 +1,52 @@
 define(
 [
     'react',
+    'jquery',
     'Socket'
 ]
 , function(
     React,
+    $,
     Socket
 ) {
     var LobbyItem = React.createClass({
         getInitialState: function() {
+            var joinText = this.props.started ? 'Join Ongoing Game' : 'Join New Game';
             return {
                 joinButtonClass: this._joinButtonClass,
-                game: {}
+                joinText: joinText 
             };
+        },
+        componentWillReceiveProps: function() {
+            var joinText = this.props.started ? 'Join Ongoing Game' : 'Join New Game';
+            this.setState({ joinText: joinText });
+        },
+        componentDidMount: function() {
+            console.log( this.props );
+            $( '.pop' ).popup();
+        },
+        componentDidUpdate: function() {
+            $( '.pop' ).popup();
         },
         _joinButtonClass: 'ui right floated teal icon button',
         _joinButtonLoadingClass: 'ui right floated teal icon loading button',
         _generateMembers: function() {
             var html = [];
 
-            for( var i = 0; i < this.props.members.length; i++ )
-                html.push( <div key={this.props.members[i].clientId} className="ui label">{this.props.members[i].username}</div> );
+            for( var i = 0; i < this.props.members.length; i++ ) {
+                // Generating icon
+                var seed = 0;
+                var name = ( typeof this.props.members[i] == 'string' ) ? this.props.members[i] : this.props.members[i].username;
+
+                for( var j = 0; j < name.length; j++ )
+                    seed += ( name.charCodeAt(j) * j * 37 );
+                seed = seed.toString( 16 );
+                var hash = '327b8763d4f0039dab25572ee873caaa';
+                hash = hash.substring( 0, hash.length - seed.length ) + seed;
+                var url = 'http://www.gravatar.com/avatar/' + hash + '?s=30&d=identicon&r=PG';
+
+                html.push( <img src={url} className="ui pop avatar image" key={name} data-content={name} /> );
+            }
 
             return html;
         },
@@ -49,9 +75,8 @@ define(
             return(
                 <div className="Lobbyitem ui clearing segment">
                     <h2>{this.props.name}</h2>
-                    <button className={this.state.joinButtonClass} onClick={this._joinGame}>Join Game</button>
+                    <button className={this.state.joinButtonClass} onClick={this._joinGame}>{this.state.joinText}</button>
                     <div className="extra">
-                        Waiting:&nbsp;
                         {this._generateMembers()}
                     </div>
                 </div>

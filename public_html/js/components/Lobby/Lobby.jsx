@@ -46,7 +46,7 @@ define(
         _generateItems: function() {
             var html = [];
             for( var i = 0; i < this.state.games.length; i++ )
-                html.push( <LobbyItem key={this.state.games[i].gameId} id={this.state.games[i].gameId} name={this.state.games[i].name} members={this.state.games[i].members} /> );
+                html.push( <LobbyItem key={this.state.games[i].gameId} id={this.state.games[i].gameId} name={this.state.games[i].name} members={this.state.games[i].members} started={this.state.games[i].started} /> );
 
             return html;
         },
@@ -66,7 +66,7 @@ define(
                     </div>
                     <div className="row">
                         <div className="column">
-                            <button className="ui black icon button" onClick={this._logout}>Log Out</button>
+                            <button className="ui black right floated icon button" onClick={this._logout}>Log Out</button>
                             <CreateButton />
                         </div>
                     </div>

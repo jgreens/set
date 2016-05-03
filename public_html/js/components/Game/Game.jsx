@@ -21,7 +21,9 @@ define(
                 scores: {},
                 selected: {},
                 started: false,
-                finished: false
+                finished: false,
+                startClass: 'fluid ui teal disabled button',
+                buttonStyles: { marginTop: '25px', display: 'none' }
             };
         },
         componentWillMount: function() {
@@ -34,10 +36,21 @@ define(
             var self = this;
             // Receives updated board, score, feed, etc
             Socket.gameUpdate({ id: this.props.id }, function( data ) {
-                // Reset 
-                // CHECK GAME ID
-                console.log( 'RECEIVING DATA' );
-                console.log( data );
+                // Update not meant for this game
+                if( self.props.id != data.gameId )
+                    return false;
+
+                // Start game button for owner
+                if( data.owner == self.props.user.name ) {
+                    if( data.started === false )
+                        self.setState({ startClass: 'fluid ui teal button' });
+                    else
+                        self.setState({ startClass: 'fluid ui teal disabled button' });
+                }
+
+                // If nonzero cards, show set button
+                if( data.cards && data.cards.length > 0 )
+                    self.setState({ buttonStyles: { marginTop: '25px', display: 'block' } });
 
                 self.setState({ cards: [] }); // Reset cards
                 data.selected = {};
@@ -120,13 +133,13 @@ define(
                     <div className="row">
                         <div className="nine wide column">
                             <GameBoard cards={this.state.cards} selectCards={this._selectCards} />
-                            <button className="huge fluid ui teal button" style={{marginTop: '25px'}} onClick={this._submitSet}>SET</button>
+                            <button className="huge fluid ui teal button" style={this.state.buttonStyles} onClick={this._submitSet}>SET</button>
                         </div>
                         <div className="seven wide column">
                             <Scoreboard scores={this.state.scores} user={this.props.user} />
                             <div className="ui grid">
                                 <div className="eight wide column">
-                                    <button className="fluid ui teal button" onClick={this._startGame}>Start Game</button>
+                                    <button className={this.state.startClass} onClick={this._startGame}>Start Game</button>
                                 </div>
                                 <div className="eight wide column">
                                     <button className="fluid ui black button" onClick={this._goToLobby}>Return to Lobby</button>

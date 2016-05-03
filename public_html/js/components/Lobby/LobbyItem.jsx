@@ -20,7 +20,7 @@ define(
             var html = [];
 
             for( var i = 0; i < this.props.members.length; i++ )
-                html.push( <div key={this.props.members[i].ClientId} className="ui label">{this.props.members[i].username}</div> );
+                html.push( <div key={this.props.members[i].clientId} className="ui label">{this.props.members[i].username}</div> );
 
             return html;
         },

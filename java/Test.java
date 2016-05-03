@@ -6,9 +6,9 @@ public class Test{
     g.start();
     g.printBoard();
     System.out.println(g.hasSet());
-      g.removeCard(1);
-      g.removeCard(1);
-      g.removeCard(1);
+      g.removeCard(2);
+      g.removeCard(2);
+      g.removeCard(0);
       g.drawThree(1,1,1);
     g.printBoard();
     System.out.println(g.hasSet());

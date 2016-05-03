@@ -52,13 +52,12 @@ public class Game {
         for (User u : players) {
             playerScores.put(u.username, 0);
         }
-        drawThree(0,0,0);
-        drawThree(0,0,0);
-        drawThree(0,0,0);
-        drawThree(0,0,0);
-        while(!hasSet())
-        {
-            drawThree(0,0,0);
+        drawThree(0, 0, 0);
+        drawThree(0, 0, 0);
+        drawThree(0, 0, 0);
+        drawThree(0, 0, 0);
+        while (!hasSet()) {
+            drawThree(0, 0, 0);
         }
     }
 
@@ -129,16 +128,14 @@ public class Game {
                 }
             }
 
-            if(boardSize > 12 && hasSet())//if the game board is large and there is a set don't draw
+            if (boardSize < 12 || !hasSet())//if the game board is large and there is a set don't draw
             {
-                return 1;
-            }else{
-                do{
-                    if (drawThree(removedCards[0],removedCards[1],removedCards[2]) == false && !hasSet()) {
+                do {
+                    if (drawThree(removedCards[0], removedCards[1], removedCards[2]) == false && !hasSet()) {
                         status = 2;
                         return 2;//game has finished
                     }
-                }while(!hasSet());
+                } while (!hasSet());
             }
             return 1;
         }
@@ -174,7 +171,7 @@ public class Game {
      * returns true if three cards were drawn
      * false if not enough cards in the deck
      */
-    public Boolean drawThree(int index1,int index2, int index3) {
+    public Boolean drawThree(int index1, int index2, int index3) {
 
         if (deckSize < 3) {
             return false;
@@ -196,9 +193,9 @@ public class Game {
             deck.put(card, 1);//makes the value of that card 1, indicating its on the board
             temp.add(card);
         }
-        board.add(index3,temp.get(2));
-        board.add(index2,temp.get(1));
-        board.add(index1,temp.get(0));
+        board.add(index3, temp.get(2));
+        board.add(index2, temp.get(1));
+        board.add(index1, temp.get(0));
 
 
         deckSize -= 3;

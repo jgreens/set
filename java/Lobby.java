@@ -334,6 +334,7 @@ class Lobby {
                             break;
                         case 2:
                             sendGameUpdate(gameId);
+                            sendLobbyUpdate();
                             finishGame(gameId);//sends game finished update
                             sendJSONMessage("GAME SET SUCCESS", "clientId", clientId, "gameId", gameId);
                             break;

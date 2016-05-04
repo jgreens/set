@@ -32,6 +32,10 @@ define(
                             {
                                 type   : 'empty',
                                 prompt : 'Please enter your username'
+                            },
+                            {
+                                type   : 'maxLength[16]',
+                                prompt : 'Your username is than 16 characters'
                             }
                         ]
                     },
@@ -41,6 +45,14 @@ define(
                             {
                                 type   : 'empty',
                                 prompt : 'Please enter your password'
+                            },
+                            {
+                                type   : 'minLength[6]',
+                                prompt : 'Your password is at least 6 characters'
+                            },
+                            {
+                                type   : 'maxLength[20]',
+                                prompt : 'Your password is less than 20 characters'
                             }
                         ]
                     }

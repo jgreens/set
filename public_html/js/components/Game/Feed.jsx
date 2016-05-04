@@ -31,7 +31,7 @@ define(
         },
         _submitChat: function() {
             // Don't send if empty
-            if( this.state.chat == '' )
+            if( this.state.chat == '' || this.state.chat.length > 100 )
                 return false;
 
             Socket.sendChat({ message: this.state.chat, user: this.props.user.name, id: this.props.id, type: 'chat' });

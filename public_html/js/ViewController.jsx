@@ -1,6 +1,7 @@
 define(
 [
     'react',
+    'Socket',
     'jsx!components/Login/Login',
     'jsx!components/Register/Register',
     'jsx!components/Lobby/Lobby',
@@ -8,6 +9,7 @@ define(
 ]
 , function(
     React,
+    Socket,
     Login,
     Register,
     Lobby,
@@ -25,6 +27,10 @@ define(
             };
         },
         componentWillMount: function() {
+            // On disconnect
+            Socket.listenForError( function() {
+                window.location.reload();
+            });
             window.addEventListener( 'ViewController', this._updateView, false );
         },
         _updateView: function( e ) {

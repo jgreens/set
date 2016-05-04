@@ -9,6 +9,12 @@ define(
 
     var Socket = {};
 
+    Socket.listenForError = function( callback ) {
+        socket.on( 'connect_error', function( data ) {
+            callback();
+        });
+    };
+
     Socket.register = function( state, callback ) {
         socket.emit( 'USER REGISTER', state );
         socket.once( 'USER REGISTER ACK', function( data ) {
@@ -38,12 +44,12 @@ define(
         socket.on( 'LOBBY UPDATE', function( data ) {
             callback( data );
         });
-    }
+    };
 
     Socket.endLobby = function() {
         socket.removeListener( 'LOBBY UPDATE' );
         socket.emit( 'LOBBY LIST END' );
-    }
+    };
 
     Socket.joinGame = function( state, callback ) {
         socket.emit( 'GAME JOIN', state );
@@ -90,7 +96,7 @@ define(
         socket.once( 'GAME LEAVE ACK', function( data ) {
             callback( data );
         });
-    }
+    };
 
     return Socket;
 });

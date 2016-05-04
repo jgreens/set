@@ -46,7 +46,7 @@ define(
         _generateItems: function() {
             var html = [];
             for( var i = 0; i < this.state.games.length; i++ )
-                html.push( <LobbyItem key={this.state.games[i].gameId} id={this.state.games[i].gameId} name={this.state.games[i].name} members={this.state.games[i].members} started={this.state.games[i].started} /> );
+                html.push( <LobbyItem key={this.state.games[i].gameId} id={this.state.games[i].gameId} name={this.state.games[i].name} members={this.state.games[i].members} started={this.state.games[i].started} finished={this.state.games[i].finished} /> );
 
             return html;
         },

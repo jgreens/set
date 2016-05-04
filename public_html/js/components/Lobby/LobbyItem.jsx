@@ -12,6 +12,9 @@ define(
     var LobbyItem = React.createClass({
         getInitialState: function() {
             var joinText = this.props.started ? 'Join Ongoing Game' : 'Join New Game';
+            if( this.props.finished )
+                joinText = 'Join Finished Game';
+
             return {
                 joinButtonClass: this._joinButtonClass,
                 joinText: joinText 
@@ -19,6 +22,9 @@ define(
         },
         componentWillReceiveProps: function( newProps ) {
             var joinText = newProps.started ? 'Join Ongoing Game' : 'Join New Game';
+            if( this.props.finished )
+                joinText = 'Join Finished Game';
+
             this.setState({ joinText: joinText });
         },
         componentDidMount: function() {

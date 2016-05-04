@@ -148,6 +148,7 @@ var handleJavaData = function( msg ) {
 var io = require( 'socket.io' ).listen( expressServer );
 var connectedClients = {};
 io.on( 'connection', function( socket ) {
+    console.log( socket.id + ' - ' + socket.client.conn.remoteAddress );
     var obj = createMessage( 'CLIENT CONNECT', { clientId: socket.id } );
     connectedClients[socket.id] = socket;
     client.write( JSON.stringify( obj ) + '\n' );

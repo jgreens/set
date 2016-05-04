@@ -158,6 +158,7 @@ define(
                             <button className={this.state.buttonClass} style={this.state.buttonStyles} onClick={this._submitSet}>{this.state.buttonText}</button>
                         </div>
                         <div className="seven wide column">
+                            <h3>{this.state.name}</h3>
                             <Scoreboard scores={this.state.scores} user={this.props.user} />
                             <Feed feed={this.state.feed} user={this.props.user} id={this.props.id} />
                             <div className="ui grid" style={{ marginTop: '0px' }}>

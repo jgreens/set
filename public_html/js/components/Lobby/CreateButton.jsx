@@ -15,7 +15,7 @@ define(
         },
         _createGame: function() {
             // Make sure it's not empty
-            if( this.state.name == '' )
+            if( this.state.name == '' || this.state.name.length > 50 )
                 return false;
 
             var self = this;

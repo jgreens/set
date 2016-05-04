@@ -42,10 +42,18 @@ define(
             return {
                 content: content,
                 className: className,
-                obj: obj
+                obj: obj,
+                cardStyle: {
+                    width: '38px',
+                    border: '1px solid #ccc',
+                    borderRadius: '3px',
+                    marginRight: '8px',
+                    marginTop: '5px',
+                    padding: '1px'
+                }
             };
         },
-        _additionalHTML: function() {
+        _beforeHTML: function() {
             var html = [];
 
             switch( this.state.obj.msgType ) {
@@ -61,8 +69,24 @@ define(
                     hash = hash.substring( 0, hash.length - seed.length ) + seed;
                     var url = 'http://www.gravatar.com/avatar/' + hash + '?s=30&d=identicon&r=PG';
 
-                    html.push( <img src={url} className="ui avatar image" /> );
+                    html.push( <img src={url} key={name} className="ui avatar image" /> );
                     break;  
+                default:
+                    break;
+            }
+
+            return html;
+        },
+        _afterHTML: function() {
+            var html = [];
+
+            switch( this.state.obj.msgType ) {
+                case 'set':
+                case 'fail':
+                    var cards = JSON.parse( this.state.obj.data );
+                    html.push( <br key={'br'} /> );
+                    for( var i = 0; i < cards.length; i++ )
+                        html.push( <img key={cards[i]} src={'img/cards/'+cards[i]+'.png'} style={this.state.cardStyle} /> );
                 default:
                     break;
             }
@@ -74,8 +98,9 @@ define(
                 <div className="Event event">
                     <div className="content">
                         <div className={this.state.className}>
-                            {this._additionalHTML()}
+                            {this._beforeHTML()}
                             {this.state.content}
+                            {this._afterHTML()}
                         </div>
                     </div>
                 </div>

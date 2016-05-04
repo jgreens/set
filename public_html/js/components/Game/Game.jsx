@@ -25,7 +25,8 @@ define(
                 startClass: 'fluid ui teal disabled button',
                 buttonStyles: { marginTop: '25px', display: 'none' },
                 buttonClass: 'huge fluid ui teal button',
-                buttonText: 'SET'
+                buttonText: 'SET',
+                feedLength: 0
             };
         },
         componentWillMount: function() {
@@ -61,9 +62,21 @@ define(
                     });
                 }
 
-                self.setState({ cards: [] }); // Reset cards
-                data.selected = {};
 
+                if( data.feed && data.feed.length > 0 && ( data.feed.length != self.state.feedLength ) ) {
+                    self.setState({ feedLength: data.feed.length });
+                    var newFeed = data.feed[ data.feed.length - 1 ];
+
+                    if( newFeed.msgType == 'fail' && ( newFeed.username == self.props.user.name ) ) {
+                        self.setState({ cards: [] }); // Reset cards
+                        data.selected = {};
+                    }
+                    if( newFeed.msgType == 'set' ) {
+                        self.setState({ cards: [] }); // Reset cards
+                        data.selected = {};
+                    }
+                }
+                        
                 self.setState( data );
             });
         },

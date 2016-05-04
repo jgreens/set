@@ -55,6 +55,7 @@ class Lobby {
                                 } else if (retval == 0) {
                                     finishGame(clientGameID);
                                 } else {
+                                    games.get(clientGameID).addFeedMessage(currentUsers.get(clientId).username, "leave", null);
                                     sendGameUpdate(clientGameID);
                                 }
                                 sendLobbyUpdate();

@@ -29,6 +29,12 @@ define(
         componentWillUnmount: function() {
             Socket.endLobby(); // Clean up socket.io listener
         },
+        componentDidMount: function() {
+            $( '.pop' ).popup();
+        },
+        componentDidUpdate: function() {
+            $( '.pop' ).popup();
+        },
         _logout: function() {
             var self = this;
             Socket.logout( this.props.user, function( data ) {
@@ -50,16 +56,41 @@ define(
 
             return html;
         },
-        members: [{ id: 1, name: 'Jonny' }, { id: 2, name: 'Akshay' }],
+        _generateMembers: function() {
+            var html = [];
+
+            if( typeof this.state.users == 'undefined' || this.state.users.length == 0 )
+                return html;
+
+            for( var i = 0; i < this.state.users.length; i++ ) {
+                // Generating icon
+                var seed = 0;
+                var name = this.state.users[i];
+
+                for( var j = 0; j < name.length; j++ )
+                    seed += ( name.charCodeAt(j) * j * 37 );
+                seed = seed.toString( 16 );
+                var hash = '327b8763d4f0039dab25572ee873caaa';
+                hash = hash.substring( 0, hash.length - seed.length ) + seed;
+                var url = 'http://www.gravatar.com/avatar/' + hash + '?s=30&d=identicon&r=PG';
+
+                html.push( <img src={url} className="ui pop avatar image" key={name} data-content={name} /> );
+            }
+
+            return html;
+        },
         render: function() {
             return(
                 <div className="Lobby ui grid container">
                     <div className="row">
-                        <div className="column">
+                        <div className="six wide column">
                             <h1>Logged in as {this.props.user.name}</h1>
                         </div>
+                        <div className="ten wide column" style={{ textAlign: 'right' }} >
+                            {this._generateMembers()}
+                        </div>
                     </div>
-                    <div className="row">
+                    <div className="row" style={{ minHeight: '138px' }} >
                         <div className="column">
                             {this._generateItems()}
                         </div>

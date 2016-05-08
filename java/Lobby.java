@@ -306,17 +306,18 @@ class Lobby {
 
                     Game game = (Game) games.get(gameId);
                     if (game == null) {
-                        sendJSONMessage("GAME SET FAIL", "setClientId", clientId, "errorMessage", "Invalid Game ID");
+                        sendJSONMessage("GAME SET FAIL", "clientId", clientId, "errorMessage", "Invalid Game ID");
                         return;
                     }
                     if (cards.length() != 3) {
-                        sendJSONMessage("GAME SET FAIL", "setClientId", clientId, "errorMessage", "Invalid Number of Cards");
+                        sendJSONMessage("GAME SET FAIL", "clientId", clientId, "errorMessage", "Invalid Number of Cards");
                         return;
                     }
 
                     int retval = game.pickSet(clientId, cards.getString(0), cards.getString(1), cards.getString(2));
                     switch (retval) {
                         case -2:
+                            sendGameUpdate(gameId, clientId);
                             sendJSONMessage("GAME SET FAIL", "clientId", clientId, "errorMessage", "Cards are not on the board");
                             break;
                         case -1:
@@ -450,6 +451,10 @@ class Lobby {
     }
 
     public void sendGameUpdate(String gId) {
+        sendGameUpdate(gId, null);
+    }
+
+    public void sendGameUpdate(String gId, String clientId) {
         // Message:     GAME UPDATE - { gameId, clients: [ clientId, ... ], cards: [ card, ... ], feed: [ msg, ... ], started, finished }
 
         JSONObject response = new JSONObject();
@@ -464,8 +469,12 @@ class Lobby {
         response.put("name", game.name);
 
         JSONArray clients = new JSONArray();
-        for (int i = 0; i < game.players.size(); ++i) {
-            clients.put(game.players.get(i).userid);
+        if (clientId != null) {
+            clients.put(clientId);
+        } else {
+            for (int i = 0; i < game.players.size(); ++i) {
+                clients.put(game.players.get(i).userid);
+            }
         }
         response.put("clients", clients);
 

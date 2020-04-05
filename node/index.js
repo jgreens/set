@@ -139,9 +139,19 @@ io.on( 'connection', function( socket ) {
     });
 
     socket.on( 'USER LOGIN', function(data) {
-        const obj = {
-            nickname: app.createUser(socket.id),
+        const user = app.createUser(socket.id);
+
+        const obj = {};
+
+        if (!user) {
+            obj.success = false;
+            obj.errorMessage = 'Failed to create user';
+        } else {
+            obj.success = true;
+            obj.nickname = user.nickname;
         };
+
+        console.log(`Client with id ${socket.id} logged in as ${obj.nickname}`);
 
         connectedClients[socket.id].emit( 'USER LOGIN ACK', obj );
     });

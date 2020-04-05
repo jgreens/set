@@ -19,7 +19,7 @@ let users = {};
 const addUser = id => {
     if (users[id]) {
         console.error(`Cannot add user with id ${id} - user already exists`);
-        return;
+        return null;
     }
 
     const user = {

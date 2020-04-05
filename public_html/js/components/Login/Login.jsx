@@ -28,7 +28,10 @@ define(
 
                     Socket.login( self.state, function( data ) { // TODO: Get userId from callback and update state
                         self.setState({ 'segmentClass': 'ui segment' }); // Remove loader
-                        self._goToLobby(data.nickname);
+
+                        if (data.success) {
+                            self._goToLobby(data.nickname);
+                        }
                     });
                 }
             }).submit( function( e ) {

@@ -1,6 +1,8 @@
 var express = require( 'express' );
 var path = require( 'path' );
 
+const app = require('./app');
+
 var server = express();
 server.use(express.static(path.join(__dirname, "../public_html")));
 var expressServer = server.listen(3000, function() {
@@ -119,10 +121,14 @@ io.on( 'connection', function( socket ) {
     connectedClients[socket.id] = socket;
     console.log( JSON.stringify( obj ) + '\n' );
 
+    app.clientConnect(socket.id);
+
     socket.on( 'disconnect', function() {
         var obj = createMessage( 'CLIENT DISCONNECT', { clientId: socket.id } );
         delete connectedClients[socket.id]
         console.log( JSON.stringify( obj ) + '\n' );
+
+        app.clientDisconnect(socket.id);
     });
 
     socket.on( 'USER REGISTER', function(data) {

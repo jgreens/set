@@ -79,13 +79,6 @@ define(
             update[ e.target.name ] = e.target.value;
             this.setState( update );
         },
-        _goToRegister: function( e ) {
-            var customEvent = new CustomEvent( 'ViewController',  {
-                detail: { 'view': 'Register' },
-                bubbles: true
-            });
-            window.dispatchEvent( customEvent );
-        },
         _goToLobby: function() {
             var customEvent = new CustomEvent( 'ViewController',  {
                 detail: { 'view': 'Lobby', 'user': { name: this.state.username, id: 99 } }, // TODO: Temporary ID
@@ -121,10 +114,6 @@ define(
 
                             <div className="ui error message"></div>
                         </form>
-
-                        <div className="ui message">
-                            Don&#39;t have an account? <a onClick={this._goToRegister}>Sign Up</a>
-                        </div>
                     </div>
                 </div>
             );

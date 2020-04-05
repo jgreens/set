@@ -3,7 +3,6 @@ define(
     'react',
     'Socket',
     'jsx!components/Login/Login',
-    'jsx!components/Register/Register',
     'jsx!components/Lobby/Lobby',
     'jsx!components/Game/Game'
 ]
@@ -11,7 +10,6 @@ define(
     React,
     Socket,
     Login,
-    Register,
     Lobby,
     Game
 ) {
@@ -50,9 +48,6 @@ define(
             switch( this.state.view ) {
                 case 'Login':
                     view.push( <Login key="Login" /> );
-                    break;
-                case 'Register':
-                    view.push( <Register key="Register" /> );
                     break;
                 case 'Lobby':
                     view.push( <Lobby key="Lobby" user={this.state.user} /> );

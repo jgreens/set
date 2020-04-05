@@ -169,8 +169,19 @@ io.on( 'connection', function( socket ) {
     });
 
     socket.on( 'LOBBY LIST', function() {
-        var obj = createMessage( 'LOBBY LIST', {} );
-        console.log( JSON.stringify( obj ) + '\n' );
+        const data = app.getLobbyList();
+        console.log(JSON.stringify(data));
+
+        for (const clientId of data.clients) {
+            if (connectedClients[clientId]) {
+                connectedClients[clientId].emit('LOBBY UPDATE', {
+                    users: data.nicknames,
+                    games: data.games,
+                });
+            } else {
+                console.warn(`Attempted to send lobby update to disconnected client ${user.id}`);
+            }
+        }
     });
 
     socket.on( 'GAME CREATE', function(data) {

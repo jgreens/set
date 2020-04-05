@@ -23,13 +23,14 @@ const getUserNickname = id => {
     return user.nickname;
 };
 
-const lobbyList = () => {
-    const users = users.getInactiveUsers();
-    const games = games.getAllGames();
+const getLobbyList = () => {
+    const inactiveUsers = users.getInactiveUsers();
+    const allGames = games.getAllGames();
 
     return {
-        users,
-        games,
+        clients: inactiveUsers.map(user => user.id),
+        nicknames: inactiveUsers.map(user => user.nickname),
+        games: allGames,
     };
 };
 
@@ -37,5 +38,5 @@ module.exports = {
     createUser,
     deleteUser,
     getUserNickname,
-    lobbyList,
+    getLobbyList,
 };

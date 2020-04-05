@@ -125,18 +125,11 @@ const clientConnected = socket => {
 
     socket.on( 'LOBBY LIST', () => {
         const data = app.getLobbyList();
-        console.log(JSON.stringify(data));
 
-        for (const clientId of data.clients) {
-            if (connectedClients[clientId]) {
-                connectedClients[clientId].emit('LOBBY UPDATE', {
-                    users: data.nicknames,
-                    games: data.games,
-                });
-            } else {
-                console.warn(`Attempted to send lobby update to unknown client ${user.id}`);
-            }
-        }
+        connectedClients[socket.id].emit('LOBBY LIST ACK', {
+            users: data.nicknames,
+            games: data.games,
+        });
     });
 
     socket.on( 'GAME CREATE', data => {

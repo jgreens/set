@@ -24,12 +24,11 @@ const getUserNickname = id => {
 };
 
 const getLobbyList = () => {
-    const inactiveUsers = users.getInactiveUsers();
+    const nicknames = users.getInactiveUsers().map(user => user.nickname);
     const allGames = games.getAllGames();
 
     return {
-        clients: inactiveUsers.map(user => user.id),
-        nicknames: inactiveUsers.map(user => user.nickname),
+        nicknames,
         games: allGames,
     };
 };

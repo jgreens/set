@@ -89,6 +89,8 @@ const clientConnected = socket => {
         app.deleteUser(socket.id);
 
         delete connectedClients[socket.id]
+
+        sendLobbyUpdate();
     });
 
     socket.on( 'USER LOGIN', data => {
@@ -109,6 +111,8 @@ const clientConnected = socket => {
         };
 
         connectedClients[socket.id].emit( 'USER LOGIN ACK', obj );
+
+        sendLobbyUpdate();
     });
 
     socket.on( 'USER LOGOUT', data => {
@@ -121,15 +125,14 @@ const clientConnected = socket => {
         }
 
         connectedClients[socket.id].emit('USER LOGOUT ACK', success);
+
+        sendLobbyUpdate();
     });
 
     socket.on( 'LOBBY LIST', () => {
-        const data = app.getLobbyList();
+        const data = app.getLobbyData();
 
-        connectedClients[socket.id].emit('LOBBY LIST ACK', {
-            users: data.nicknames,
-            games: data.games,
-        });
+        connectedClients[socket.id].emit('LOBBY LIST ACK', data);
     });
 
     socket.on( 'GAME CREATE', data => {
@@ -209,7 +212,12 @@ const broadcast = (clients, eventType, data) => {
     }
 };
 
+const sendLobbyUpdate = () => {
+    const data = app.getLobbyData();
+
+    broadcast(data.clients, 'LOBBY UPDATE', data);
+};
+
 module.exports = {
     connect,
-    broadcast,
 };

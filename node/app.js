@@ -1,5 +1,6 @@
 const users = require('./users');
 const games = require('./games');
+const socket = require('./socket');
 
 const createUser = id => {
     return users.addUser(id);
@@ -23,12 +24,13 @@ const getUserNickname = id => {
     return user.nickname;
 };
 
-const getLobbyList = () => {
-    const nicknames = users.getInactiveUsers().map(user => user.nickname);
+const getLobbyData = () => {
+    const inactiveUsers = users.getInactiveUsers();
     const allGames = games.getAllGames();
 
     return {
-        nicknames,
+        clients: inactiveUsers.map(user => user.id),
+        users: inactiveUsers.map(user => user.nickname),
         games: allGames,
     };
 };
@@ -37,5 +39,5 @@ module.exports = {
     createUser,
     deleteUser,
     getUserNickname,
-    getLobbyList,
+    getLobbyData,
 };

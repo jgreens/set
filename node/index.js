@@ -116,10 +116,10 @@ var createMessage = function( msgType, data ) {
 var io = require( 'socket.io' ).listen( expressServer );
 var connectedClients = {};
 io.on( 'connection', function( socket ) {
-    console.log( socket.id + ' - ' + socket.client.conn.remoteAddress );
-    var obj = createMessage( 'CLIENT CONNECT', { clientId: socket.id } );
+    console.log(`Received connection with id ${socket.id} from address ${socket.client.conn.remoteAddress}`);
+
     connectedClients[socket.id] = socket;
-    console.log( JSON.stringify( obj ) + '\n' );
+    connectedClients[socket.id].emit('CLIENT CONNECT ACK', true);
 
     socket.on( 'disconnect', function() {
         var obj = createMessage( 'CLIENT DISCONNECT', { clientId: socket.id } );

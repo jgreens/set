@@ -14,7 +14,18 @@ const clientDisconnect = id => {
     clients.deleteClient(id);
 };
 
+const lobbyList = () => {
+    const users = clients.getInactiveClients();
+    const games = games.getAllGames();
+
+    return {
+        users,
+        games,
+    };
+};
+
 module.exports = {
     clientConnect,
     clientDisconnect,
+    lobbyList,
 };

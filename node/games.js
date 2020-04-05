@@ -6,6 +6,10 @@
 
 let games = {};
 
+const getAllGames = () => {
+    return Object.values(games);
+};
+
 const addMemberToGame = (id, clientId) => {
     if (!games[id]) {
         console.error(`Cannot add client to game with id ${id} - game does not exist`);

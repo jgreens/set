@@ -10,25 +10,25 @@ const getAllGames = () => {
     return Object.values(games);
 };
 
-const addMemberToGame = (id, clientId) => {
+const addMemberToGame = (id, userId) => {
     if (!games[id]) {
-        console.error(`Cannot add client to game with id ${id} - game does not exist`);
+        console.error(`Cannot add user to game with id ${id} - game does not exist`);
         return;
     }
 
-    games[id].members.push(clientId);
+    games[id].members.push(userId);
 };
 
-const removeMemberFromGame = (id, clientId) => {
+const removeMemberFromGame = (id, userId) => {
     if (!games[id]) {
-        console.error(`Cannot remove client from game with id ${id} - game does not exist`);
+        console.error(`Cannot remove user from game with id ${id} - game does not exist`);
         return;
     }
 
-    const memberIndex = games[id].members.indexOf(clientId);
+    const memberIndex = games[id].members.indexOf(userId);
 
     if (memberIndex < 0) {
-        console.error(`Cannot remove client with id ${clientId} from game with id ${id} - client not in game`);
+        console.error(`Cannot remove user with id ${userId} from game with id ${id} - user not in game`);
         return;
     }
 

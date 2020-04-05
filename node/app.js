@@ -1,30 +1,30 @@
-const clients = require('./clients');
+const users = require('./users');
 const games = require('./games');
 
-const clientConnect = id => {
-    clients.addClient(id);
+const createUser = id => {
+    users.addUser(id);
 };
 
-const clientDisconnect = id => {
-    const gameId = clients.getClient(id).gameId;
+const deleteUser = id => {
+    const gameId = users.getUser(id).gameId;
     if (gameId) {
         games.removeUserFromGame(gameId, id);
     }
 
-    clients.deleteClient(id);
+    users.deleteUser(id);
 };
 
-const getClientNickname = id => {
-    const client = clients.getClient(id);
-    if (!client) {
+const getUserNickname = id => {
+    const user = users.getUser(id);
+    if (!user) {
         return 'user';
     }
 
-    return client.nickname;
+    return user.nickname;
 };
 
 const lobbyList = () => {
-    const users = clients.getInactiveClients();
+    const users = users.getInactiveUsers();
     const games = games.getAllGames();
 
     return {
@@ -34,8 +34,8 @@ const lobbyList = () => {
 };
 
 module.exports = {
-    clientConnect,
-    clientDisconnect,
-    getClientNickname,
+    createUser,
+    deleteUser,
+    getUserNickname,
     lobbyList,
 };

@@ -121,14 +121,14 @@ io.on( 'connection', function( socket ) {
     connectedClients[socket.id] = socket;
     console.log( JSON.stringify( obj ) + '\n' );
 
-    app.clientConnect(socket.id);
+    app.createUser(socket.id);
 
     socket.on( 'disconnect', function() {
         var obj = createMessage( 'CLIENT DISCONNECT', { clientId: socket.id } );
         delete connectedClients[socket.id]
         console.log( JSON.stringify( obj ) + '\n' );
 
-        app.clientDisconnect(socket.id);
+        app.deleteUser(socket.id);
     });
 
     socket.on( 'USER REGISTER', function(data) {
@@ -142,7 +142,7 @@ io.on( 'connection', function( socket ) {
 
     socket.on( 'USER LOGIN', function(data) {
         const obj = {
-            nickname: app.getClientNickname(socket.id),
+            nickname: app.getUserNickname(socket.id),
         };
 
         connectedClients[socket.id].emit( 'USER LOGIN ACK', obj );

@@ -141,12 +141,11 @@ io.on( 'connection', function( socket ) {
     });
 
     socket.on( 'USER LOGIN', function(data) {
-        var obj = createMessage( 'USER LOGIN', {
-            clientId: socket.id,
-            username: data.username,
-            password: data.password,
-        });
-        console.log( JSON.stringify( obj ) + '\n' );
+        const obj = {
+            nickname: app.getClientNickname(socket.id),
+        };
+
+        connectedClients[socket.id].emit( 'USER LOGIN ACK', obj );
     });
 
     socket.on( 'USER LOGOUT', function(data) {

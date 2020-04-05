@@ -134,7 +134,7 @@ const clientConnected = socket => {
                     games: data.games,
                 });
             } else {
-                console.warn(`Attempted to send lobby update to disconnected client ${user.id}`);
+                console.warn(`Attempted to send lobby update to unknown client ${user.id}`);
             }
         }
     });

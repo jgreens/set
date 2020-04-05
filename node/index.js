@@ -122,11 +122,9 @@ io.on( 'connection', function( socket ) {
     connectedClients[socket.id].emit('CLIENT CONNECT ACK', true);
 
     socket.on( 'disconnect', function() {
-        var obj = createMessage( 'CLIENT DISCONNECT', { clientId: socket.id } );
-        delete connectedClients[socket.id]
-        console.log( JSON.stringify( obj ) + '\n' );
-
         app.deleteUser(socket.id);
+
+        delete connectedClients[socket.id]
     });
 
     socket.on( 'USER REGISTER', function(data) {
@@ -157,11 +155,15 @@ io.on( 'connection', function( socket ) {
     });
 
     socket.on( 'USER LOGOUT', function(data) {
-        var obj = createMessage( 'USER LOGOUT', {
-            clientId: socket.id,
-            username: data.name
-        });
-        console.log( JSON.stringify( obj ) + '\n' );
+        const success = Boolean(app.deleteUser(socket.id));
+
+        if (!success) {
+            console.error(`Failed to log out client with id ${socket.id}`);
+        } else {
+            console.log(`Client with id ${socket.id} logged out`);
+        }
+
+        connectedClients[socket.id].emit('USER LOGOUT ACK', success);
     });
 
     socket.on( 'LOBBY LIST', function() {

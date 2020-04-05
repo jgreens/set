@@ -37,16 +37,16 @@ const addUser = id => {
 const deleteUser = id => {
     if (!users[id]) {
         console.error(`Cannot remove user with id ${id} - user does not exist`);
-        return;
+        return null;
     }
-
-    // TODO: Clean up user from games
 
     const nickname = users[id].nickname;
 
     delete users[id];
 
     console.log(`Deleted user '${nickname}'`);
+
+    return true;
 };
 
 const getUser = id => {

@@ -11,7 +11,7 @@ const deleteUser = id => {
         games.removeUserFromGame(gameId, id);
     }
 
-    users.deleteUser(id);
+    return users.deleteUser(id);
 };
 
 const getUserNickname = id => {

@@ -36,6 +36,7 @@ const removeMemberFromGame = (id, userId) => {
 };
 
 module.exports = {
+    getAllGames,
     addMemberToGame,
     removeMemberFromGame,
 };

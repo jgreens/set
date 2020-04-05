@@ -2,7 +2,7 @@ const users = require('./users');
 const games = require('./games');
 
 const createUser = id => {
-    users.addUser(id);
+    return users.addUser(id).nickname;
 };
 
 const deleteUser = id => {

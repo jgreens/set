@@ -30,6 +30,8 @@ const addUser = id => {
     users[id] = user;
 
     console.log(`Created user '${user.nickname}'`);
+
+    return user;
 };
 
 const deleteUser = id => {

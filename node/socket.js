@@ -206,6 +206,17 @@ const clientConnected = socket => {
     });
 };
 
+const broadcast = (clients, eventType, data) => {
+    for (const clientId of clients) {
+        if (!connectedClients[clientId]) {
+            console.warn(`Attempted to send message of type ${eventType} to unknown client`);
+            return;
+        }
+        connectedClients[clientId].emit(eventType, data);
+    }
+};
+
 module.exports = {
     connect,
+    broadcast,
 };

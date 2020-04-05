@@ -14,6 +14,15 @@ const clientDisconnect = id => {
     clients.deleteClient(id);
 };
 
+const getClientNickname = id => {
+    const client = clients.getClient(id);
+    if (!client) {
+        return 'user';
+    }
+
+    return client.nickname;
+};
+
 const lobbyList = () => {
     const users = clients.getInactiveClients();
     const games = games.getAllGames();
@@ -27,5 +36,6 @@ const lobbyList = () => {
 module.exports = {
     clientConnect,
     clientDisconnect,
+    getClientNickname,
     lobbyList,
 };

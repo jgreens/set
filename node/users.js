@@ -14,7 +14,7 @@ const generateNickname = () => {
 //     gameId: <game id> | null | undefined,
 // }
 
-let users = {};
+const users = {};
 
 const addUser = id => {
     if (users[id]) {

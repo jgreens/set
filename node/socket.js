@@ -1,8 +1,6 @@
 const socketIO = require('socket.io');
 const app = require('./app');
 
-var connectedClients = {};
-
 const connect = expressServer => {
     const io = socketIO.listen( expressServer );
     io.on('connection', clientConnected);
@@ -10,7 +8,7 @@ const connect = expressServer => {
 
 // Utility function to create messages with id numbers (used for acks)
 let msgCount = 0;
-const createMessage = function( msgType, data ) {
+const createMessage = (msgType, data) => {
     const obj = {
         msgId: msgCount++,
         msgType: msgType,
@@ -79,19 +77,21 @@ const createMessage = function( msgType, data ) {
 //    }
 //};
 
+const connectedClients = {};
+
 const clientConnected = socket => {
     console.log(`Received connection with id ${socket.id} from address ${socket.client.conn.remoteAddress}`);
 
     connectedClients[socket.id] = socket;
     connectedClients[socket.id].emit('CLIENT CONNECT ACK', true);
 
-    socket.on( 'disconnect', function() {
+    socket.on( 'disconnect', () => {
         app.deleteUser(socket.id);
 
         delete connectedClients[socket.id]
     });
 
-    socket.on( 'USER LOGIN', function(data) {
+    socket.on( 'USER LOGIN', data => {
         const user = app.createUser(socket.id);
 
         const obj = {};
@@ -111,7 +111,7 @@ const clientConnected = socket => {
         connectedClients[socket.id].emit( 'USER LOGIN ACK', obj );
     });
 
-    socket.on( 'USER LOGOUT', function(data) {
+    socket.on( 'USER LOGOUT', data => {
         const success = Boolean(app.deleteUser(socket.id));
 
         if (!success) {
@@ -123,7 +123,7 @@ const clientConnected = socket => {
         connectedClients[socket.id].emit('USER LOGOUT ACK', success);
     });
 
-    socket.on( 'LOBBY LIST', function() {
+    socket.on( 'LOBBY LIST', () => {
         const data = app.getLobbyList();
         console.log(JSON.stringify(data));
 
@@ -139,7 +139,7 @@ const clientConnected = socket => {
         }
     });
 
-    socket.on( 'GAME CREATE', function(data) {
+    socket.on( 'GAME CREATE', data => {
         var obj = createMessage( 'GAME CREATE', {
             clientId: socket.id,
             name: data.name
@@ -147,7 +147,7 @@ const clientConnected = socket => {
         console.log( JSON.stringify( obj ) + '\n' );
     });
 
-    socket.on( 'GAME JOIN', function(data) {
+    socket.on( 'GAME JOIN', data => {
         var obj = createMessage( 'GAME JOIN', {
             clientId: socket.id,
             gameId: data.id
@@ -155,14 +155,14 @@ const clientConnected = socket => {
         console.log( JSON.stringify( obj ) + '\n' );
     });
 
-    socket.on( 'GAME UPDATE SUBSCRIBE', function(data) {
+    socket.on( 'GAME UPDATE SUBSCRIBE', data => {
         var obj = createMessage( 'GAME UPDATE SUBSCRIBE', {
             gameId: data.id
         });
         console.log( JSON.stringify( obj ) + '\n' );
     });
 
-    socket.on( 'GAME DELETE', function(data) {
+    socket.on( 'GAME DELETE', data => {
         var obj = createMessage( 'GAME DELETE', {
             clientId: socket.id,
             gameId: data.id
@@ -170,7 +170,7 @@ const clientConnected = socket => {
         console.log( JSON.stringify( obj ) + '\n' );
     });
 
-    socket.on( 'GAME START', function(data) {
+    socket.on( 'GAME START', data => {
         var obj = createMessage( 'GAME START', {
             clientId: socket.id,
             gameId: data.id
@@ -178,7 +178,7 @@ const clientConnected = socket => {
         console.log( JSON.stringify( obj ) + '\n' );
     });
 
-    socket.on( 'GAME LEAVE', function(data) {
+    socket.on( 'GAME LEAVE', data => {
         var obj = createMessage( 'GAME LEAVE', {
             clientId: socket.id,
             gameId: data.id
@@ -186,7 +186,7 @@ const clientConnected = socket => {
         console.log( JSON.stringify( obj ) + '\n' );
     });
 
-    socket.on( 'GAME SET', function(data) {
+    socket.on( 'GAME SET', data => {
         var obj = createMessage( 'GAME SET', {
             clientId: socket.id,
             gameId: data.id,
@@ -195,7 +195,7 @@ const clientConnected = socket => {
         console.log( JSON.stringify( obj ) + '\n' );
     });
 
-    socket.on( 'GAME FEED', function(data) {
+    socket.on( 'GAME FEED', data => {
         var obj = createMessage( 'GAME FEED MESSAGE', {
             gameId: data.id,
             username: data.user,

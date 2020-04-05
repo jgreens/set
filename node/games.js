@@ -4,7 +4,7 @@
 //     members: [<user id>],
 // }
 
-let games = {};
+const games = {};
 
 const getAllGames = () => {
     return Object.values(games);

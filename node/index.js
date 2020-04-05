@@ -1,11 +1,11 @@
-var express = require( 'express' );
-var path = require( 'path' );
+const express = require( 'express' );
+const path = require( 'path' );
 
 const socket = require('./socket');
 
-var server = express();
+const server = express();
 server.use(express.static(path.join(__dirname, "../public_html")));
-var expressServer = server.listen(3000, function() {
+const expressServer = server.listen(3000, () => {
     console.log( 'listening on *:3000' );
 });
 

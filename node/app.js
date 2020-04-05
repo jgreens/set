@@ -2,8 +2,18 @@ const users = require('./users');
 const games = require('./games');
 const socket = require('./socket');
 
+let broadcast;
+
+const connectBroadcaster = broadcaster => {
+    broadcast = broadcaster;
+};
+
 const createUser = id => {
-    return users.addUser(id);
+    const user = users.addUser(id);
+
+    sendLobbyUpdate();
+
+    return user;
 };
 
 const deleteUser = id => {
@@ -12,7 +22,11 @@ const deleteUser = id => {
         games.removeUserFromGame(gameId, id);
     }
 
-    return users.deleteUser(id);
+    const result = users.deleteUser(id);
+
+    sendLobbyUpdate();
+
+    return result;
 };
 
 const getUserNickname = id => {
@@ -35,7 +49,14 @@ const getLobbyData = () => {
     };
 };
 
+const sendLobbyUpdate = () => {
+    const data = getLobbyData();
+
+    broadcast(data.clients, 'LOBBY UPDATE', data);
+};
+
 module.exports = {
+    connectBroadcaster,
     createUser,
     deleteUser,
     getUserNickname,

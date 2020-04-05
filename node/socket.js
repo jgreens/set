@@ -89,8 +89,6 @@ const clientConnected = socket => {
         app.deleteUser(socket.id);
 
         delete connectedClients[socket.id]
-
-        sendLobbyUpdate();
     });
 
     socket.on( 'USER LOGIN', data => {
@@ -111,8 +109,6 @@ const clientConnected = socket => {
         };
 
         connectedClients[socket.id].emit( 'USER LOGIN ACK', obj );
-
-        sendLobbyUpdate();
     });
 
     socket.on( 'USER LOGOUT', data => {
@@ -125,8 +121,6 @@ const clientConnected = socket => {
         }
 
         connectedClients[socket.id].emit('USER LOGOUT ACK', success);
-
-        sendLobbyUpdate();
     });
 
     socket.on( 'LOBBY LIST', () => {
@@ -202,7 +196,7 @@ const clientConnected = socket => {
     });
 };
 
-const broadcast = (clients, eventType, data) => {
+app.connectBroadcaster((clients, eventType, data) => {
     for (const clientId of clients) {
         if (!connectedClients[clientId]) {
             console.warn(`Attempted to send message of type ${eventType} to unknown client`);
@@ -210,13 +204,7 @@ const broadcast = (clients, eventType, data) => {
         }
         connectedClients[clientId].emit(eventType, data);
     }
-};
-
-const sendLobbyUpdate = () => {
-    const data = app.getLobbyData();
-
-    broadcast(data.clients, 'LOBBY UPDATE', data);
-};
+});
 
 module.exports = {
     connect,

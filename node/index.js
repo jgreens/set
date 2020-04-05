@@ -31,39 +31,6 @@ var createMessage = function( msgType, data ) {
 //    switch( msgObj.msgType ) {
 //        case 'ack':
 //            break;
-//        case 'CLIENT CONNECT SUCCESS':
-//            connectedClients[ data.clientId ].emit( 'CLIENT CONNECT ACK', true );
-//            break;
-//        case 'USER REGISTER SUCCESS':
-//            var obj = { success: true };
-//            connectedClients[ data.clientId ].emit( 'USER REGISTER ACK', obj );
-//            break;
-//        case 'USER REGISTER FAIL':
-//            var obj = { success: false, message: data.errorMessage };
-//            connectedClients[ data.clientId ].emit( 'USER REGISTER ACK', obj );
-//            break;
-//        case 'USER LOGIN SUCCESS':
-//            var obj = { success: true, user: data.username, id: data.clientId };
-//            connectedClients[ data.clientId ].emit( 'USER LOGIN ACK', obj );
-//            break;
-//        case 'USER LOGIN FAIL':
-//            var obj = { success: false, message: data.errorMessage };
-//            connectedClients[ data.clientId ].emit( 'USER LOGIN ACK', obj );
-//            break;
-//        case 'USER LOGOUT SUCCESS':
-//            connectedClients[ data.clientId ].emit( 'USER LOGOUT ACK', true );
-//            break;
-//        case 'USER LOGOUT FAIL':
-//            connectedClients[ data.clientId ].emit( 'USER LOGOUT ACK', false );
-//            break;
-//        case 'LOBBY UPDATE':
-//            var obj = { users: data.lobbyUsers, games: data.games };
-//            for ( var i = 0; i < data.clients.length; ++i ) {
-//                if ( connectedClients[ data.clients[i] ] ) {
-//                    connectedClients[ data.clients[i] ].emit( 'LOBBY UPDATE', obj );
-//                }
-//            }
-//            break;
 //        case 'GAME CREATE SUCCESS':
 //            var obj = { id: data.gameId };
 //            connectedClients[ data.clientId ].emit( 'GAME CREATE ACK', obj );
@@ -125,15 +92,6 @@ io.on( 'connection', function( socket ) {
         app.deleteUser(socket.id);
 
         delete connectedClients[socket.id]
-    });
-
-    socket.on( 'USER REGISTER', function(data) {
-        var obj = createMessage( 'USER REGISTER', {
-            clientId: socket.id,
-            username: data.username,
-            password: data.password,
-        });
-        console.log( JSON.stringify( obj ) + '\n' );
     });
 
     socket.on( 'USER LOGIN', function(data) {
@@ -249,5 +207,4 @@ io.on( 'connection', function( socket ) {
         });
         console.log( JSON.stringify( obj ) + '\n' );
     });
-
 });

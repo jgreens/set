@@ -7,6 +7,13 @@ const generateNickname = () => {
     });
 };
 
+// Client structure:
+// {
+//     id: <socket id>,
+//     nickname: <some nickname>,
+//     gameId: <game id> | null | undefined,
+// }
+
 let clients = {};
 
 const addClient = id => {

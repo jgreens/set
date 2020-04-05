@@ -1,3 +1,9 @@
+// Game structure:
+// {
+//     id: <some unique id>,
+//     members: [<user id>],
+// }
+
 let games = {};
 
 const addMemberToGame = (id, clientId) => {

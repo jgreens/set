@@ -12,8 +12,6 @@ define(
     var Login = React.createClass({
         getInitialState: function() {
             return {
-                'username': '',
-                'password': '',
                 'segmentClass': 'ui segment'
             };
         },
@@ -25,48 +23,12 @@ define(
 
             var form = $('.ui.form');
             form.form({
-                fields: {
-                    username: {
-                        identifier: 'username',
-                        rules: [
-                            {
-                                type   : 'empty',
-                                prompt : 'Please enter your username'
-                            },
-                            {
-                                type   : 'maxLength[16]',
-                                prompt : 'Your username is than 16 characters'
-                            }
-                        ]
-                    },
-                    password: {
-                        identifier: 'password',
-                        rules: [
-                            {
-                                type   : 'empty',
-                                prompt : 'Please enter your password'
-                            },
-                            {
-                                type   : 'minLength[6]',
-                                prompt : 'Your password is at least 6 characters'
-                            },
-                            {
-                                type   : 'maxLength[20]',
-                                prompt : 'Your password is less than 20 characters'
-                            }
-                        ]
-                    }
-                },
                 onSuccess: function() {
                     self.setState({ 'segmentClass': 'ui segment loading' }); // Dim and show loader while waiting for response
 
                     Socket.login( self.state, function( data ) { // TODO: Get userId from callback and update state
                         self.setState({ 'segmentClass': 'ui segment' }); // Remove loader
-
-                        if( data.success ) // Successfully created account
-                            self._goToLobby();
-                        else // Failure
-                            form.form( 'add errors', [ data.message ] );
+                        self._goToLobby(data.nickname);
                     });
                 }
             }).submit( function( e ) {
@@ -74,14 +36,9 @@ define(
                 return false;
             });
         },
-        _inputChange: function( e ) {
-            var update = {};
-            update[ e.target.name ] = e.target.value;
-            this.setState( update );
-        },
-        _goToLobby: function() {
+        _goToLobby: function(nickname) {
             var customEvent = new CustomEvent( 'ViewController',  {
-                detail: { 'view': 'Lobby', 'user': { name: this.state.username, id: 99 } }, // TODO: Temporary ID
+                detail: { 'view': 'Lobby', 'user': { name: nickname } },
                 bubbles: true
             });
             window.dispatchEvent( customEvent );
@@ -92,23 +49,11 @@ define(
                     <div className="column">
                         <h2 className="ui teal image header">
                             <div className="content">
-                                Login
+                                Welcome to Set!
                             </div>
                         </h2>
                         <form className="ui large form Login-form">
                             <div className={this.state.segmentClass}>
-                                <div className="field">
-                                    <div className="ui left icon input">
-                                        <i className="user icon"></i>
-                                        <input id="username" type="text" name="username" placeholder="Username" value={this.state.username} onChange={this._inputChange}></input>
-                                    </div>
-                                </div>
-                                <div className="field">
-                                    <div className="ui left icon input">
-                                        <i className="lock icon"></i>
-                                        <input id="password" type="password" name="password" placeholder="Password" value={this.state.password} onChange={this._inputChange}></input>
-                                    </div>
-                                </div>
                                 <div id="submit" className="ui fluid large teal submit button">Login</div>
                             </div>
 

@@ -144,12 +144,14 @@ io.on( 'connection', function( socket ) {
         if (!user) {
             obj.success = false;
             obj.errorMessage = 'Failed to create user';
+
+            console.error(`Failed to create user for client with id ${socket.id}`);
         } else {
             obj.success = true;
             obj.nickname = user.nickname;
-        };
 
-        console.log(`Client with id ${socket.id} logged in as ${obj.nickname}`);
+            console.log(`Client with id ${socket.id} logged in as ${obj.nickname}`);
+        };
 
         connectedClients[socket.id].emit( 'USER LOGIN ACK', obj );
     });

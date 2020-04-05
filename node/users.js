@@ -58,14 +58,14 @@ const getUser = id => {
     return users[id];
 };
 
-const getInactiveUser = () => {
-    const inactiveUser = Object.values(users).filter(user => !user.gameId);
-    return inactiveUser;
+const getInactiveUsers = () => {
+    const inactiveUsers = Object.values(users).filter(user => !user.gameId);
+    return inactiveUsers;
 };
 
 module.exports = {
     addUser,
     deleteUser,
     getUser,
-    getInactiveUser,
+    getInactiveUsers,
 };

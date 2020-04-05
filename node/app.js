@@ -17,7 +17,7 @@ const deleteUser = id => {
 const getUserNickname = id => {
     const user = users.getUser(id);
     if (!user) {
-        return 'user';
+        return 'unnamed user';
     }
 
     return user.nickname;

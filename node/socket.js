@@ -130,11 +130,9 @@ const clientConnected = socket => {
     });
 
     socket.on( 'GAME CREATE', data => {
-        var obj = createMessage( 'GAME CREATE', {
-            clientId: socket.id,
-            name: data.name
-        });
-        console.log( JSON.stringify( obj ) + '\n' );
+        const gameData = app.createGame(socket.id, data.name);
+
+        connectedClients[socket.id].emit('GAME CREATE ACK', gameData);
     });
 
     socket.on( 'GAME JOIN', data => {

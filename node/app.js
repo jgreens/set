@@ -49,6 +49,11 @@ const getLobbyData = () => {
     };
 };
 
+const createGame = (creatorId, name) => {
+    const id = games.createGame(name, creatorId);
+    return { id };
+};
+
 const sendLobbyUpdate = () => {
     const data = getLobbyData();
 
@@ -67,4 +72,5 @@ module.exports = {
     deleteUser,
     getUserNickname,
     getLobbyData,
+    createGame,
 };

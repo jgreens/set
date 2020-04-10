@@ -3,6 +3,7 @@ const app = require('./app');
 
 const connect = expressServer => {
     const io = socketIO.listen( expressServer );
+    io.set('transports', ['websocket']);
     io.on('connection', clientConnected);
 };
 

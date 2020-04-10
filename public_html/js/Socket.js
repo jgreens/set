@@ -5,7 +5,7 @@ define(
 , function(
     io
 ) {
-    var socket = io();
+    var socket = io({transports: ['websocket'], upgrade: false});
 
     var Socket = {};
 

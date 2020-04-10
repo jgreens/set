@@ -214,6 +214,8 @@ const game = (creatorId, gameName) => {
         };
     };
 
+    const hasMembers = () => Boolean(members.length);
+
     addFeedMessage(creatorId, "create", null);
 
     initDeck();
@@ -226,6 +228,7 @@ const game = (creatorId, gameName) => {
         evaluateSet,
         addFeedMessage,
         getOverviewData,
+        hasMembers,
     }
 };
 
@@ -277,6 +280,10 @@ const removeMemberFromGame = (id, userId) => {
     if (!games[id].removeUser(userId)) {
         console.error(`Cannot remove user with id ${userId} from game with id ${id} - user not in game`);
         return false;
+    }
+
+    if (!games[id].hasMembers()) {
+        delete games[id];
     }
 
     return true;

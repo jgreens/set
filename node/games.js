@@ -143,7 +143,7 @@ const game = (creatorId, gameName) => {
     };
 
     const addUser = userId => {
-        members.add(userId);
+        members.push(userId);
 
         addFeedMessage(userId, "join", null);
     };

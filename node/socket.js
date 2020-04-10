@@ -166,11 +166,9 @@ const clientConnected = socket => {
     });
 
     socket.on( 'GAME LEAVE', data => {
-        var obj = createMessage( 'GAME LEAVE', {
-            clientId: socket.id,
-            gameId: data.id
-        });
-        console.log( JSON.stringify( obj ) + '\n' );
+        const success = app.leaveGame(data.id, socket.id);
+
+        connectedClients[socket.id].emit('GAME LEAVE ACK', success);
     });
 
     socket.on( 'GAME SET', data => {

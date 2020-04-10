@@ -75,6 +75,7 @@ const joinGame = (gameId, userId) => {
     users.getUser(userId).gameId = gameId;
 
     sendLobbyUpdate();
+    sendGameUpdate(gameId);
 
     return true;
 };
@@ -88,8 +89,24 @@ const leaveGame = (gameId, userId) => {
     users.getUser(userId).gameId = null;
 
     sendLobbyUpdate();
+    sendGameUpdate(gameId);
 
     return true;
+};
+
+const getGameData = gameId => {
+    const gameData = games.getGameData(gameId);
+
+    gameData.clients = gameData.members;
+    delete gameData.members;
+
+    gameData.feed.map(message => ({
+        username: users.getUser(message.userId).nickname,
+        msgType: message.type,
+        data: message.data,
+    }));
+
+    return gameData;
 };
 
 const sendLobbyUpdate = () => {
@@ -98,8 +115,8 @@ const sendLobbyUpdate = () => {
     broadcast(data.clients, 'LOBBY UPDATE', data);
 };
 
-const sendGameUpdate = () => {
-    const data = getGameData();
+const sendGameUpdate = gameId => {
+    const data = getGameData(gameId);
 
     broadcast(data.clients, 'GAME UPDATE', data);
 };

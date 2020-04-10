@@ -40,7 +40,7 @@ define(
             // Receives updated board, score, feed, etc
             Socket.gameUpdate({ id: this.props.id }, function( data ) {
                 // Update not meant for this game
-                if( self.props.id != data.gameId )
+                if( self.props.id != data.id )
                     return false;
 
                 // Start game button for owner

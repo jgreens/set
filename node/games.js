@@ -1,6 +1,6 @@
 const uuidv4 = require('uuid/v4');
 
-const game = (gameName, creatorId) => {
+const game = (creatorId, gameName) => {
     const id = uuidv4();
     const name = gameName;
 
@@ -230,9 +230,10 @@ const getAllGames = () => {
     return Object.values(games);
 };
 
-const createGame = (name, creatorId) => {
-    let game = game(name, creatorId);
-    games[id] = game;
+const createGame = (creatorId, name) => {
+    const newGame = game(creatorId, name);
+    games[newGame.id] = newGame;
+    return newGame.id;
 };
 
 const startGame = (id, userId) => {

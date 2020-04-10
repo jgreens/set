@@ -29,32 +29,6 @@ const createMessage = (msgType, data) => {
 //    switch( msgObj.msgType ) {
 //        case 'ack':
 //            break;
-//        case 'GAME CREATE SUCCESS':
-//            var obj = { id: data.gameId };
-//            connectedClients[ data.clientId ].emit( 'GAME CREATE ACK', obj );
-//            break;
-//        case 'GAME JOIN SUCCESS':
-//            connectedClients[ data.clientId ].emit( 'GAME JOIN ACK', true );
-//            break;
-//        case 'GAME JOIN FAIL':
-//            connectedClients[ data.clientId ].emit( 'GAME JOIN ACK', false );
-//            break;
-//        case 'GAME DELETE SUCCESS':
-//            // TODO: This should send game members back to the lobby
-//            for ( var i = 0; i < data.clients.length; ++i ) {
-//                connectedClients[ data.clients[i] ].emit( 'GAME DELETE ACK', true );
-//            }
-//            break;
-//        case 'GAME DELETE FAIL':
-//            // TODO: This should show some sort of error message and stop the button load state
-//            connectedClients[ data.clientId ].emit( 'GAME DELETE ACK', false );
-//            break;
-//        case 'GAME LEAVE SUCCESS':
-//            connectedClients[ data.clientId ].emit( 'GAME LEAVE ACK', true );
-//            break;
-//        case 'GAME LEAVE FAIL':
-//            connectedClients[ data.clientId ].emit( 'GAME LEAVE ACK', false );
-//            break;
 //        case 'GAME START SUCCESS':
 //            connectedClients[ data.clientId ].emit( 'GAME START ACK', true );
 //            break;
@@ -66,11 +40,6 @@ const createMessage = (msgType, data) => {
 //            break;
 //        case 'GAME SET FAIL':
 //            connectedClients[ data.clientId ].emit( 'GAME SET ACK', false );
-//            break;
-//        case 'GAME UPDATE':
-//            for ( var i = 0; i < data.clients.length; ++i ) {
-//                connectedClients[ data.clients[i] ].emit( 'GAME UPDATE', data );
-//            }
 //            break;
 //        default:
 //            console.log( 'Unhandled message: ' + msgObj );
@@ -144,14 +113,6 @@ const clientConnected = socket => {
 
     socket.on( 'GAME UPDATE INIT', data => {
         const gameData = app.triggerGameUpdate(data.id);
-    });
-
-    socket.on( 'GAME DELETE', data => {
-        var obj = createMessage( 'GAME DELETE', {
-            clientId: socket.id,
-            gameId: data.id
-        });
-        console.log( JSON.stringify( obj ) + '\n' );
     });
 
     socket.on( 'GAME START', data => {

@@ -195,6 +195,8 @@ const clientConnected = socket => {
 };
 
 app.connectBroadcaster((clients, eventType, data) => {
+    console.log(`Broadcasting ${eventType}`, JSON.stringify(data, null, 2));
+
     for (const clientId of clients) {
         if (!connectedClients[clientId]) {
             console.warn(`Attempted to send message of type ${eventType} to unknown client`);

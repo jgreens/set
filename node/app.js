@@ -99,13 +99,14 @@ const leaveGame = (gameId, userId) => {
     return true;
 };
 
+const triggerGameUpdate = gameId => {
+    sendGameUpdate(gameId);
+};
+
 const getGameData = gameId => {
     const gameData = games.getGameData(gameId);
 
-    gameData.clients = gameData.members;
-    delete gameData.members;
-
-    gameData.feed.map(message => ({
+    gameData.feed = gameData.feed.map(message => ({
         username: users.getUser(message.userId).nickname,
         msgType: message.type,
         data: message.data,
@@ -123,7 +124,7 @@ const sendLobbyUpdate = () => {
 const sendGameUpdate = gameId => {
     const data = getGameData(gameId);
 
-    broadcast(data.clients, 'GAME UPDATE', data);
+    broadcast(data.members, 'GAME UPDATE', data);
 };
 
 module.exports = {
@@ -135,4 +136,5 @@ module.exports = {
     createGame,
     joinGame,
     leaveGame,
+    triggerGameUpdate,
 };

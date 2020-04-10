@@ -142,11 +142,8 @@ const clientConnected = socket => {
         connectedClients[socket.id].emit('GAME JOIN ACK', success);
     });
 
-    socket.on( 'GAME UPDATE SUBSCRIBE', data => {
-        var obj = createMessage( 'GAME UPDATE SUBSCRIBE', {
-            gameId: data.id
-        });
-        console.log( JSON.stringify( obj ) + '\n' );
+    socket.on( 'GAME UPDATE INIT', data => {
+        const gameData = app.triggerGameUpdate(data.id);
     });
 
     socket.on( 'GAME DELETE', data => {

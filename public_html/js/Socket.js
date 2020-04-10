@@ -73,7 +73,7 @@ define(
     };
 
     Socket.gameUpdate = function( state, callback ) {
-        socket.emit( 'GAME UPDATE SUBSCRIBE', state );
+        socket.emit( 'GAME UPDATE INIT', state );
         socket.on( 'GAME UPDATE', function( data ) {
             callback( data );
         });

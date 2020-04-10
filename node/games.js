@@ -4,6 +4,8 @@ const game = (creatorId, gameName) => {
     const id = uuidv4();
     const name = gameName;
 
+    const owner = creatorId;
+
     let board = [];
     let deck = [];
 

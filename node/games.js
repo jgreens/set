@@ -206,6 +206,8 @@ const game = (creatorId, gameName) => {
         feed.push({ userId, type, data });
     };
 
+    const hasMembers = () => Boolean(members.length);
+
     const getOverviewData = () => {
         return {
             id,
@@ -216,7 +218,17 @@ const game = (creatorId, gameName) => {
         };
     };
 
-    const hasMembers = () => Boolean(members.length);
+    const getDetailedData = () => {
+        return {
+            id,
+            members,
+            cards: board.map(card => card.join('')),
+            feed,
+            owner,
+            started: status !== 0,
+            finished: status === 2,
+        };
+    };
 
     addFeedMessage(creatorId, "create", null);
 
@@ -231,6 +243,7 @@ const game = (creatorId, gameName) => {
         addFeedMessage,
         getOverviewData,
         hasMembers,
+        getDetailedData,
     }
 };
 
@@ -310,6 +323,15 @@ const addFeedMessage = (id, userId, type, data) => {
     return true;
 };
 
+const getGameData = id => {
+    if (!games[id]) {
+        console.error(`Cannot get game data for game with id ${id} - game does not exist`);
+        return false;
+    }
+
+    return games[id].getDetailedData();
+};
+
 module.exports = {
     getAllGames,
     createGame,
@@ -318,4 +340,5 @@ module.exports = {
     removeMemberFromGame,
     evaluateSet,
     addFeedMessage,
+    getGameData,
 };

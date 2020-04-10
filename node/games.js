@@ -204,6 +204,16 @@ const game = (creatorId, gameName) => {
         feed.push({ userId, type, data });
     };
 
+    const getOverviewData = () => {
+        return {
+            id,
+            name,
+            members,
+            started: status !== 0,
+            finished: status === 2,
+        };
+    };
+
     addFeedMessage(creatorId, "create", null);
 
     initDeck();
@@ -215,12 +225,14 @@ const game = (creatorId, gameName) => {
         removeUser,
         evaluateSet,
         addFeedMessage,
+        getOverviewData,
     }
 };
 
 // Game structure:
 // {
 //     id: <some unique id>,
+//     name: <name>,
 //     members: [<user id>],
 // }
 

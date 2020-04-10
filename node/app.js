@@ -42,11 +42,18 @@ const getLobbyData = () => {
     const inactiveUsers = users.getInactiveUsers();
     const allGames = games.getAllGames();
 
-    return {
+    const lobbyData = {
         clients: inactiveUsers.map(user => user.id),
         users: inactiveUsers.map(user => user.nickname),
-        games: allGames,
+        games: allGames.map(game => game.getOverviewData()),
     };
+
+    lobbyData.games.map(game => {
+        game.members = game.members.map(id => users.getUser(id).nickname);
+        return game;
+    });
+
+    return lobbyData;
 };
 
 const createGame = (creatorId, name) => {
@@ -57,6 +64,8 @@ const createGame = (creatorId, name) => {
     } else {
         users.getUser(creatorId).gameId = id;
     }
+
+    sendLobbyUpdate();
 
     return { id };
 };

@@ -274,7 +274,7 @@ const removeMemberFromGame = (id, userId) => {
         return false;
     }
 
-    if (games[id].removeUser(userId)) {
+    if (!games[id].removeUser(userId)) {
         console.error(`Cannot remove user with id ${userId} from game with id ${id} - user not in game`);
         return false;
     }

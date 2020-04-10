@@ -131,8 +131,8 @@ const game = (creatorId, gameName) => {
         }
 
         status = 1;
-        scores = members.reduce(member, obj => {
-            scores[userId] = 0;
+        scores = members.reduce((obj, member) => {
+            scores[member] = 0;
         }, {});
 
         deck.shuffle(() => Math.random() - 0.5);

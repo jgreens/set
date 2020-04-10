@@ -116,11 +116,9 @@ const clientConnected = socket => {
     });
 
     socket.on( 'GAME START', data => {
-        var obj = createMessage( 'GAME START', {
-            clientId: socket.id,
-            gameId: data.id
-        });
-        console.log( JSON.stringify( obj ) + '\n' );
+        const success = app.startGame(data.id, socket.id);
+
+        connectedClients[socket.id].emit('GAME START ACK', success);
     });
 
     socket.on( 'GAME LEAVE', data => {

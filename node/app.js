@@ -103,6 +103,16 @@ const triggerGameUpdate = gameId => {
     sendGameUpdate(gameId);
 };
 
+const startGame = (gameId, userId) => {
+    const result = games.startGame(gameId, userId);
+
+    if (result) {
+        sendGameUpdate(gameId);
+    }
+
+    return result;
+};
+
 const getGameData = gameId => {
     const gameData = games.getGameData(gameId);
 
@@ -139,4 +149,5 @@ module.exports = {
     joinGame,
     leaveGame,
     triggerGameUpdate,
+    startGame,
 };

@@ -136,11 +136,9 @@ const clientConnected = socket => {
     });
 
     socket.on( 'GAME JOIN', data => {
-        var obj = createMessage( 'GAME JOIN', {
-            clientId: socket.id,
-            gameId: data.id
-        });
-        console.log( JSON.stringify( obj ) + '\n' );
+        const success = app.joinGame(data.id, socket.id);
+
+        connectedClients[socket.id].emit('GAME JOIN ACK', success);
     });
 
     socket.on( 'GAME UPDATE SUBSCRIBE', data => {

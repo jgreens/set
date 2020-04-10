@@ -55,6 +55,12 @@ const sendLobbyUpdate = () => {
     broadcast(data.clients, 'LOBBY UPDATE', data);
 };
 
+const sendGameUpdate = () => {
+    const data = getGameData();
+
+    broadcast(data.clients, 'GAME UPDATE', data);
+};
+
 module.exports = {
     connectBroadcaster,
     createUser,

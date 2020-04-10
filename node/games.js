@@ -214,7 +214,6 @@ const game = (gameName, creatorId) => {
         addUser,
         removeUser,
         evaluateSet,
-        getWinner,
         addFeedMessage,
     }
 };
@@ -231,33 +230,70 @@ const getAllGames = () => {
     return Object.values(games);
 };
 
+const createGame = (name, creatorId) => {
+    let game = game(name, creatorId);
+    games[id] = game;
+};
+
+const startGame = (id, userId) => {
+    if (!games[id]) {
+        console.error(`Cannot start game with id ${id} - game does not exist`);
+        return false;
+    }
+
+    games[id].start(userId);
+    return true;
+};
+
 const addMemberToGame = (id, userId) => {
     if (!games[id]) {
         console.error(`Cannot add user to game with id ${id} - game does not exist`);
-        return;
+        return false;
     }
 
-    games[id].members.push(userId);
+    games[id].addUser(userId);
+    return true
 };
 
 const removeMemberFromGame = (id, userId) => {
     if (!games[id]) {
         console.error(`Cannot remove user from game with id ${id} - game does not exist`);
-        return;
+        return false;
     }
 
-    const memberIndex = games[id].members.indexOf(userId);
-
-    if (memberIndex < 0) {
+    if (games[id].removeUser(userId) == -1) {
         console.error(`Cannot remove user with id ${userId} from game with id ${id} - user not in game`);
-        return;
+        return false;
     }
 
-    games[id].members.splice(memberIndex, 1);
+    return true;
+};
+
+const evaluateSet = (id, userId, first, second, third) => {
+    if (!games[id]) {
+        console.error(`Cannot evaluate set in game with id ${id} - game does not exist`);
+        return -1;
+    }
+
+    return games[id].evaluateSet(userId, first, second, third);
+};
+
+const addFeedMessage = (id, userId, type, data) => {
+    if (!games[id]) {
+        console.error(`Cannot add feed message to game with id ${id} - game does not exist`);
+        return false;
+    }
+
+    games[id].addFeedMessage(userId, type, data);
+    return true;
 };
 
 module.exports = {
     getAllGames,
+    createGame,
+    startGame,
     addMemberToGame,
     removeMemberFromGame,
+    evaluateSet,
+    addFeedMessage,
 };

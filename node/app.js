@@ -19,7 +19,7 @@ const createUser = id => {
 const deleteUser = id => {
     const gameId = users.getUser(id).gameId;
     if (gameId) {
-        games.removeUserFromGame(gameId, id);
+        games.removeUser(gameId, id);
     }
 
     const result = users.deleteUser(id);

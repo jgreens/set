@@ -192,14 +192,32 @@ const game = (creatorId, gameName) => {
         return false;
     };
 
-    const evaluateSet = (userId, cardIndex1, cardIndex2, cardIndex3) => {
-        if (cardIndex1 < board.length || cardIndex2 < board.length || cardIndex3 < board.length) {
-            return -2;
+    const validateCard = card => {
+        return card.length === 4 && card.filter(element => element >= 0 && element <= 2).length == 4;
+    };
+
+    const cardIndex = card => {
+        for (let i = 0; i < board.length; ++i) {
+            if (arraysEqual(board[i], card)) {
+                return i;
+            }
         }
 
-        const card1 = board[cardIndex1];
-        const card2 = board[cardIndex2];
-        const card3 = board[cardIndex3];
+        return false;
+    };
+
+    const evaluateSet = (userId, cards) => {
+        if (cards.length !== 3 || !validateCard(cards[0]) || !validateCard(cards[1]) || !validateCard(cards[2])) {
+            return -1;
+        }
+
+        const cardIndex1 = cardIndex(card[0]);
+        const cardIndex2 = cardIndex(card[1]);
+        const cardIndex3 = cardIndex(card[2]);
+
+        if (!cardIndex1 || !cardIndex2 || !cardIndex3) {
+            return -2;
+        }
 
         if (arraysEqual(getSetCard(card1, card2), card3)) {
             const indices = [cardIndex1, cardIndex2, cardIndex3].sort((a, b) => b - a);
@@ -209,19 +227,21 @@ const game = (creatorId, gameName) => {
 
             scores[userId] += 1;
 
-            addFeedMessage(userId, "set", `[${card1.join('')},${card2.join('')},${card3.join('')}]`);
+            addFeedMessage(userId, "set", `[${cards[0].join('')},${cards[1].join('')},${cards[2].join('')}]`);
 
-            drawThree(cardIndex1, cardIndex2, cardIndex3);
-
-            if (board.length < 12 && !hasSet()) {
+            if (!deck.length && !hasSet()) {
                 status = 2;
                 return 2;
             }
 
+            do {
+                drawThree(cardIndex1, cardIndex2, cardIndex3);
+            } while (board.length < 12 && !hasSet());
+
             return 1;
         }
         
-        addFeedMessage(userId, "fail", `[${card1.join('')},${card2.join('')},${card3.join('')}]`);
+        addFeedMessage(userId, "fail", `[${cards[0].join('')},${cards[1].join('')},${cards[2].join('')}]`);
         return 0;
     };
 
@@ -322,13 +342,13 @@ const removeMemberFromGame = (id, userId) => {
     return true;
 };
 
-const evaluateSet = (id, userId, first, second, third) => {
+const evaluateSet = (id, userId, cards) => {
     if (!games[id]) {
         console.error(`Cannot evaluate set in game with id ${id} - game does not exist`);
         return -1;
     }
 
-    return games[id].evaluateSet(userId, first, second, third);
+    return games[id].evaluateSet(userId, cards);
 };
 
 const addFeedMessage = (id, userId, type, data) => {

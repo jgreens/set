@@ -79,7 +79,7 @@ const joinGame = (gameId, userId) => {
 
 const leaveGame = (gameId, userId) => {
     if (!games.removeMemberFromGame(gameId, userId)) {
-        console.error(`Error removing player with id ${creatorId} from game with id ${id}`);
+        console.error(`Error removing player with id ${userId} from game with id ${gameId}`);
         return false;
     }
 

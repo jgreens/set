@@ -124,6 +124,22 @@ const game = (creatorId, gameName) => {
         return [parseInt(cardStr[0]), parseInt(cardStr[1]), parseInt(cardStr[2]), parseInt(cardStr[3])];
     };
 
+    const shuffleDeck = () => {
+        let counter = deck.length, temp, index;
+
+        while (counter > 0) {
+            index = Math.floor(Math.random() * counter);
+            counter--;
+            temp = deck[counter];
+            deck[counter] = deck[index];
+            deck[index] = temp;
+        }
+
+        console.log(JSON.stringify(deck));
+
+        return deck;
+    };
+
     const start = userId => {
         if (owner !== userId) {
             console.warn(`Non-owner user ${userId} attempted to start game ${id}`);
@@ -135,7 +151,7 @@ const game = (creatorId, gameName) => {
             scores[member] = 0;
         }, {});
 
-        deck.shuffle(() => Math.random() - 0.5);
+        shuffleDeck();
 
         drawThree(0, 0, 0);
         drawThree(0, 0, 0);

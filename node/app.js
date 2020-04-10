@@ -74,6 +74,8 @@ const joinGame = (gameId, userId) => {
 
     users.getUser(userId).gameId = gameId;
 
+    sendLobbyUpdate();
+
     return true;
 };
 
@@ -84,6 +86,8 @@ const leaveGame = (gameId, userId) => {
     }
 
     users.getUser(userId).gameId = null;
+
+    sendLobbyUpdate();
 
     return true;
 };

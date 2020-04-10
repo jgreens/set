@@ -106,6 +106,8 @@ const triggerGameUpdate = gameId => {
 const getGameData = gameId => {
     const gameData = games.getGameData(gameId);
 
+    gameData.owner = users.getUser(gameData.owner).nickname;
+
     gameData.feed = gameData.feed.map(message => ({
         username: users.getUser(message.userId).nickname,
         msgType: message.type,

@@ -205,19 +205,21 @@ const game = (creatorId, gameName) => {
     };
 
     const evaluateSet = (userId, cards) => {
+        cards = cards.map(card => Array.from(card));
+
         if (cards.length !== 3 || !validateCard(cards[0]) || !validateCard(cards[1]) || !validateCard(cards[2])) {
             return -1;
         }
 
-        const cardIndex1 = cardIndex(card[0]);
-        const cardIndex2 = cardIndex(card[1]);
-        const cardIndex3 = cardIndex(card[2]);
+        const cardIndex1 = cardIndex(cards[0]);
+        const cardIndex2 = cardIndex(cards[1]);
+        const cardIndex3 = cardIndex(cards[2]);
 
         if (!cardIndex1 || !cardIndex2 || !cardIndex3) {
             return -2;
         }
 
-        if (arraysEqual(getSetCard(card1, card2), card3)) {
+        if (arraysEqual(getSetCard(card[0], card[1]), card[2])) {
             const indices = [cardIndex1, cardIndex2, cardIndex3].sort((a, b) => b - a);
             indices.forEach(index => {
                 board.splice(index, 1);

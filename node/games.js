@@ -161,10 +161,10 @@ const game = (creatorId, gameName) => {
             members.splice(index, 1);
             addFeedMessage(userId, "leave", null);
 
-            return members.length;
-        } else {
-            return -1;
+            return true;
         }
+
+        return false;
     };
 
     const evaluateSet = (userId, cardIndex1, cardIndex2, cardIndex3) => {
@@ -274,7 +274,7 @@ const removeMemberFromGame = (id, userId) => {
         return false;
     }
 
-    if (games[id].removeUser(userId) == -1) {
+    if (games[id].removeUser(userId)) {
         console.error(`Cannot remove user with id ${userId} from game with id ${id} - user not in game`);
         return false;
     }

@@ -113,6 +113,11 @@ const startGame = (gameId, userId) => {
     return result;
 };
 
+const sendGameFeedMessage = (gameId, userId, type, message) => {
+    games.addFeedMessage(gameId, userId, type, message);
+    sendGameUpdate(gameId);
+};
+
 const getGameData = gameId => {
     const gameData = games.getGameData(gameId);
 
@@ -150,4 +155,5 @@ module.exports = {
     leaveGame,
     triggerGameUpdate,
     startGame,
+    sendGameFeedMessage,
 };

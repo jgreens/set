@@ -137,13 +137,7 @@ const clientConnected = socket => {
     });
 
     socket.on( 'GAME FEED', data => {
-        var obj = createMessage( 'GAME FEED MESSAGE', {
-            gameId: data.id,
-            username: data.user,
-            msgType: data.type,
-            data: data.message
-        });
-        console.log( JSON.stringify( obj ) + '\n' );
+        app.sendGameFeedMessage(data.id, socket.id, data.type, data.message);
     });
 };
 

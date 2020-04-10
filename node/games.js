@@ -297,10 +297,6 @@ const removeMemberFromGame = (id, userId) => {
         return false;
     }
 
-    if (!games[id].hasMembers()) {
-        delete games[id];
-    }
-
     return true;
 };
 
@@ -332,6 +328,26 @@ const getGameData = id => {
     return games[id].getDetailedData();
 };
 
+const gameIsEmpty = id => {
+    if (!games[id]) {
+        console.error(`Cannot check game members for game with id ${id} - game does not exist`);
+        return false;
+    }
+
+    return !games[id].hasMembers();
+};
+
+const deleteGame = id => {
+    if (!games[id]) {
+        console.error(`Cannot delete game with id ${id} - game does not exist`);
+        return false;
+    }
+
+    delete games[id];
+
+    return true;
+};
+
 module.exports = {
     getAllGames,
     createGame,
@@ -341,4 +357,6 @@ module.exports = {
     evaluateSet,
     addFeedMessage,
     getGameData,
+    gameIsEmpty,
+    deleteGame,
 };

@@ -88,8 +88,13 @@ const leaveGame = (gameId, userId) => {
 
     users.getUser(userId).gameId = null;
 
-    sendLobbyUpdate();
     sendGameUpdate(gameId);
+
+    if (games.gameIsEmpty(gameId)) {
+        games.deleteGame(gameId);
+    }
+
+    sendLobbyUpdate();
 
     return true;
 };

@@ -38,7 +38,7 @@ const game = (creatorId, gameName) => {
             return false;
         }
 
-        if (first > board.length || second >= board.length || third >= board.length) {
+        if (first >= deck.length || second >= deck.length || deck >= board.length) {
             return false;
         }
 

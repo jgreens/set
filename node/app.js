@@ -50,7 +50,7 @@ const getLobbyData = () => {
 };
 
 const createGame = (creatorId, name) => {
-    const id = games.createGame(name, creatorId);
+    const id = games.createGame(creatorId, name);
 
     if (!games.addMemberToGame(id, creatorId)) {
         console.error(`Error adding initial player with id ${creatorId} to game with id ${id}`);

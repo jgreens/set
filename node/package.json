@@ -11,7 +11,8 @@
   "dependencies": {
     "express": "^4.17.1",
     "socket.io": "^2.3.0",
-    "unique-names-generator": "^4.2.0"
+    "unique-names-generator": "^4.2.0",
+    "uuid": "^7.0.3"
   },
   "devDependencies": {
     "nodemon": "^2.0.2"

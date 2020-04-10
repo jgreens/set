@@ -1,7 +1,7 @@
-let gameIdCounter = 0;
+const uuidv4 = require('uuid/v4');
 
 const game = (gameName, creatorId) => {
-    const id = gameIdCounter++;
+    const id = uuidv4();
     const name = gameName;
 
     let board = [];

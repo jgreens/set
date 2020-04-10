@@ -135,8 +135,6 @@ const game = (creatorId, gameName) => {
             deck[index] = temp;
         }
 
-        console.log(JSON.stringify(deck));
-
         return deck;
     };
 

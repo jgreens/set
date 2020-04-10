@@ -125,6 +125,11 @@ const game = (creatorId, gameName) => {
     };
 
     const start = userId => {
+        if (owner !== userId) {
+            console.warn(`Non-owner user ${userId} attempted to start game ${id}`);
+            return false;
+        }
+
         status = 1;
         scores = members.reduce(member, obj => {
             scores[userId] = 0;
@@ -142,6 +147,8 @@ const game = (creatorId, gameName) => {
         }
 
         addFeedMessage(userId, "start", null);
+
+        return true;
     };
 
     const addUser = userId => {
@@ -272,8 +279,7 @@ const startGame = (id, userId) => {
         return false;
     }
 
-    games[id].start(userId);
-    return true;
+    return games[id].start(userId);
 };
 
 const addMemberToGame = (id, userId) => {

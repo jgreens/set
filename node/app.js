@@ -59,15 +59,33 @@ const getLobbyData = () => {
 const createGame = (creatorId, name) => {
     const id = games.createGame(creatorId, name);
 
-    if (!games.addMemberToGame(id, creatorId)) {
-        console.error(`Error adding initial player with id ${creatorId} to game with id ${id}`);
-    } else {
-        users.getUser(creatorId).gameId = id;
-    }
+    joinGame(id, creatorId);
 
     sendLobbyUpdate();
 
     return { id };
+};
+
+const joinGame = (gameId, userId) => {
+    if (!games.addMemberToGame(gameId, userId)) {
+        console.error(`Error adding player with id ${creatorId} to game with id ${id}`);
+        return false;
+    }
+
+    users.getUser(userId).gameId = gameId;
+
+    return true;
+};
+
+const leaveGame = (gameId, userId) => {
+    if (!games.removeMemberFromGame(gameId, userId)) {
+        console.error(`Error removing player with id ${creatorId} from game with id ${id}`);
+        return false;
+    }
+
+    users.getUser(userId).gameId = null;
+
+    return true;
 };
 
 const sendLobbyUpdate = () => {
@@ -89,4 +107,6 @@ module.exports = {
     getUserNickname,
     getLobbyData,
     createGame,
+    joinGame,
+    leaveGame,
 };

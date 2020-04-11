@@ -147,6 +147,7 @@ const evaluateSet = (gameId, userId, cards) => {
 
     if (rc >= 0) {
         sendGameUpdate(gameId);
+        sendLobbyUpdate();
     }
 
     return result;

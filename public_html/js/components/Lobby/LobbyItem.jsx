@@ -22,7 +22,7 @@ define(
         },
         componentWillReceiveProps: function( newProps ) {
             var joinText = newProps.started ? 'Join Ongoing Game' : 'Join New Game';
-            if( this.props.finished )
+            if( newProps.finished )
                 joinText = 'Join Finished Game';
 
             this.setState({ joinText: joinText });

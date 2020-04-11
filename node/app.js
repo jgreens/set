@@ -8,8 +8,8 @@ const connectBroadcaster = broadcaster => {
     broadcast = broadcaster;
 };
 
-const createUser = id => {
-    const user = users.addUser(id);
+const createUser = (id, nickname) => {
+    const user = users.addUser(id, nickname);
 
     sendLobbyUpdate();
 

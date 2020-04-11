@@ -22,7 +22,7 @@ const clientConnected = socket => {
     });
 
     socket.on( 'USER ENTER', data => {
-        const user = app.createUser(socket.id);
+        const user = app.createUser(socket.id, data.nickname);
 
         const obj = {};
 

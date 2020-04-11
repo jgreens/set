@@ -16,7 +16,7 @@ const generateNickname = () => {
 
 const users = {};
 
-const addUser = id => {
+const addUser = (id, nickname) => {
     if (users[id]) {
         console.error(`Cannot add user with id ${id} - user already exists`);
         return null;
@@ -24,7 +24,7 @@ const addUser = id => {
 
     const user = {
         id,
-        nickname: generateNickname(),
+        nickname: nickname ? nickname : generateNickname(),
     };
 
     users[id] = user;

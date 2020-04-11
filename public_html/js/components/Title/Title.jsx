@@ -12,6 +12,7 @@ define(
     var Title = React.createClass({
         getInitialState: function() {
             return {
+                'nickname': '',
                 'segmentClass': 'ui segment'
             };
         },
@@ -39,6 +40,11 @@ define(
                 return false;
             });
         },
+        _inputChange: function( e ) {
+            var update = {};
+            update[ e.target.name ] = e.target.value;
+            this.setState( update );
+        },
         _goToLobby: function(nickname) {
             var customEvent = new CustomEvent( 'ViewController',  {
                 detail: { 'view': 'Lobby', 'user': { name: nickname } },
@@ -57,6 +63,12 @@ define(
                         </h2>
                         <form className="ui large form Title-form">
                             <div className={this.state.segmentClass}>
+                                <div className="field">
+                                    <div className="ui left icon input">
+                                        <i className="user icon"></i>
+                                        <input id="nickname" type="text" name="nickname" placeholder="Nickname (optional)" value={this.state.nickname} onChange={this._inputChange}></input>
+                                    </div>
+                                </div>
                                 <div id="submit" className="ui fluid large teal submit button">Enter</div>
                             </div>
 

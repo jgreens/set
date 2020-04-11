@@ -128,12 +128,9 @@ const clientConnected = socket => {
     });
 
     socket.on( 'GAME SET', data => {
-        var obj = createMessage( 'GAME SET', {
-            clientId: socket.id,
-            gameId: data.id,
-            cards: data.set
-        });
-        console.log( JSON.stringify( obj ) + '\n' );
+        const result = app.evaluateSet(data.id, socket.id, data.set);
+
+        connectedClients[socket.id].emit('GAME SET ACK', result);
     });
 
     socket.on( 'GAME FEED', data => {

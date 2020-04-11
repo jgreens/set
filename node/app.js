@@ -113,6 +113,44 @@ const startGame = (gameId, userId) => {
     return result;
 };
 
+const evaluateSet = (gameId, userId, cards) => {
+    const rc = games.evaluateSet(gameId, userId, cards);
+
+    let result = {};
+    switch (rc) {
+        case -2:
+            result.message = 'Cards are not on the board';
+            result.success = false;
+            break;
+        case -1:
+            result.message = 'Cards are formatted incorrectly';
+            result.success = false;
+            break;
+        case 0:
+            result.message = 'Invalid set';
+            result.success = false;
+            break;
+        case 1:
+            result.message = 'Valid set; game not yet finished';
+            result.success = true;
+            break;
+        case 2:
+            result.message = 'Valid set; game finished';
+            result.success = true;
+            break;
+        default:
+            result.message = 'Unknown return code from set evaluation';
+            result.success = false;
+            break;
+    }
+
+    if (rc >= 0) {
+        sendGameUpdate(gameId);
+    }
+
+    return result;
+};
+
 const sendGameFeedMessage = (gameId, userId, type, message) => {
     games.addFeedMessage(gameId, userId, type, message);
     sendGameUpdate(gameId);
@@ -156,4 +194,5 @@ module.exports = {
     triggerGameUpdate,
     startGame,
     sendGameFeedMessage,
+    evaluateSet,
 };

@@ -47,9 +47,9 @@ const game = (creatorId, gameName) => {
             return false;
         }
 
-        if (first >= deck.length || second >= deck.length || deck >= board.length) {
-            return false;
-        }
+        first = Math.min(first, board.length);
+        second = Math.min(second, board.length);
+        third = Math.min(third, board.length);
 
         board.splice(first, 0, deck.pop());
         board.splice(second, 0, deck.pop());
@@ -214,6 +214,8 @@ const game = (creatorId, gameName) => {
                 board.splice(index, 1);
             });
 
+            setBoardIndices();
+
             scores[userId] += 1;
 
             addFeedMessage(userId, "set", `["${cards[0]}","${cards[1]}","${cards[2]}"]`);
@@ -223,12 +225,12 @@ const game = (creatorId, gameName) => {
             }
 
             while (!hasSet()) {
-                drawThree(board.length, board.length, board.length);
-
-                if (!deck.length && !hasSet()) {
+                if (!deck.length) {
                     status = 2;
                     return 2;
                 }
+
+                drawThree(board.length, board.length, board.length);
             }
 
             return 1;

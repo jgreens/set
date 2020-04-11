@@ -84,7 +84,9 @@ define(
                 <div className="Lobby ui grid container">
                     <div className="row">
                         <div className="six wide column">
-                            <h1>Logged in as {this.props.user.name}</h1>
+                            <div className="ui teal big label">
+                                <i className="user icon"></i> {this.props.user.name}
+                            </div>
                         </div>
                         <div className="ten wide column" style={{ textAlign: 'right' }} >
                             {this._generateMembers()}

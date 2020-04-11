@@ -17,7 +17,12 @@ const createUser = (id, nickname) => {
 };
 
 const deleteUser = id => {
-    const gameId = users.getUser(id).gameId;
+    const user = users.getUser(id);
+    if (!user) {
+        return;
+    }
+
+    const gameId = users.gameId;
     if (gameId) {
         leaveGame(gameId, id);
     }

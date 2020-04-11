@@ -108,6 +108,7 @@ const startGame = (gameId, userId) => {
 
     if (result) {
         sendGameUpdate(gameId);
+        sendLobbyUpdate();
     }
 
     return result;

@@ -35,16 +35,16 @@ define(
         componentDidUpdate: function() {
             $( '.pop' ).popup();
         },
-        _logout: function() {
+        _exit: function() {
             var self = this;
-            Socket.logout( this.props.user, function( data ) {
+            Socket.exit( this.props.user, function( data ) {
                 if( data ) // Successfully logged out 
-                    self._goToLogin();
+                    self._goToTitle();
             });
         },
-        _goToLogin: function( e ) {
+        _goToTitle: function( e ) {
             var customEvent = new CustomEvent( 'ViewController',  {
-                detail: { 'view': 'Login' },
+                detail: { 'view': 'Title' },
                 bubbles: true
             });
             window.dispatchEvent( customEvent );
@@ -52,7 +52,7 @@ define(
         _generateItems: function() {
             var html = [];
             for( var i = 0; i < this.state.games.length; i++ )
-                html.push( <LobbyItem key={this.state.games[i].gameId} id={this.state.games[i].gameId} name={this.state.games[i].name} members={this.state.games[i].members} started={this.state.games[i].started} finished={this.state.games[i].finished} /> );
+                html.push( <LobbyItem key={this.state.games[i].id} id={this.state.games[i].id} name={this.state.games[i].name} members={this.state.games[i].members} started={this.state.games[i].started} finished={this.state.games[i].finished} /> );
 
             return html;
         },
@@ -84,7 +84,9 @@ define(
                 <div className="Lobby ui grid container">
                     <div className="row">
                         <div className="six wide column">
-                            <h1>Logged in as {this.props.user.name}</h1>
+                            <div className="ui teal big label">
+                                <i className="user icon"></i> {this.props.user.name}
+                            </div>
                         </div>
                         <div className="ten wide column" style={{ textAlign: 'right' }} >
                             {this._generateMembers()}
@@ -97,7 +99,7 @@ define(
                     </div>
                     <div className="row">
                         <div className="column">
-                            <button className="ui black right floated icon button" onClick={this._logout}>Log Out</button>
+                            <button className="ui black right floated icon button" onClick={this._exit}>Exit</button>
                             <CreateButton />
                         </div>
                     </div>

@@ -1,259 +1,211 @@
-var express = require( 'express' );
-var http = require( 'http' );
-var socketIO = require( 'socket.io' );
-var net = require( 'net' );
-var path = require( 'path' );
+const users = require('./users');
+const games = require('./games');
+const socket = require('./socket');
 
+let broadcast;
 
-/*
- * Express
- */
-var app = express();
-app.use(express.static(path.join(__dirname, "../public_html")));
-var expressServer = app.listen(3000, function() {
-    console.log( 'listening on *:3000' );
-});
-
-
-/*
- * Node - Java Socket Connection
- */
-// Utility function to create messages with id numbers (used for acks)
-var msgCount = 0;
-var createMessage = function( msgType, data ) {
-    var obj = {
-        msgId: msgCount++,
-        msgType: msgType,
-        data: data
-    }
-    console.log( 'Sending message: ' );
-    console.log( obj );
-    return obj;
+const connectBroadcaster = broadcaster => {
+    broadcast = broadcaster;
 };
 
-// Node-Java socket connection event handling
-const client = net.connect( 1010, 'localhost' );
-client.on( 'connect', function() {
-    // 'connect' listener
-    var obj = createMessage( "nodeConnect", { msg: "connected to server!" } );
-    client.write( JSON.stringify( obj ) + '\n' );
-});
-client.on( 'end', function() {
-    console.log( 'disconnected from server' );
-});
+const createUser = (id, nickname) => {
+    const user = users.addUser(id, nickname);
 
-client.on( 'data', function( msg ) {
-    var msgs = msg.toString().split('\n');
-    for ( var i = 0; i < msgs.length; ++i ) {
-        if (msgs[i].length) {
-            handleJavaData(msgs[i]);
-        }
+    sendLobbyUpdate();
+
+    return user;
+};
+
+const deleteUser = id => {
+    const user = users.getUser(id);
+    if (!user) {
+        return;
     }
-});
 
-var handleJavaData = function( msg ) {
-    var msgObj = JSON.parse(msg);
-    console.log( 'Processed message ' + msgObj.msgId + ': ' + msgObj.msgType );
-    console.log( msgObj.data );
+    const gameId = users.gameId;
+    if (gameId) {
+        leaveGame(gameId, id);
+    }
 
-    var data = msgObj.data;
-    switch( msgObj.msgType ) {
-        case 'ack':
+    const result = users.deleteUser(id);
+
+    sendLobbyUpdate();
+
+    return result;
+};
+
+const getUserNickname = id => {
+    const user = users.getUser(id);
+    if (!user) {
+        return 'unnamed user';
+    }
+
+    return user.nickname;
+};
+
+const getLobbyData = () => {
+    const inactiveUsers = users.getInactiveUsers();
+    const allGames = games.getAllGames();
+
+    const lobbyData = {
+        clients: inactiveUsers.map(user => user.id),
+        users: inactiveUsers.map(user => user.nickname),
+        games: allGames.map(game => game.getOverviewData()),
+    };
+
+    lobbyData.games.map(game => {
+        game.members = game.members.map(id => users.getUser(id).nickname);
+        return game;
+    });
+
+    return lobbyData;
+};
+
+const createGame = (creatorId, name) => {
+    const id = games.createGame(creatorId, name);
+
+    joinGame(id, creatorId);
+
+    sendLobbyUpdate();
+
+    return { id };
+};
+
+const joinGame = (gameId, userId) => {
+    if (!games.addMemberToGame(gameId, userId)) {
+        console.error(`Error adding player with id ${creatorId} to game with id ${id}`);
+        return false;
+    }
+
+    users.getUser(userId).gameId = gameId;
+
+    sendLobbyUpdate();
+    sendGameUpdate(gameId);
+
+    return true;
+};
+
+const leaveGame = (gameId, userId) => {
+    if (!games.removeMemberFromGame(gameId, userId)) {
+        console.error(`Error removing player with id ${userId} from game with id ${gameId}`);
+        return false;
+    }
+
+    users.getUser(userId).gameId = null;
+
+    sendGameUpdate(gameId);
+
+    if (games.gameIsEmpty(gameId)) {
+        games.deleteGame(gameId);
+    }
+
+    sendLobbyUpdate();
+
+    return true;
+};
+
+const triggerGameUpdate = gameId => {
+    sendGameUpdate(gameId);
+};
+
+const startGame = (gameId, userId) => {
+    const result = games.startGame(gameId, userId);
+
+    if (result) {
+        sendGameUpdate(gameId);
+        sendLobbyUpdate();
+    }
+
+    return result;
+};
+
+const evaluateSet = (gameId, userId, cards) => {
+    const rc = games.evaluateSet(gameId, userId, cards);
+
+    let result = {};
+    switch (rc) {
+        case -2:
+            result.message = 'Cards are not on the board';
+            result.success = false;
             break;
-        case 'CLIENT CONNECT SUCCESS':
-            connectedClients[ data.clientId ].emit( 'CLIENT CONNECT ACK', true );
+        case -1:
+            result.message = 'Cards are formatted incorrectly';
+            result.success = false;
             break;
-        case 'USER REGISTER SUCCESS':
-            var obj = { success: true };
-            connectedClients[ data.clientId ].emit( 'USER REGISTER ACK', obj );
+        case 0:
+            result.message = 'Invalid set';
+            result.success = false;
             break;
-        case 'USER REGISTER FAIL':
-            var obj = { success: false, message: data.errorMessage };
-            connectedClients[ data.clientId ].emit( 'USER REGISTER ACK', obj );
+        case 1:
+            result.message = 'Valid set; game not yet finished';
+            result.success = true;
             break;
-        case 'USER LOGIN SUCCESS':
-            var obj = { success: true, user: data.username, id: data.clientId };
-            connectedClients[ data.clientId ].emit( 'USER LOGIN ACK', obj );
-            break;
-        case 'USER LOGIN FAIL':
-            var obj = { success: false, message: data.errorMessage };
-            connectedClients[ data.clientId ].emit( 'USER LOGIN ACK', obj );
-            break;
-        case 'USER LOGOUT SUCCESS':
-            connectedClients[ data.clientId ].emit( 'USER LOGOUT ACK', true );
-            break;
-        case 'USER LOGOUT FAIL':
-            connectedClients[ data.clientId ].emit( 'USER LOGOUT ACK', false );
-            break;
-        case 'LOBBY UPDATE':
-            var obj = { users: data.lobbyUsers, games: data.games };
-            for ( var i = 0; i < data.clients.length; ++i ) {
-                if ( connectedClients[ data.clients[i] ] ) {
-                    connectedClients[ data.clients[i] ].emit( 'LOBBY UPDATE', obj );
-                }
-            }
-            break;
-        case 'GAME CREATE SUCCESS':
-            var obj = { id: data.gameId };
-            connectedClients[ data.clientId ].emit( 'GAME CREATE ACK', obj );
-            break;
-        case 'GAME JOIN SUCCESS':
-            connectedClients[ data.clientId ].emit( 'GAME JOIN ACK', true );
-            break;
-        case 'GAME JOIN FAIL':
-            connectedClients[ data.clientId ].emit( 'GAME JOIN ACK', false );
-            break;
-        case 'GAME DELETE SUCCESS':
-            // TODO: This should send game members back to the lobby
-            for ( var i = 0; i < data.clients.length; ++i ) {
-                connectedClients[ data.clients[i] ].emit( 'GAME DELETE ACK', true );
-            }
-            break;
-        case 'GAME DELETE FAIL':
-            // TODO: This should show some sort of error message and stop the button load state
-            connectedClients[ data.clientId ].emit( 'GAME DELETE ACK', false );
-            break;
-        case 'GAME LEAVE SUCCESS':
-            connectedClients[ data.clientId ].emit( 'GAME LEAVE ACK', true );
-            break;
-        case 'GAME LEAVE FAIL':
-            connectedClients[ data.clientId ].emit( 'GAME LEAVE ACK', false );
-            break;
-        case 'GAME START SUCCESS':
-            connectedClients[ data.clientId ].emit( 'GAME START ACK', true );
-            break;
-        case 'GAME SET SUCCESS':
-            connectedClients[ data.clientId ].emit( 'GAME SET ACK', true );
-            break;
-        case 'GAME SET INVALID':
-            connectedClients[ data.clientId ].emit( 'GAME SET ACK', false );
-            break;
-        case 'GAME SET FAIL':
-            connectedClients[ data.clientId ].emit( 'GAME SET ACK', false );
-            break;
-        case 'GAME UPDATE':
-            for ( var i = 0; i < data.clients.length; ++i ) {
-                connectedClients[ data.clients[i] ].emit( 'GAME UPDATE', data );
-            }
+        case 2:
+            result.message = 'Valid set; game finished';
+            result.success = true;
             break;
         default:
-            console.log( 'Unhandled message: ' + msgObj );
+            result.message = 'Unknown return code from set evaluation';
+            result.success = false;
             break;
     }
+
+    if (rc >= 0) {
+        sendGameUpdate(gameId);
+        sendLobbyUpdate();
+    }
+
+    return result;
 };
 
-/*
- * Node - Browser Socket Connection (socket.io)
- */
-var io = require( 'socket.io' ).listen( expressServer );
-var connectedClients = {};
-io.on( 'connection', function( socket ) {
-    console.log( socket.id + ' - ' + socket.client.conn.remoteAddress );
-    var obj = createMessage( 'CLIENT CONNECT', { clientId: socket.id } );
-    connectedClients[socket.id] = socket;
-    client.write( JSON.stringify( obj ) + '\n' );
+const sendGameFeedMessage = (gameId, userId, type, message) => {
+    games.addFeedMessage(gameId, userId, type, message);
+    sendGameUpdate(gameId);
+};
 
-    socket.on( 'disconnect', function() {
-        var obj = createMessage( 'CLIENT DISCONNECT', { clientId: socket.id } );
-        delete connectedClients[socket.id]
-        client.write( JSON.stringify( obj ) + '\n' );
+const getGameData = gameId => {
+    const gameData = games.getGameData(gameId);
+
+    gameData.owner = users.getUser(gameData.owner).nickname;
+
+    let scoresByNickname = {};
+    Object.keys(gameData.scores).forEach(userId => {
+        scoresByNickname[users.getUser(userId).nickname] = gameData.scores[userId];
     });
+    gameData.scores = scoresByNickname;
 
-    socket.on( 'USER REGISTER', function(data) {
-        var obj = createMessage( 'USER REGISTER', {
-            clientId: socket.id,
-            username: data.username,
-            password: data.password,
-        });
-        client.write( JSON.stringify( obj ) + '\n' );
-    });
+    gameData.feed = gameData.feed.map(message => ({
+        username: users.getUser(message.userId).nickname,
+        msgType: message.type,
+        data: message.data,
+    }));
 
-    socket.on( 'USER LOGIN', function(data) {
-        var obj = createMessage( 'USER LOGIN', {
-            clientId: socket.id,
-            username: data.username,
-            password: data.password,
-        });
-        client.write( JSON.stringify( obj ) + '\n' );
-    });
+    return gameData;
+};
 
-    socket.on( 'USER LOGOUT', function(data) {
-        var obj = createMessage( 'USER LOGOUT', {
-            clientId: socket.id,
-            username: data.name
-        });
-        client.write( JSON.stringify( obj ) + '\n' );
-    });
+const sendLobbyUpdate = () => {
+    const data = getLobbyData();
 
-    socket.on( 'LOBBY LIST', function() {
-        var obj = createMessage( 'LOBBY LIST', {} );
-        client.write( JSON.stringify( obj ) + '\n' );
-    });
+    broadcast(data.clients, 'LOBBY UPDATE', data);
+};
 
-    socket.on( 'GAME CREATE', function(data) {
-        var obj = createMessage( 'GAME CREATE', {
-            clientId: socket.id,
-            name: data.name
-        });
-        client.write( JSON.stringify( obj ) + '\n' );
-    });
+const sendGameUpdate = gameId => {
+    const data = getGameData(gameId);
 
-    socket.on( 'GAME JOIN', function(data) {
-        var obj = createMessage( 'GAME JOIN', {
-            clientId: socket.id,
-            gameId: data.id
-        });
-        client.write( JSON.stringify( obj ) + '\n' );
-    });
+    broadcast(data.members, 'GAME UPDATE', data);
+};
 
-    socket.on( 'GAME UPDATE SUBSCRIBE', function(data) {
-        var obj = createMessage( 'GAME UPDATE SUBSCRIBE', {
-            gameId: data.id
-        });
-        client.write( JSON.stringify( obj ) + '\n' );
-    });
-
-    socket.on( 'GAME DELETE', function(data) {
-        var obj = createMessage( 'GAME DELETE', {
-            clientId: socket.id,
-            gameId: data.id
-        });
-        client.write( JSON.stringify( obj ) + '\n' );
-    });
-
-    socket.on( 'GAME START', function(data) {
-        var obj = createMessage( 'GAME START', {
-            clientId: socket.id,
-            gameId: data.id
-        });
-        client.write( JSON.stringify( obj ) + '\n' );
-    });
-
-    socket.on( 'GAME LEAVE', function(data) {
-        var obj = createMessage( 'GAME LEAVE', {
-            clientId: socket.id,
-            gameId: data.id
-        });
-        client.write( JSON.stringify( obj ) + '\n' );
-    });
-
-    socket.on( 'GAME SET', function(data) {
-        var obj = createMessage( 'GAME SET', {
-            clientId: socket.id,
-            gameId: data.id,
-            cards: data.set
-        });
-        client.write( JSON.stringify( obj ) + '\n' );
-    });
-
-    socket.on( 'GAME FEED', function(data) {
-        var obj = createMessage( 'GAME FEED MESSAGE', {
-            gameId: data.id,
-            username: data.user,
-            msgType: data.type,
-            data: data.message
-        });
-        client.write( JSON.stringify( obj ) + '\n' );
-    });
-
-});
+module.exports = {
+    connectBroadcaster,
+    createUser,
+    deleteUser,
+    getUserNickname,
+    getLobbyData,
+    createGame,
+    joinGame,
+    leaveGame,
+    triggerGameUpdate,
+    startGame,
+    sendGameFeedMessage,
+    evaluateSet,
+};

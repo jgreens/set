@@ -5,7 +5,7 @@ define(
 , function(
     io
 ) {
-    var socket = io();
+    var socket = io({transports: ['websocket'], upgrade: false});
 
     var Socket = {};
 
@@ -15,23 +15,16 @@ define(
         });
     };
 
-    Socket.register = function( state, callback ) {
-        socket.emit( 'USER REGISTER', state );
-        socket.once( 'USER REGISTER ACK', function( data ) {
+    Socket.enter = function( state, callback ) {
+        socket.emit( 'USER ENTER', state );
+        socket.once( 'USER ENTER ACK', function( data ) {
             callback( data );
         });
     };
 
-    Socket.login = function( state, callback ) {
-        socket.emit( 'USER LOGIN', state );
-        socket.once( 'USER LOGIN ACK', function( data ) {
-            callback( data );
-        });
-    };
-
-    Socket.logout = function( state, callback ) {
-        socket.emit( 'USER LOGOUT', state );
-        socket.once( 'USER LOGOUT ACK', function( data ) {
+    Socket.exit = function( state, callback ) {
+        socket.emit( 'USER EXIT', state );
+        socket.once( 'USER EXIT ACK', function( data ) {
             callback( data );
         });
     };
@@ -73,7 +66,7 @@ define(
     };
 
     Socket.gameUpdate = function( state, callback ) {
-        socket.emit( 'GAME UPDATE SUBSCRIBE', state );
+        socket.emit( 'GAME UPDATE INIT', state );
         socket.on( 'GAME UPDATE', function( data ) {
             callback( data );
         });

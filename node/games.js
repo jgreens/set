@@ -214,14 +214,18 @@ const game = (creatorId, gameName) => {
 
             addFeedMessage(userId, "set", `["${cards[0]}","${cards[1]}","${cards[2]}"]`);
 
-            if (!deck.length && !hasSet()) {
-                status = 2;
-                return 2;
+            if (deck.length) {
+                drawThree(indices[2], indices[1], indices[0]);
             }
 
-            do {
-                drawThree(indices[0], indices[1], indices[2]);
-            } while (board.length < 12 && !hasSet());
+            while (!hasSet()) {
+                drawThree(board.length, board.length, board.length);
+
+                if (!deck.length && !hasSet()) {
+                    status = 2;
+                    return 2;
+                }
+            }
 
             return 1;
         }

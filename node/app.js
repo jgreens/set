@@ -161,6 +161,12 @@ const getGameData = gameId => {
 
     gameData.owner = users.getUser(gameData.owner).nickname;
 
+    let scoresByNickname = {};
+    Object.keys(gameData.scores).forEach(userId => {
+        scoresByNickname[users.getUser(userId).nickname] = gameData.scores[userId];
+    });
+    gameData.scores = scoresByNickname;
+
     gameData.feed = gameData.feed.map(message => ({
         username: users.getUser(message.userId).nickname,
         msgType: message.type,

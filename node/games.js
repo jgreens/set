@@ -204,6 +204,10 @@ const game = (creatorId, gameName) => {
             return -2;
         }
 
+        if (!scores[userId]) {
+            scores[userId] = 0;
+        }
+
         if (getSetCard(cards[0], cards[1]) === cards[2]) {
             indices.sort((a, b) => b - a);
             indices.forEach(index => {
@@ -229,6 +233,8 @@ const game = (creatorId, gameName) => {
 
             return 1;
         }
+
+        scores[userId] -= 1;
         
         addFeedMessage(userId, "fail", `["${cards[0]}","${cards[1]}","${cards[2]}"]`);
         return 0;
@@ -255,6 +261,7 @@ const game = (creatorId, gameName) => {
             id,
             members,
             cards: board,
+            scores,
             feed,
             owner,
             started: status !== 0,

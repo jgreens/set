@@ -200,7 +200,7 @@ const game = (creatorId, gameName) => {
 
         const indices = [boardIndices[cards[0]], boardIndices[cards[1]], boardIndices[cards[2]]];
 
-        if (indices.length !== indices.filter(index => Boolean(index)).length) {
+        if (indices.filter(index => index === undefined).length !== 0) {
             return -2;
         }
 

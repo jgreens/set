@@ -7,46 +7,6 @@ const connect = expressServer => {
     io.on('connection', clientConnected);
 };
 
-// Utility function to create messages with id numbers (used for acks)
-let msgCount = 0;
-const createMessage = (msgType, data) => {
-    const obj = {
-        msgId: msgCount++,
-        msgType: msgType,
-        data: data
-    }
-    console.log( 'Sending message: ' );
-    console.log( obj );
-    return obj;
-};
-
-//var handleJavaData = function( msg ) {
-//    var msgObj = JSON.parse(msg);
-//    console.log( 'Processed message ' + msgObj.msgId + ': ' + msgObj.msgType );
-//    console.log( msgObj.data );
-//
-//    var data = msgObj.data;
-//    switch( msgObj.msgType ) {
-//        case 'ack':
-//            break;
-//        case 'GAME START SUCCESS':
-//            connectedClients[ data.clientId ].emit( 'GAME START ACK', true );
-//            break;
-//        case 'GAME SET SUCCESS':
-//            connectedClients[ data.clientId ].emit( 'GAME SET ACK', true );
-//            break;
-//        case 'GAME SET INVALID':
-//            connectedClients[ data.clientId ].emit( 'GAME SET ACK', false );
-//            break;
-//        case 'GAME SET FAIL':
-//            connectedClients[ data.clientId ].emit( 'GAME SET ACK', false );
-//            break;
-//        default:
-//            console.log( 'Unhandled message: ' + msgObj );
-//            break;
-//    }
-//};
-
 const connectedClients = {};
 
 const clientConnected = socket => {

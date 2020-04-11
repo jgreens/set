@@ -9,6 +9,8 @@ const game = (creatorId, gameName) => {
     let board = [];
     let deck = [];
 
+    let boardIndices = {};
+
     let members = [];
     let scores = {};
 
@@ -22,10 +24,17 @@ const game = (creatorId, gameName) => {
             for (let j = 0; j < 3; ++j) {
                 for (let k = 0; k < 3; ++k) {
                     for (let l = 0; l < 3; ++l) {
-                        deck.push([i, j, k, l]);
+                        deck.push(`${i}${j}${k}${l}`);
                     }
                 }
             }
+        }
+    };
+
+    const setBoardIndices = () => {
+        boardIndices = {};
+        for (let i = 0; i < board.length; ++i) {
+            boardIndices[board[i]] = i;
         }
     };
 
@@ -46,10 +55,15 @@ const game = (creatorId, gameName) => {
         board.splice(second, 0, deck.pop());
         board.splice(third, 0, deck.pop());
 
+        setBoardIndices();
+
         return true;
     };
 
     const getSetCard = (card1, card2) => {
+        const str1 = Array.from(card1);
+        const str2 = Array.from(card2);
+
         let setCard = [];
 
         if (card1[0] === card2[0]) {
@@ -76,21 +90,7 @@ const game = (creatorId, gameName) => {
             setCard.push(3 - card2[3] - card1[3]);
         }
 
-        return setCard;
-    };
-
-    const arraysEqual = (first, second) => {
-        if (first.length !== second.length) {
-            return false;
-        }
-
-        for (let i = 0; i < first.length; ++i) {
-            if (first[i] !== second[i]) {
-                return false;
-            }
-        }
-
-        return true;
+        return setCard.join('');
     };
 
     const hasSet = () => {
@@ -105,10 +105,8 @@ const game = (creatorId, gameName) => {
 
                 const card3 = getSetCard(card1, card2);
 
-                for (let k = 0; k < board.length; ++k) {
-                    if (arraysEqual(board[k], card3)) {
-                        return true;
-                    }
+                if (boardIndices[card3]) {
+                    return true;
                 }
             }
         }
@@ -146,7 +144,8 @@ const game = (creatorId, gameName) => {
 
         status = 1;
         scores = members.reduce((obj, member) => {
-            scores[member] = 0;
+            obj[member] = 0;
+            return obj;
         }, {});
 
         shuffleDeck();
@@ -191,43 +190,29 @@ const game = (creatorId, gameName) => {
     };
 
     const validateCard = card => {
-        return card.length === 4 && card.filter(element => element >= 0 && element <= 2).length == 4;
-    };
-
-    const cardIndex = card => {
-        for (let i = 0; i < board.length; ++i) {
-            if (arraysEqual(board[i], card)) {
-                return i;
-            }
-        }
-
-        return false;
+        return card.length === 4 && Array.from(card).filter(element => element >= 0 && element <= 2).length == 4;
     };
 
     const evaluateSet = (userId, cards) => {
-        cards = cards.map(card => Array.from(card));
-
         if (cards.length !== 3 || !validateCard(cards[0]) || !validateCard(cards[1]) || !validateCard(cards[2])) {
             return -1;
         }
 
-        const cardIndex1 = cardIndex(cards[0]);
-        const cardIndex2 = cardIndex(cards[1]);
-        const cardIndex3 = cardIndex(cards[2]);
+        const indices = [boardIndices[cards[0]], boardIndices[cards[1]], boardIndices[cards[2]]];
 
-        if (!cardIndex1 || !cardIndex2 || !cardIndex3) {
+        if (indices.length !== indices.filter(index => Boolean(index)).length) {
             return -2;
         }
 
-        if (arraysEqual(getSetCard(card[0], card[1]), card[2])) {
-            const indices = [cardIndex1, cardIndex2, cardIndex3].sort((a, b) => b - a);
+        if (getSetCard(cards[0], cards[1]) === cards[2]) {
+            indices.sort((a, b) => b - a);
             indices.forEach(index => {
                 board.splice(index, 1);
             });
 
             scores[userId] += 1;
 
-            addFeedMessage(userId, "set", `[${cards[0].join('')},${cards[1].join('')},${cards[2].join('')}]`);
+            addFeedMessage(userId, "set", `[${cards[0]},${cards[1]},${cards[2]}]`);
 
             if (!deck.length && !hasSet()) {
                 status = 2;
@@ -235,13 +220,13 @@ const game = (creatorId, gameName) => {
             }
 
             do {
-                drawThree(cardIndex1, cardIndex2, cardIndex3);
+                drawThree(indices[0], indices[1], indices[2]);
             } while (board.length < 12 && !hasSet());
 
             return 1;
         }
         
-        addFeedMessage(userId, "fail", `[${cards[0].join('')},${cards[1].join('')},${cards[2].join('')}]`);
+        addFeedMessage(userId, "fail", `[${cards[0]},${cards[1]},${cards[2]}]`);
         return 0;
     };
 
@@ -265,7 +250,7 @@ const game = (creatorId, gameName) => {
         return {
             id,
             members,
-            cards: board.map(card => card.join('')),
+            cards: board,
             feed,
             owner,
             started: status !== 0,

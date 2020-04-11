@@ -9,7 +9,7 @@ define(
     Socket,
     SemanticForm
 ) {
-    var Login = React.createClass({
+    var Title = React.createClass({
         getInitialState: function() {
             return {
                 'segmentClass': 'ui segment'
@@ -26,7 +26,7 @@ define(
                 onSuccess: function() {
                     self.setState({ 'segmentClass': 'ui segment loading' }); // Dim and show loader while waiting for response
 
-                    Socket.login( self.state, function( data ) { // TODO: Get userId from callback and update state
+                    Socket.enter( self.state, function( data ) { // TODO: Get userId from callback and update state
                         self.setState({ 'segmentClass': 'ui segment' }); // Remove loader
 
                         if (data.success) {
@@ -48,16 +48,16 @@ define(
         },
         render: function() {
             return(
-                <div className="Login ui middle aligned center aligned grid">
+                <div className="Title ui middle aligned center aligned grid">
                     <div className="column">
                         <h2 className="ui teal image header">
                             <div className="content">
                                 Welcome to Set!
                             </div>
                         </h2>
-                        <form className="ui large form Login-form">
+                        <form className="ui large form Title-form">
                             <div className={this.state.segmentClass}>
-                                <div id="submit" className="ui fluid large teal submit button">Login</div>
+                                <div id="submit" className="ui fluid large teal submit button">Enter</div>
                             </div>
 
                             <div className="ui error message"></div>
@@ -68,5 +68,5 @@ define(
         }
     });
 
-    return Login;
+    return Title;
 });

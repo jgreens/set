@@ -2,21 +2,21 @@ define(
 [
     'react',
     'Socket',
-    'jsx!components/Login/Login',
+    'jsx!components/Title/Title',
     'jsx!components/Lobby/Lobby',
     'jsx!components/Game/Game'
 ]
 , function(
     React,
     Socket,
-    Login,
+    Title,
     Lobby,
     Game
 ) {
     var ViewController = React.createClass({
         getInitialState: function() {
             return {
-                'view': 'Login',
+                'view': 'Title',
                 'user': {
                     'id': -1,
                     'name': ''
@@ -46,8 +46,8 @@ define(
             var view = [];
 
             switch( this.state.view ) {
-                case 'Login':
-                    view.push( <Login key="Login" /> );
+                case 'Title':
+                    view.push( <Title key="Title" /> );
                     break;
                 case 'Lobby':
                     view.push( <Lobby key="Lobby" user={this.state.user} /> );

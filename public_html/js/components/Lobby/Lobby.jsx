@@ -35,16 +35,16 @@ define(
         componentDidUpdate: function() {
             $( '.pop' ).popup();
         },
-        _logout: function() {
+        _exit: function() {
             var self = this;
-            Socket.logout( this.props.user, function( data ) {
+            Socket.exit( this.props.user, function( data ) {
                 if( data ) // Successfully logged out 
-                    self._goToLogin();
+                    self._goToTitle();
             });
         },
-        _goToLogin: function( e ) {
+        _goToTitle: function( e ) {
             var customEvent = new CustomEvent( 'ViewController',  {
-                detail: { 'view': 'Login' },
+                detail: { 'view': 'Title' },
                 bubbles: true
             });
             window.dispatchEvent( customEvent );
@@ -97,7 +97,7 @@ define(
                     </div>
                     <div className="row">
                         <div className="column">
-                            <button className="ui black right floated icon button" onClick={this._logout}>Log Out</button>
+                            <button className="ui black right floated icon button" onClick={this._exit}>Exit</button>
                             <CreateButton />
                         </div>
                     </div>

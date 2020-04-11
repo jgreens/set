@@ -15,16 +15,16 @@ define(
         });
     };
 
-    Socket.login = function( state, callback ) {
-        socket.emit( 'USER LOGIN', state );
-        socket.once( 'USER LOGIN ACK', function( data ) {
+    Socket.enter = function( state, callback ) {
+        socket.emit( 'USER ENTER', state );
+        socket.once( 'USER ENTER ACK', function( data ) {
             callback( data );
         });
     };
 
-    Socket.logout = function( state, callback ) {
-        socket.emit( 'USER LOGOUT', state );
-        socket.once( 'USER LOGOUT ACK', function( data ) {
+    Socket.exit = function( state, callback ) {
+        socket.emit( 'USER EXIT', state );
+        socket.once( 'USER EXIT ACK', function( data ) {
             callback( data );
         });
     };

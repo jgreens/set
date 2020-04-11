@@ -21,7 +21,7 @@ const clientConnected = socket => {
         delete connectedClients[socket.id]
     });
 
-    socket.on( 'USER LOGIN', data => {
+    socket.on( 'USER ENTER', data => {
         const user = app.createUser(socket.id);
 
         const obj = {};
@@ -38,10 +38,10 @@ const clientConnected = socket => {
             console.log(`Client with id ${socket.id} logged in as ${obj.nickname}`);
         };
 
-        connectedClients[socket.id].emit( 'USER LOGIN ACK', obj );
+        connectedClients[socket.id].emit( 'USER ENTER ACK', obj );
     });
 
-    socket.on( 'USER LOGOUT', data => {
+    socket.on( 'USER EXIT', data => {
         const success = Boolean(app.deleteUser(socket.id));
 
         if (!success) {
@@ -50,7 +50,7 @@ const clientConnected = socket => {
             console.log(`Client with id ${socket.id} logged out`);
         }
 
-        connectedClients[socket.id].emit('USER LOGOUT ACK', success);
+        connectedClients[socket.id].emit('USER EXIT ACK', success);
     });
 
     socket.on( 'LOBBY LIST', () => {

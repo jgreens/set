@@ -99,7 +99,7 @@ const clientConnected = socket => {
 };
 
 app.connectBroadcaster((clients, eventType, data) => {
-    console.log(`Broadcasting ${eventType}`, JSON.stringify(data, null, 2));
+    console.log(`Broadcasting ${eventType} to ${clients}`);
 
     for (const clientId of clients) {
         if (!connectedClients[clientId]) {

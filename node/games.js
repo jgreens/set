@@ -212,7 +212,7 @@ const game = (creatorId, gameName) => {
 
             scores[userId] += 1;
 
-            addFeedMessage(userId, "set", `[${cards[0]},${cards[1]},${cards[2]}]`);
+            addFeedMessage(userId, "set", `["${cards[0]}","${cards[1]}","${cards[2]}"]`);
 
             if (!deck.length && !hasSet()) {
                 status = 2;
@@ -226,7 +226,7 @@ const game = (creatorId, gameName) => {
             return 1;
         }
         
-        addFeedMessage(userId, "fail", `[${cards[0]},${cards[1]},${cards[2]}]`);
+        addFeedMessage(userId, "fail", `["${cards[0]}","${cards[1]}","${cards[2]}"]`);
         return 0;
     };
 
